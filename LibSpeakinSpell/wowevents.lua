@@ -251,7 +251,6 @@ function Verbose:RANGE_DAMAGE(timestamp, eventtype, hideCaster, srcGUID, srcName
 	local amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing = select(4, ...)
 	-- transfer to shared function
 	self:DamageEvent(eventtype, spellId, spellName, srcName, dstName, amount, overkill, school, critical)
-endamageEvent(eventtype, nil, L["Melee Swing"], srcName, dstName, amount, overkill, school, critical)
 end
 
 
