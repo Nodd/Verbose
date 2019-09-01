@@ -1,0 +1,9 @@
+## Interface: 11302
+## Title: Verbose
+## DefaultState: enabled
+## Author: Nodd Tisse-Airain
+## Version: 0.0
+
+embeds.xml
+
+Verbose.xml
