@@ -10,4 +10,6 @@
 	<Script file="LibSpeakinSpell/data.lua"/>
 	<Script file="LibSpeakinSpell/utils.lua"/>
 	<Script file="LibSpeakinSpell/wowevents.lua"/>
+	<Script file="data.lua"/>
+	<Script file="speak.lua"/>
 </Ui>
