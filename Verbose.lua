@@ -10,13 +10,15 @@ Verbose:PrintLoading("Verbose.lua")
 function Verbose:OnInitialize()
   -- Code that you want to run when the addon is first loaded goes here.
 
-	self:InitRuntimeData()		-- initialize self.RuntimeData.Stuff\
-	self:RegisterAllEvents()	-- includes registering for ADDON_LOADED event -> OnVariablesLoaded
+    self:RegisterOptions()
+    self:DisplayOptions()
+
+	--self:InitRuntimeData()		-- initialize self.RuntimeData.Stuff\
+	--self:RegisterAllEvents()	-- includes registering for ADDON_LOADED event -> OnVariablesLoaded
 end
 
 function Verbose:OnEnable()
     -- Called when the addon is enabled
-    self:DebugMsg("toto")
 end
 
 function Verbose:OnDisable()

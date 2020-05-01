@@ -1,4 +1,5 @@
 <Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
+	<Script file="options.lua"/>
 	<Script file="Verbose.lua"/>
 	<Script file="LibSpeakinSpell/Locales/Locale-enUS.lua"/>
 	<Script file="LibSpeakinSpell/Locales/Locale-deDE.lua"/>
