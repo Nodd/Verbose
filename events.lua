@@ -47,20 +47,18 @@ function Verbose:RegisterEvents()
 	-- self:RegisterEvent("CHAT_MSG_GUILD_ACHIEVEMENT", "DUMMYEvent") --not in Classic
 
 	-- NPC interaction events
+    -- *_CLOSED events are unreliable and can fire anytime,
+    -- when speaking to another NPC for example.
+    -- It would need some heavy filtering :/
 	self:RegisterEvent("GOSSIP_SHOW", "ManageNoArgEvent")
-	self:RegisterEvent("GOSSIP_CLOSED", "ManageNoArgEvent")
 	self:RegisterEvent("BARBER_SHOP_OPEN", "ManageNoArgEvent") --not in Classic
 	self:RegisterEvent("BARBER_SHOP_CLOSE", "ManageNoArgEvent") --not in Classic
 	self:RegisterEvent("MAIL_SHOW", "ManageNoArgEvent")
-	self:RegisterEvent("MAIL_CLOSED", "ManageNoArgEvent")
 	self:RegisterEvent("MERCHANT_SHOW", "ManageNoArgEvent")
-	self:RegisterEvent("MERCHANT_CLOSED", "ManageNoArgEvent")
 	self:RegisterEvent("QUEST_GREETING", "ManageNoArgEvent")
 	self:RegisterEvent("QUEST_FINISHED", "ManageNoArgEvent")
 	self:RegisterEvent("TAXIMAP_OPENED", "DUMMYEvent")
-	self:RegisterEvent("TAXIMAP_CLOSED", "DUMMYEvent")
 	self:RegisterEvent("TRAINER_SHOW", "ManageNoArgEvent")
-	self:RegisterEvent("TRAINER_CLOSED", "ManageNoArgEvent")
 end
 
 
