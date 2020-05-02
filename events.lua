@@ -8,10 +8,10 @@ function Verbose:RegisterEvents()
 	self:RegisterEvent("UNIT_SPELLCAST_SENT", "OnUnitSpellcastSent")
 	self:RegisterEvent("UNIT_SPELLCAST_START", "OnUnitSpellcastCommon")
 	self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START", "OnUnitSpellcastCommon")
-	self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", "OnUnitSpellcastCommon")
-	self:RegisterEvent("UNIT_SPELLCAST_FAILED", "OnUnitSpellcastCommon")
-	self:RegisterEvent("UNIT_SPELLCAST_STOP", "OnUnitSpellcastCommon")
-	self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP", "OnUnitSpellcastCommon")
+	self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", "OnUnitSpellcastEnd")
+	self:RegisterEvent("UNIT_SPELLCAST_FAILED", "OnUnitSpellcastEnd")
+	self:RegisterEvent("UNIT_SPELLCAST_STOP", "OnUnitSpellcastEnd")
+	self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP", "OnUnitSpellcastEnd")
 end
 
 local targetTable = {}
@@ -26,6 +26,12 @@ function Verbose:OnUnitSpellcastCommon(event, caster, castID, spellID)
     if blacklist[spellID] ~= nil then return end
     local target = targetTable[castID]
     self:OnSpellcastEvent(event, caster, target, spellID)
+end
+
+function Verbose:OnUnitSpellcastEnd(event, caster, castID, spellID)
+    self:OnUnitSpellcastCommon(event, caster, castID, spellID)
+    -- Clean targetTable
+    targetTable[castID] = nil
 end
 
 function Verbose:OnSpellcastEvent(event, caster, target, spellID)
