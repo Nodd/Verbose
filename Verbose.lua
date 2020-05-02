@@ -13,7 +13,8 @@ function Verbose:OnInitialize()
     self:RegisterOptions()
     self:RegisterEvents()
 
-    self:DisplayOptions()
+    -- For debug
+    self:ShowOptions()
 end
 
 function Verbose:OnEnable()
