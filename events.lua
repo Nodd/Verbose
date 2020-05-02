@@ -5,15 +5,68 @@ local spellBlacklist = {
 }
 
 function Verbose:RegisterEvents()
+    -- Spell casts
 	self:RegisterEvent("UNIT_SPELLCAST_SENT", "OnUnitSpellcastSent")
 	self:RegisterEvent("UNIT_SPELLCAST_START", "OnUnitSpellcastCommon")
 	self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START", "OnUnitSpellcastCommon")
 	self:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED", "OnUnitSpellcastEnd")
 	self:RegisterEvent("UNIT_SPELLCAST_FAILED", "OnUnitSpellcastEnd")
+	self:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED", "OnUnitSpellcastEnd")
 	self:RegisterEvent("UNIT_SPELLCAST_STOP", "OnUnitSpellcastEnd")
-	self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP", "OnUnitSpellcastEnd")
+    self:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP", "OnUnitSpellcastEnd")
+
+    -- Death events
+	self:RegisterEvent("PLAYER_DEAD", "ManageNoArgEvent")
+	self:RegisterEvent("PLAYER_ALIVE", "ManageNoArgEvent")
+	self:RegisterEvent("PLAYER_UNGHOST", "ManageNoArgEvent")  -- From ghost to alive
+    self:RegisterEvent("RESURRECT_REQUEST", "DUMMYEvent")
+
+    -- Combat events
+	-- self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", "DUMMYEvent")
+	-- self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", "DUMMYEvent") --not in Classic
+    -- self:RegisterEvent("COMPANION_UPDATE", "DUMMYEvent") --not in Classic
+	self:RegisterEvent("PLAYER_REGEN_DISABLED", "ManageNoArgEvent")  -- Entering combat
+    self:RegisterEvent("PLAYER_REGEN_ENABLED", "ManageNoArgEvent")  -- Leaving combat
+
+	-- Chat events
+	-- self:RegisterEvent("CHAT_MSG_WHISPER", "DUMMYEvent")
+	-- self:RegisterEvent("CHAT_MSG_BN_WHISPER", "DUMMYEvent")
+	-- self:RegisterEvent("CHAT_MSG_GUILD", "DUMMYEvent")
+	-- self:RegisterEvent("CHAT_MSG_PARTY", "DUMMYEvent")
+
+	-- Events from interactions between players
+	-- self:RegisterEvent("AUTOFOLLOW_BEGIN", "DUMMYEvent")  -- /follow
+	-- self:RegisterEvent("AUTOFOLLOW_END", "DUMMYEvent")  -- /follow
+	-- self:RegisterEvent("TRADE_SHOW", "DUMMYEvent")  -- Trade between players
+	-- self:RegisterEvent("TRADE_CLOSED", "DUMMYEvent")  -- Trade between players
+
+	-- Achievement events
+	self:RegisterEvent("PLAYER_LEVEL_UP", "DUMMYEvent")
+	self:RegisterEvent("ACHIEVEMENT_EARNED", "DUMMYEvent") --not in Classic
+	-- self:RegisterEvent("CHAT_MSG_ACHIEVEMENT", "DUMMYEvent") --not in Classic
+	-- self:RegisterEvent("CHAT_MSG_GUILD_ACHIEVEMENT", "DUMMYEvent") --not in Classic
+
+	-- NPC interaction events
+	self:RegisterEvent("GOSSIP_SHOW", "ManageNoArgEvent")
+	self:RegisterEvent("GOSSIP_CLOSED", "ManageNoArgEvent")
+	self:RegisterEvent("BARBER_SHOP_OPEN", "ManageNoArgEvent") --not in Classic
+	self:RegisterEvent("BARBER_SHOP_CLOSE", "ManageNoArgEvent") --not in Classic
+	self:RegisterEvent("MAIL_SHOW", "ManageNoArgEvent")
+	self:RegisterEvent("MAIL_CLOSED", "ManageNoArgEvent")
+	self:RegisterEvent("MERCHANT_SHOW", "ManageNoArgEvent")
+	self:RegisterEvent("MERCHANT_CLOSED", "ManageNoArgEvent")
+	self:RegisterEvent("QUEST_GREETING", "ManageNoArgEvent")
+	self:RegisterEvent("QUEST_FINISHED", "ManageNoArgEvent")
+	self:RegisterEvent("TAXIMAP_OPENED", "DUMMYEvent")
+	self:RegisterEvent("TAXIMAP_CLOSED", "DUMMYEvent")
+	self:RegisterEvent("TRAINER_SHOW", "ManageNoArgEvent")
+	self:RegisterEvent("TRAINER_CLOSED", "ManageNoArgEvent")
 end
 
+
+-------------------------------------------------------------------------------
+-- Spellcast Events
+-------------------------------------------------------------------------------
 local targetTable = {}
 
 -- For UNIT_SPELLCAST_SENT only, used to retrieve the spell target
@@ -34,22 +87,6 @@ function Verbose:OnUnitSpellcastEnd(event, caster, castID, spellID)
     self:OnUnitSpellcastCommon(event, caster, castID, spellID)
     -- Clean targetTable
     targetTable[castID] = nil
-end
-
-function Verbose:OnSpellcastEvent(event, caster, target, spellID)
-    -- Ignore events from others
-    if caster ~= "player" and caster ~= "pet" then return end
-
-    -- Debug
-    spellName = GetSpellInfo(spellID)
-    print(event, caster, target, spellID, spellName)
-
-    -- Record Spell/event
-    self:RecordSpellcastEvent(spellID, event)
-
-    -- Talk
-    local msgData = self.db.profile.events.spells[spellID][event]
-    self:Speak(msgData)
 end
 
 function Verbose:RecordSpellcastEvent(spellID, event)
@@ -76,4 +113,62 @@ function Verbose:RecordSpellcastEvent(spellID, event)
     end
     -- Update timestamp
     spellData[event].lastRecord = GetServerTime()
+end
+
+function Verbose:OnSpellcastEvent(event, caster, target, spellID)
+    -- Ignore events from others
+    if caster ~= "player" and caster ~= "pet" then return end
+
+    spellName, iconTexture = self:SpellNameAndIconTexture(spellID)
+
+    -- Debug
+    print(event, caster, target, spellID, spellName)
+
+    -- Record Spell/event
+    self:RecordSpellcastEvent(spellID, event)
+
+    -- Talk
+    local msgData = self.db.profile.events.spells[spellID][event]
+    self:Speak(msgData, {
+        caster = caster,
+        target = target,
+        spellname = spellname,
+        icon = nil
+     })
+end
+
+
+-------------------------------------------------------------------------------
+-- Events with no parameters
+-------------------------------------------------------------------------------
+function Verbose:ManageNoArgEvent(event, ...)
+    -- DEBUG
+    print(event, "(NOARG)")
+    if ... then
+        print("NOARG event received args:", ...)
+    end
+
+    local msgData = self.db.profile.events[event]
+    self:Speak(msgData)
+end
+
+
+-------------------------------------------------------------------------------
+-- Events with specific parameters
+-------------------------------------------------------------------------------
+function Verbose:RESURRECT_REQUEST(event, caster)
+    -- DEBUG
+    print(event, caster)
+
+    local msgData = self.db.profile.events[event]
+    self:Speak(msgData, { caster = caster })
+end
+
+
+-------------------------------------------------------------------------------
+-- TODOs
+-------------------------------------------------------------------------------
+function Verbose:DUMMYEvent(event, ...)
+    -- DEBUG
+    print("DUMMY", event, ...)
 end

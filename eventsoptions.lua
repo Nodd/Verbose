@@ -9,6 +9,7 @@ function Verbose:AddEventToOptions(spellID, event)
             type = "group",
             name = function(info) return self:SpellName(info[#info]) end,
             icon = function(info) return self:SpellIconID(info[#info]) end,
+            iconCoords = Verbose.iconCropBorders,
             desc = function(info) return self:SpellIconTexture(info[#info]) .. "\n" .. self:SpellDescription(info[#info]) end,
             childGroups = "tree",
             args = {
