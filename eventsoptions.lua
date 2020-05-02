@@ -5,11 +5,6 @@ function Verbose:AddEventToOptions(spellID, event)
 
     -- Insert spell options
     if not spellOptions then
-        local name, _, icon = GetSpellInfo(spellID)
-        name = "|cFFFFFFFF" .. name .. "|r"  -- Always in white
-        local iconTexture = "|T" .. icon .. ":32|t"  -- Get the texture
-        local description = "|cFFFFD100" .. GetSpellDescription(spellID) .. "|r"  -- In yellow like in tooltips
-
         spellOptions = {
             type = "group",
             name = function(info) return self:SpellName(info[#info]) end,
