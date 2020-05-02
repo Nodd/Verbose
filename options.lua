@@ -102,7 +102,11 @@ Verbose.defaults = {
 }
 
 function Verbose:UpdateOptionsGUI()
-    AceConfigRegistry:NotifyChange(appName)
+    -- AceConfigRegistry:NotifyChange(addonName) doesn't work here
+    -- I guess it's because it's not the option values that change
+    -- but that new options are created
+    Verbose:HideOptions()
+    Verbose:ShowOptions()
 end
 
 function Verbose:SelectOption(...)
@@ -139,13 +143,17 @@ function Verbose:RegisterOptions()
     self.optionsFrame:Hide()
 end
 
-function Verbose:DisplayOptions()
+function Verbose:ShowOptions()
     AceConfigDialog:Open(addonName, self.optionsFrame)
+end
+
+function Verbose:HideOptions()
+    AceConfigDialog:Close(addonName)
 end
 
 function Verbose:ChatCommand(input)
     if not input or input:trim() == "" then
-        self:DisplayOptions()
+        self:ShowOptions()
     else
         LibStub("AceConfigCmd-3.0"):HandleCommand("verbose", "Verbose", input)
     end
