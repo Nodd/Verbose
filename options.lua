@@ -1,8 +1,10 @@
 local addonName, Verbose = ...
 
-local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local AceGUI = LibStub("AceGUI-3.0")
+local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
+local AceConfigDialog = LibStub("AceConfigDialog-3.0")
+
 
 Verbose.options = {
     name = addonName,
@@ -126,10 +128,9 @@ function Verbose:RegisterOptions()
     self.options.args.profiles.order = 40
 
     -- Register options
-    LibStub("AceConfig-3.0"):RegisterOptionsTable(
+    AceConfig:RegisterOptionsTable(
         addonName,
         self.options
-        --{"verbose", "verb"},  -- Commandline commands
     )
     self:RegisterChatCommand("verbose", "ChatCommand")
     self:RegisterChatCommand("verb", "ChatCommand")
