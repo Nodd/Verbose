@@ -1,5 +1,9 @@
 local addonName, Verbose = ...
 
+local blacklist = {
+    836: "LOGINEFFECT",
+}
+
 function Verbose:RegisterEvents()
 	self:RegisterEvent("UNIT_SPELLCAST_SENT", "OnUnitSpellcastSent")
 	self:RegisterEvent("UNIT_SPELLCAST_START", "OnUnitSpellcastCommon")
@@ -18,6 +22,8 @@ function Verbose:OnUnitSpellcastSent(event, caster, target, castID, spellID)
 end
 
 function Verbose:OnUnitSpellcastCommon(event, caster, castID, spellID)
+    -- Ignore blacklisted spells
+    if blacklist[spellID] ~= nil then return end
     local target = targetTable[castID]
     self:OnSpellcastEvent(event, caster, target, spellID)
 end
