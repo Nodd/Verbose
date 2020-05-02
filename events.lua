@@ -16,9 +16,11 @@ end
 
 local targetTable = {}
 
+-- For UNIT_SPELLCAST_SENT only, used to retrieve the spell target
 function Verbose:OnUnitSpellcastSent(event, caster, target, castID, spellID)
+    -- Store target for later use
+    -- The other spell events don't provide the target :(
     targetTable[castID] = target
-    self:OnSpellcastEvent(event, caster, target, spellID)
 end
 
 function Verbose:OnUnitSpellcastCommon(event, caster, castID, spellID)
