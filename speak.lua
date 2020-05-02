@@ -62,8 +62,9 @@ function Verbose:Speak(msgData)
     local inInstance = IsInInstance()
     if inInstance then
         -- SendChatMessage("msg", "chatType", "language", "channel");
-        SendChatMessage(message, "SAY", nil, "channel");
+        SendChatMessage(message, "SAY");
     else
-        print("NOT IN INSTANCE:", message)
+        print("NOT IN INSTANCE")
+        SendChatMessage("dit : " .. message, "EMOTE");
     end
 end
