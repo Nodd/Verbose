@@ -6,7 +6,7 @@ end
 
 function Verbose:TextToTable(s, t)
     -- clear table
-    for i=0, #t do t[i] = nil end
+    table.wipe(t)
 
     -- Split on \n, skipping empty lines
     for v in s:gmatch("([^\n]+)") do
