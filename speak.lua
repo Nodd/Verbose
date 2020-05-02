@@ -59,6 +59,11 @@ function Verbose:Speak(msgData)
     msgData.LastTime = currenttime
     self.db.profile.lastTime = currenttime
 
-    -- SendChatMessage("msg" ,"chatType" ,"language" ,"channel");
-    SendChatMessage(message ,"SAY" ,nil ,"channel");
+    local inInstance = IsInInstance()
+    if inInstance then
+        -- SendChatMessage("msg", "chatType", "language", "channel");
+        SendChatMessage(message, "SAY", nil, "channel");
+    else
+        print("NOT IN INSTANCE:", message)
+    end
 end
