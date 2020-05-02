@@ -26,7 +26,7 @@ function Verbose:AddEventToOptions(spellID, event)
                 },
                 content = {
                     type = "description",
-                    name = function(info) return self:SpellDescription(info[#info-1]) end,
+                    name = function(info) return self:SpellDescription(info[#info-1])  .. "\n\nSpell ID: " .. info[#info-1] end,
                     order = 1,
                     fontSize = "medium",
                     width = "full",
