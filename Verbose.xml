@@ -1,16 +1,6 @@
 <Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
 	<Script file="options.lua"/>
 	<Script file="Verbose.lua"/>
-	<Script file="LibSpeakinSpell/Locales/Locale-enUS.lua"/>
-	<Script file="LibSpeakinSpell/Locales/Locale-deDE.lua"/>
-	<Script file="LibSpeakinSpell/Locales/Locale-frFR.lua"/>
-	<Script file="LibSpeakinSpell/Locales/Locale-koKR.lua"/>
-	<Script file="LibSpeakinSpell/Locales/Locale-zhCN.lua"/>
-	<Script file="LibSpeakinSpell/loader.lua"/>
-	<Script file="LibSpeakinSpell/debug.lua"/>
-	<Script file="LibSpeakinSpell/data.lua"/>
-	<Script file="LibSpeakinSpell/utils.lua"/>
-	<Script file="LibSpeakinSpell/wowevents.lua"/>
-	<Script file="data.lua"/>
 	<Script file="speak.lua"/>
+	<Script file="events.lua"/>
 </Ui>

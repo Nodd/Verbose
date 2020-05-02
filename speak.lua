@@ -1,70 +1,64 @@
 local addonName, Verbose = ...
 
 
-function Verbose:OnSpeechEvent( DetectedEventStub )
-	local funcname = "OnSpeechEvent"
-    self:DebugMsg(funcname, "--- EVENT ---")
-	self:DebugMsgDumpTable(DetectedEventStub, "DetectedEventStub")
-    self:DebugMsg(funcname, "--- END ---")
+function Verbose:GetRandomFromTable(t)
+	if not t then return end
 
-    self:DebugMsg(funcname, "toto")
+	local len = #t
+	if len < 1 then return end
 
-    local selected = Verbose:DispatchData( DetectedEventStub )
-    self:DebugMsgDumpTable(selected, "selected")
-    Verbose:Speak( selected )
+	local n = math.random(1, len);
+	return t[n]
 end
 
+function Verbose:GetRandomMsg(messages)
+    -- Get random message
+    local msg = self:GetRandomFromTable(messages)
+	if not msg then return end
 
-function Verbose:DispatchData( DetectedEventStub )
-    local selected, data
-    -- all stubs are expected to have at least a name and type, which MUST exist
-    if DetectedEventStub.type == "COMBAT" then
-        data = Verbose.data[DetectedEventStub.type]
-        --[[
-		local DetectedEventStub = {
-			type = "COMBAT",
-			name		= L["Damage received"],
-			eventname	= L["Damage received"],
-
-			spellid = spellId,
-			spellname = spellName,
-
-			caster = self:PlayerNameNoRealm(srcName),
-			target = self:PlayerNameNoRealm(dstName),
-
-			damage		= amount or 0,
-			overkill	= overkill or 0,
-			school		=
-        }
-        --]]
-        if data[DetectedEventStub.eventname] then
-            data = data[DetectedEventStub.eventname]
-            if data[DetectedEventStub.school] then
-                selected = data[DetectedEventStub.school]
-            else
-                selected = data["other"]
-            end
-        end
+    -- Replace from list randomly
+    for listID, list in pairs(self.db.profile.lists) do
+        local listStr = "<" .. list.name .. ">"
+        local n
+        repeat
+            local element = self:GetRandomFromTable(list.values)
+            msg, n = msg:gsub(listStr, element, 1)
+        until(n == 0)
     end
-    return selected
+
+    -- TODO: replace target...
+
+	return msg
 end
 
-function Verbose:Speak( selected )
-    if not selected then return end
+function Verbose:Speak(msgData)
+    if not msgData then return end
 
-    local lasttime = selected.LastTime or 0
-    local currenttime = GetTime()
-    local elapsed = currenttime - lasttime
+    -- Check enabled
+    if not msgData.enabled then print("local disabled") return end
 
-    if elapsed < selected.Cooldown then return end
+    -- Check global cooldown
+    local currentTime = GetServerTime()
+    local lastTime = self.db.profile.lastTime or 0
+    local elapsed = currentTime - lastTime
+    if elapsed < self.db.profile.cooldown then print("on global CD")  return end
 
-    if selected.Frequency < 1 and math.random(100) > selected.Frequency * 100 then return end
+    -- Check event cooldown
+    lastTime = msgData.lastTime or 0
+    elapsed = currentTime - lastTime
+    if elapsed < msgData.cooldown then print("on local CD")  return end
 
-    selected.LastTime = currenttime
+    -- Check probability
+    if math.random(100) > msgData.proba * 100 then print("proba fail") return end
 
-    message = Verbose:GetRandomTableEntry( selected.Messages, selected.LastMsg )
-    selected.LastMsg = message
+    -- All pass, speak to the world !
+    message = self:GetRandomMsg(msgData.messages)
+    if not message then print("no message") return end
 
-    --SendChatMessage("msg" ,"chatType" ,"language" ,"channel");
+    -- Update times
+    msgData.LastTime = currenttime
+    self.db.profile.lastTime = currenttime
+
+    -- SendChatMessage("msg" ,"chatType" ,"language" ,"channel");
     SendChatMessage(message ,"SAY" ,nil ,"channel");
 end

@@ -1,5 +1,4 @@
 local addonName, Verbose = ...
---local AceGUI = LibStub("AceGUI-3.0")
 
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local AceGUI = LibStub("AceGUI-3.0")
@@ -44,58 +43,21 @@ Verbose.options = {
             order = 20,
             childGroups = "tree",
             args = {
-                spellCastStart = {
+                spellcasts = {
                     type = "group",
-                    name = "Spell cast start",
+                    name = "Spellcasts",
                     order = 10,
+                    childGroups = "tree",
                     args = {
                         title = {
                             type = "description",
-                            name = "Spell cast start",
+                            name = "Spellcasts",
                             fontSize = "large",
                             order = 0,
                         },
                         info = {
                             type = "description",
                             name = "Documentation here.",
-                            fontSize = "medium",
-                            order = 1,
-                        },
-                    },
-                },
-                spellCastSucceed = {
-                    type = "group",
-                    name = "Spell cast succeed",
-                    order = 11,
-                    args = {
-                        title = {
-                            type = "description",
-                            name = "Spell cast succeed",
-                            fontSize = "large",
-                            order = 0,
-                        },
-                        info = {
-                            type = "description",
-                            name = "Documentation here too.",
-                            fontSize = "medium",
-                            order = 1,
-                        },
-                    },
-                },
-                spellCastFail = {
-                    type = "group",
-                    name = "Spell cast fail",
-                    order = 12,
-                    args = {
-                        title = {
-                            type = "description",
-                            name = "Spell cast fail",
-                            fontSize = "large",
-                            order = 0,
-                        },
-                        info = {
-                            type = "description",
-                            name = "Documentation here again.",
                             fontSize = "medium",
                             order = 1,
                         },
@@ -124,9 +86,11 @@ Verbose.defaults = {
     profile = {
         enabled = true,
         cooldown = 10,
+        lastTime = 0,
 
         events = {
-            spellCastStart
+            spells = {},
+            combat = {}
         },
         lists = {
             -- ListIDXXXX = {
@@ -137,54 +101,101 @@ Verbose.defaults = {
     }
 }
 
-function Verbose:AddEvent(event, name)
-    local options = {
-        type = "group",
-        name = name,
-        args = {
-            header = {
-                type = "description",
-                name = event .. ": " .. name,
-                order = 0,
-                fontSize = "large",
-            },
-            enable = {
-                type = "toggle",
-                name = "Enable",
-                order = 10,
-                width = "full",
-            },
-            proba = {
-                type = "range",
-                name = "Message probability",
-                order = 20,
-                isPercent = true,
-                min = 0,
-                max = 1,
-                bigStep = 0.05,
-            },
-            cooldown = {
-                type = "range",
-                name = "Message cooldown (s)",
-                order = 30,
-                min = 0,
-                max = 3600,
-                softMax = 60,
-                bigStep = 1,
-            },
-            list = {
-                type = "input",
-                name = "Messages, one per line",
-                order = 40,
-                multiline = 20,
-                width = "full",
-            },
-        },
-    }
+function Verbose:AddEventToOptions(spellID, event)
+    local spellOptions = self.options.args.events.args.spellcasts.args[tostring(spellID)]
+    if not spellOptions then
+        local name, _, icon = GetSpellInfo(spellID)
+        name = "|cFFFFFFFF" .. name .. "|r"  -- Always in white
+        local iconTexture = "|T" .. icon .. ":32|t"  -- Get the texture
+        local description = "|cFFFFD100" .. GetSpellDescription(spellID) .. "|r"  -- In yellow like in tooltips
 
-    --if type == spellCastStart then
-    self.options.args.events.args.spellCastStart.args[name] = options
-    AceConfigRegistry:NotifyChange(appName)
+        spellOptions = {
+            type = "group",
+            name = name,
+            icon = icon,
+            desc = iconTexture .. "\n" .. description,
+            childGroups = "tree",
+            args = {
+                header = {
+                    type = "description",
+                    name = iconTexture .. name .. "\n" .. description,
+                    order = 0,
+                    fontSize = "large",
+                },
+            },
+        }
+        self.options.args.events.args.spellcasts.args[tostring(spellID)] = spellOptions
+    end
+
+    if not spellOptions.args[event] then
+        spellOptions.args[event] = {
+            type = "group",
+            name = event,
+            args = {
+                enable = {
+                    type = "toggle",
+                    name = "Enable",
+                    order = 10,
+                    width = "full",
+                    get = function(info)
+                        print("-------------------------")
+                        for k, v in pairs(info) do
+                            print(k, v)
+                        end
+                        print("----")
+                        for k, v in pairs(self.db.profile.events.spells) do
+                            print(k, v)
+                        end
+                        print("--")
+                        print(info[#info - 2], info[#info - 1])
+                        print(self.db.profile.events.spells[tonumber(info[#info - 2])])
+                        print(self.db.profile.events.spells[tonumber(info[#info - 2])][info[#info - 1]])
+                        return self.db.profile.events.spells[tonumber(info[#info - 2])][info[#info - 1]].enabled
+                    end,
+                    set = function(info, value) self.db.profile.events.spells[tonumber(info[#info - 2])][info[#info - 1]].enabled = value end,
+                },
+                proba = {
+                    type = "range",
+                    name = "Message probability",
+                    order = 20,
+                    isPercent = true,
+                    min = 0,
+                    max = 1,
+                    bigStep = 0.05,
+                    get = function(info) return self.db.profile.events.spells[tonumber(info[#info - 2])][info[#info - 1]].proba end,
+                    set = function(info, value) self.db.profile.events.spells[tonumber(info[#info - 2])][info[#info - 1]].proba = value end,
+                },
+                cooldown = {
+                    type = "range",
+                    name = "Message cooldown (s)",
+                    order = 30,
+                    min = 0,
+                    max = 3600,
+                    softMax = 60,
+                    bigStep = 1,
+                    get = function(info) return self.db.profile.events.spells[tonumber(info[#info - 2])][info[#info - 1]].cooldown end,
+                    set = function(info, value) self.db.profile.events.spells[tonumber(info[#info - 2])][info[#info - 1]].cooldown = value end,
+                },
+                list = {
+                    type = "input",
+                    name = "Messages, one per line",
+                    order = 40,
+                    multiline = 20,
+                    width = "full",
+                    get = function(info)
+                        return table.concat(Verbose.db.profile.events.spells[tonumber(info[#info - 2])][info[#info - 1]].messages, "\n")
+                    end,
+                    set = function(info, value)
+                        local dbValues = Verbose.db.profile.events.spells[tonumber(info[#info - 2])][info[#info - 1]].messages
+                        for i=0, #dbValues do dbValues[i] = nil end  -- clear table
+                        for v in value:gmatch("([^\n]+)") do  -- Split on \n, skip empty lines
+                            table.insert(dbValues, v)
+                        end
+                    end,
+                },
+            },
+        }
+    end
 end
 
 -- Create a new list from the interface
@@ -206,8 +217,8 @@ function Verbose:CreateList()
     self:AddListToOptions(listID)
 
     -- Update GUI and select new list
-    AceConfigRegistry:NotifyChange(appName)
-    AceConfigDialog:SelectGroup(addonName, "lists", listID)
+    self:UpdateOptionsGUI()
+    self:SelectOption("lists", listID)
 end
 
 -- Insert list from db in options table
@@ -230,7 +241,7 @@ function Verbose:AddListToOptions(listID)
                 set = function(info, value)
                     Verbose.db.profile.lists[info[#info - 1]].name = value
                     self.options.args.lists.args[info[#info - 1]].name = value
-                    AceConfigRegistry:NotifyChange(appName)
+                    self:UpdateOptionsGUI()
                 end,
             },
             delete = {
@@ -240,7 +251,7 @@ function Verbose:AddListToOptions(listID)
                 func = function(info)
                     Verbose.db.profile.lists[info[#info - 1]] = nil
                     self.options.args.lists.args[info[#info - 1]] = nil
-                    AceConfigRegistry:NotifyChange(appName)
+                    self:UpdateOptionsGUI()
                 end,
             },
             list = {
@@ -266,16 +277,24 @@ function Verbose:AddListToOptions(listID)
     }
 end
 
-function Verbose:RegisterOptions()
-    -- Test data
-    self:AddEvent("type", "test1")
-    self:AddEvent("type", "test2")
-    self:AddEvent("type", "test3")
+function Verbose:UpdateOptionsGUI()
+    AceConfigRegistry:NotifyChange(appName)
+end
 
+function Verbose:SelectOption(...)
+    AceConfigDialog:SelectGroup(addonName, ...)
+end
+
+function Verbose:RegisterOptions()
     -- Load saved config
     self.db = LibStub("AceDB-3.0"):New("VerboseDB", self.defaults)
 
     -- Add dynamic data to options
+    for spellID, spellData in pairs(self.db.profile.events.spells) do
+        for event in pairs(spellData) do
+            self:AddEventToOptions(spellID, event)
+        end
+    end
     for listID in pairs(self.db.profile.lists) do
         self:AddListToOptions(listID)
     end

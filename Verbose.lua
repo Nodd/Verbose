@@ -11,10 +11,9 @@ function Verbose:OnInitialize()
   -- Code that you want to run when the addon is first loaded goes here.
 
     self:RegisterOptions()
-    self:DisplayOptions()
+    self:RegisterEvents()
 
-	--self:InitRuntimeData()		-- initialize self.RuntimeData.Stuff\
-	--self:RegisterAllEvents()	-- includes registering for ADDON_LOADED event -> OnVariablesLoaded
+    self:DisplayOptions()
 end
 
 function Verbose:OnEnable()
@@ -24,10 +23,3 @@ end
 function Verbose:OnDisable()
     -- Called when the addon is disabled
 end
-
-function Verbose:Talk(msg, random)
-    self:Print(msg)
-    --SendChatMessage("msg" ,"chatType" ,"language" ,"channel");
-    SendChatMessage(msg ,"SAY" ,nil ,"channel");
-end
-
