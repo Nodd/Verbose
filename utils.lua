@@ -14,8 +14,17 @@ function Verbose:TextToTable(s, t)
     end
 end
 
+-- To be used in option table
+Verbose.iconCropBorders = { 1/16, 15/16, 1/16, 15/16 }
+
+-- Icon texture, 32 pixels
 function Verbose:IconTextureFromID(iconID)
     return "|T" .. iconID .. ":32|t"
+end
+
+-- Borderless icon texture, text height
+function Verbose:IconTextureBorderlessFromID(iconID)
+    return "|T" .. iconID .. ":0:0:0:0:64:64:4:60:4:60|t"
 end
 
 function Verbose:SpellName(spellID)
@@ -48,5 +57,5 @@ end
 
 function Verbose:SpellDescription(spellID)
     -- Text in yellowish like in tooltips
-    return "|cFFFFD100" .. GetSpellDescription(tonumber(spellID)) .. "|r"
+    return NORMAL_FONT_COLOR_CODE .. GetSpellDescription(tonumber(spellID)) .. FONT_COLOR_CODE_CLOSE
 end
