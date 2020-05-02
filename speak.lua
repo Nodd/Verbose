@@ -38,7 +38,7 @@ function Verbose:Speak(msgData)
     if not msgData.enabled then print("local disabled") return end
 
     -- Check global cooldown
-    local currentTime = GetServerTime()
+    local currentTime = GetTime()
     local lastTime = self.db.profile.lastTime or 0
     local elapsed = currentTime - lastTime
     if elapsed < self.db.profile.cooldown then print("on global CD")  return end
@@ -52,12 +52,12 @@ function Verbose:Speak(msgData)
     if math.random(100) > msgData.proba * 100 then print("proba fail") return end
 
     -- All pass, speak to the world !
-    message = self:GetRandomMsg(msgData.messages)
+    local message = self:GetRandomMsg(msgData.messages)
     if not message then print("no message") return end
 
     -- Update times
-    msgData.LastTime = currenttime
-    self.db.profile.lastTime = currenttime
+    msgData.lastTime = currentTime  -- Event CD
+    self.db.profile.lastTime = currentTime  -- Global CD
 
     local inInstance = IsInInstance()
     if inInstance then
