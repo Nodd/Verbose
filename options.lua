@@ -4,6 +4,7 @@ local AceGUI = LibStub("AceGUI-3.0")
 local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
+local LibDBIcon = LibStub("LibDBIcon-1.0")
 
 local spellsIconID = 134414  -- inv_misc_rune_01 (Hearthstone)
 local combatIconID = 132349  -- ability_warrior_offensivestance
@@ -42,6 +43,17 @@ Verbose.options = {
                     bigStep = 1,
                     get = function(info) return Verbose.db.profile.cooldown end,
                     set = function(info, value) Verbose.db.profile.cooldown = value end,
+                },
+                showMinimapIcon = {
+                    type = "toggle",
+                    name = "Show minimap icon",
+                    order = 22,
+                    width = "double",
+                    get = function(info) return not Verbose.db.profile.minimap.hide end,
+                    set = function(info, value)
+                        Verbose.db.profile.minimap.hide = not value
+                        if value then LibDBIcon:Show(addonName) else LibDBIcon:Hide(addonName) end
+                    end,
                 },
                 debugHeader = {
                     type = "header",

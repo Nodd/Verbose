@@ -8,7 +8,10 @@ Verbose.defaults = {
         lastTime = 0,
 
         -- For LibDBIcon
-        minimap = { hide = false, },
+        minimap = {
+            hide = false,
+            minimapPos = 190,  -- Set default so that it doesn't spawn above another one
+        },
 
         events = {
             -- Populated below
