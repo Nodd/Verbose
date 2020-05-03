@@ -10,23 +10,14 @@ function Verbose:AddEventToOptions(spellID, event)
             name = function(info) return self:SpellName(info[#info]) end,
             icon = function(info) return self:SpellIconID(info[#info]) end,
             iconCoords = Verbose.iconCropBorders,
-            desc = function(info) return self:SpellIconTexture(info[#info]) .. "\n" .. self:SpellDescription(info[#info]) end,
+            desc = function(info)
+                return (
+                    self:SpellIconTexture(info[#info])
+                    .. "\n".. self:SpellDescription(info[#info]))
+                    .. "\n\nSpell ID: " .. info[#info]
+                end,
             childGroups = "tree",
             args = {
-                header = {
-                    type = "description",
-                    name = function(info) return self:SpellName(info[#info-1]) .. "\n" .. self:SpellIconTexture(info[#info-1]) end,
-                    order = 0,
-                    fontSize = "large",
-                    width = "full",
-                },
-                content = {
-                    type = "description",
-                    name = function(info) return self:SpellDescription(info[#info-1])  .. "\n\nSpell ID: " .. info[#info-1] end,
-                    order = 1,
-                    fontSize = "medium",
-                    width = "full",
-                },
             },
         }
         self.options.args.events.args.spellcasts.args[tostring(spellID)] = spellOptions
@@ -72,7 +63,7 @@ function Verbose:AddEventToOptions(spellID, event)
                     type = "input",
                     name = "Messages, one per line",
                     order = 40,
-                    multiline = 20,
+                    multiline = 17,
                     width = "full",
                     get = function(info)
                         return Verbose:TableToText(self:SpellEventData(info).messages)
