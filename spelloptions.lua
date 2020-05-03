@@ -53,7 +53,7 @@ function Verbose:AddSpellToOptions(spellID, event)
                     type = "range",
                     name = "Message cooldown (s)",
                     order = 30,
-                    min = 0,
+                    min = 1,
                     max = 3600,
                     softMax = 60,
                     bigStep = 1,
