@@ -1,6 +1,13 @@
 local addonName, Verbose = ...
 
-function Verbose:AddEventToOptions(spellID, event)
+function Verbose:spellEventDisplayNames(event)
+    -- UNIT_SPELLCAST_CHANNEL_START -> "Channel start"
+    local str =  event:sub(16):lower():gsub("_", " ")
+    return str:sub(1,1):upper() .. str:sub(2)
+end
+
+
+function Verbose:AddSpellToOptions(spellID, event)
     local spellOptions = self.options.args.events.args.spellcasts.args[tostring(spellID)]
 
     -- Insert spell options
@@ -27,7 +34,7 @@ function Verbose:AddEventToOptions(spellID, event)
     if not spellOptions.args[event] then
         spellOptions.args[event] = {
             type = "group",
-            name = event,
+            name = self:spellEventDisplayNames(event),
             args = {
                 enable = {
                     type = "toggle",
@@ -77,14 +84,14 @@ end
 
 -- Return spell and event data for callbacks from info arg
 function Verbose:SpellEventData(info)
-    return self.db.profile.events.spells[tonumber(info[#info - 2])][info[#info - 1]]
+    return self.db.profile.spells[tonumber(info[#info - 2])][info[#info - 1]]
 end
 
 -- Load saved events to options table
-function Verbose:EventsDBToOptions()
-    for spellID, spellData in pairs(self.db.profile.events.spells) do
+function Verbose:SpellDBToOptions()
+    for spellID, spellData in pairs(self.db.profile.spells) do
         for event in pairs(spellData) do
-            self:AddEventToOptions(spellID, event)
+            self:AddSpellToOptions(spellID, event)
         end
     end
 end

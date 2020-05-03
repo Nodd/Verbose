@@ -95,7 +95,7 @@ function Verbose:OnUnitSpellcastEnd(event, caster, castID, spellID)
 end
 
 function Verbose:RecordSpellcastEvent(spellID, event)
-    local spells = self.db.profile.events.spells
+    local spells = self.db.profile.spells
 
     -- If spell not known at all, register it
     if not spells[spellID] then
@@ -113,7 +113,7 @@ function Verbose:RecordSpellcastEvent(spellID, event)
         }
 
         -- Update options
-        self:AddEventToOptions(spellID, event)
+        self:AddSpellToOptions(spellID, event)
         self:UpdateOptionsGUI()
     end
     -- Update timestamp
@@ -133,7 +133,7 @@ function Verbose:OnSpellcastEvent(event, caster, target, spellID)
     self:RecordSpellcastEvent(spellID, event)
 
     -- Talk
-    local msgData = self.db.profile.events.spells[spellID][event]
+    local msgData = self.db.profile.spells[spellID][event]
     self:Speak(event, msgData, {
         caster = caster,
         target = target,

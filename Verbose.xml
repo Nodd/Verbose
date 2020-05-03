@@ -5,6 +5,6 @@
 	<Script file="Verbose.lua"/>
 	<Script file="speak.lua"/>
 	<Script file="events.lua"/>
-	<Script file="eventsoptions.lua"/>
+	<Script file="spelloptions.lua"/>
 	<Script file="lists.lua"/>
 </Ui>
