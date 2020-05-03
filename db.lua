@@ -4,6 +4,7 @@ Verbose.defaults = {
     profile = {
         enabled = true,
         speakDebug = true,
+        muteDebug = false,
         cooldown = 10,
         lastTime = 0,
 

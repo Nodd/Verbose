@@ -76,6 +76,15 @@ Verbose.options = {
                     get = function(info) return Verbose.db.profile.eventDebug end,
                     set = function(info, value) Verbose.db.profile.eventDebug = value end,
                 },
+                muteDebug = {
+                    type = "toggle",
+                    name = "Don't speak but print to console only",
+                    desc = "Don't spam the world when testing and tuning messages",
+                    order = 50,
+                    width = "double",
+                    get = function(info) return Verbose.db.profile.muteDebug end,
+                    set = function(info, value) Verbose.db.profile.muteDebug = value end,
+                },
                 reloadui = {
                     type = "execute",
                     name = "Save data (/reloadui)",

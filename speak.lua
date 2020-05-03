@@ -123,12 +123,16 @@ function Verbose:Speak(event, msgData, substitutions)
     msgData.lastTime = currentTime  -- Event CD
     self.db.profile.lastTime = currentTime  -- Global CD
 
-    local inInstance = IsInInstance()
-    if inInstance then
-        -- SendChatMessage("msg", "chatType", "language", "channel");
-        SendChatMessage(message, "SAY");
+    if self.db.profile.muteDebug then
+        self:Print("MUTED:", message)
     else
-        self:SpeakDbgPrint("NOT IN INSTANCE, emoting instead :(")
-        SendChatMessage("dit : " .. message, "EMOTE")
+        local inInstance = IsInInstance()
+        if inInstance then
+            -- SendChatMessage("msg", "chatType", "language", "channel");
+            SendChatMessage(message, "SAY");
+        else
+            self:SpeakDbgPrint("NOT IN INSTANCE, emoting instead :(")
+            SendChatMessage("dit : " .. message, "EMOTE")
+        end
     end
 end
