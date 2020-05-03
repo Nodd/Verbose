@@ -13,7 +13,27 @@ function Verbose:OnInitialize()
         type = "data source",
         text = addonName,
         icon = VerboseIconID,
-        OnClick = function() self:ToggleOptions() end,
+        OnClick = function(_, button)
+            if button == "LeftButton" then
+                if self.db.profile.enabled then
+                    Verbose:OnDisable()
+                else
+                    Verbose:OnEnable()
+                end
+            elseif button == "MiddleButton" then
+                self:ToggleOptions()
+                self:SelectOption("events")
+            elseif button == "RightButton" then
+                self:ToggleOptions()
+            end
+        end,
+        OnTooltipShow = function(tooltip)
+            tooltip:SetText(self:IconTextureBorderlessFromID(VerboseIconID) .. " " .. addonName)
+            tooltip:AddLine("Left clic: Enable/Disable", 1, 1, 1)
+            tooltip:AddLine("Right clic: Toggle options window", 1, 1, 1)
+            tooltip:AddLine("Middle clic: Go to events configuration", 1, 1, 1)
+            tooltip:Show()
+        end,
     })
     LibStub("LibDBIcon-1.0"):Register(addonName, self.LDB, self.db.profile.minimap)
 
