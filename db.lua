@@ -4,7 +4,6 @@ Verbose.defaults = {
     profile = {
         enabled = true,
         eventDebug = false,
-        messageDebug = false,
         mute = false,
         cooldown = 10,
         lastTime = 0,

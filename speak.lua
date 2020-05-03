@@ -2,7 +2,7 @@ local addonName, Verbose = ...
 
 
 function Verbose:SpeakDbgPrint(...)
-    if self.db.profile.messageDebug then
+    if self.db.profile.eventDebug then
         self:Print("SPEAK:", ...)
     end
 end
@@ -67,8 +67,6 @@ function Verbose:GetRandomMessageWithSubstitution(messages, substitutions)
 end
 
 function Verbose:Speak(event, msgData, substitutions)
-    self:SpeakDbgPrint("Event", event)
-
     -- Check arg
     if not msgData then
         self:SpeakDbgPrint("No message data")

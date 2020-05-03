@@ -60,15 +60,6 @@ Verbose.options = {
                     name = "DEBUG",
                     order = 28,
                 },
-                speakDebug = {
-                    type = "toggle",
-                    name = "Print debug info for muted messages",
-                    desc = "Explains why no message is displayed",
-                    order = 30,
-                    width = "double",
-                    get = function(info) return Verbose.db.profile.messageDebug end,
-                    set = function(info, value) Verbose.db.profile.messageDebug = value end,
-                },
                 eventDebug = {
                     type = "toggle",
                     name = "Print all event info",
