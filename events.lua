@@ -1,5 +1,12 @@
 local addonName, Verbose = ...
 
+
+function Verbose:EventDbgPrint(...)
+    if self.db.profile.eventDebug then
+        self:Print("(Event)", ...)
+    end
+end
+
 local spellBlacklist = {
     [836] = true,  -- LOGINEFFECT, fired on login
 }
@@ -120,7 +127,7 @@ function Verbose:OnSpellcastEvent(event, caster, target, spellID)
     spellName, iconTexture = self:SpellNameAndIconTexture(spellID)
 
     -- Debug
-    print(event, caster, target, spellID, spellName)
+    self:EventDbgPrint(event, caster, target, spellID, spellName)
 
     -- Record Spell/event
     self:RecordSpellcastEvent(spellID, event)
@@ -141,9 +148,9 @@ end
 -------------------------------------------------------------------------------
 function Verbose:ManageNoArgEvent(event, ...)
     -- DEBUG
-    print(event, "(NOARG)")
+    self:EventDbgPrint(event, "(NOARG)")
     if ... then
-        print("NOARG event received args:", ...)
+        self:EventDbgPrint("NOARG event received args:", ...)
     end
 
     local msgData = self.db.profile.events[event]
@@ -156,7 +163,7 @@ end
 -------------------------------------------------------------------------------
 function Verbose:RESURRECT_REQUEST(event, caster)
     -- DEBUG
-    print(event, caster)
+    self:EventDbgPrint(event, caster)
 
     local msgData = self.db.profile.events[event]
     self:Speak(event, msgData, { caster = caster })
@@ -168,7 +175,7 @@ end
 -------------------------------------------------------------------------------
 function Verbose:DUMMYEvent(event, ...)
     -- DEBUG
-    print("DUMMY", event, ...)
+    self:EventDbgPrint("DUMMY", event, ...)
 
     local msgData = self.db.profile.events[event]
     self:Speak(event, msgData, ...)
