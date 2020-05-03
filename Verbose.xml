@@ -1,5 +1,6 @@
 <Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
 	<Script file="utils.lua"/>
+	<Script file="db.lua"/>
 	<Script file="options.lua"/>
 	<Script file="Verbose.lua"/>
 	<Script file="speak.lua"/>
