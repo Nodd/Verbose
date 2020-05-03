@@ -7,53 +7,85 @@ function Verbose:GetRandomFromTable(t)
 	local len = #t
 	if len < 1 then return end
 
-	local n = math.random(1, len);
+	local n = fastrandom(1, len);
 	return t[n]
 end
 
-function Verbose:GetRandomMsg(messages)
-    -- Get random message
-    local msg = self:GetRandomFromTable(messages)
-	if not msg then return end
-
+function Verbose:ListSubstitution(message)
     -- Replace from list randomly
     for listID, list in pairs(self.db.profile.lists) do
         local listStr = "<" .. list.name .. ">"
         local n
         repeat
             local element = self:GetRandomFromTable(list.values)
-            msg, n = msg:gsub(listStr, element, 1)
+            message, n = message:gsub(listStr, element, 1)
         until(n == 0)
     end
-
-    -- TODO: replace target...
-
-	return msg
+	return message
 end
 
-function Verbose:Speak(msgData)
-    if not msgData then return end
+function Verbose:TokenSubstitution(message, substitutions)
+    -- Replace from list randomly
+    for token, value in pairs(substitutions) do
+        local tokenStr = "%%" .. token .. "%%"
+        message = message:gsub(tokenStr, value)
+    end
+	return message
+end
+
+function Verbose:Speak(event, msgData, substitutions)
+    self:SpeakDbgPrint("Event", event)
+
+    -- Check arg
+    if not msgData then
+        self:SpeakDbgPrint("No message data")
+        return
+    end
 
     -- Check enabled
-    if not msgData.enabled then print("local disabled") return end
+    if not self.db.profile.enabled then
+        self:SpeakDbgPrint("Addon disabled")
+        return
+    end
+    if not msgData.enabled then
+        self:SpeakDbgPrint("Event disabled")
+        return
+    end
 
     -- Check global cooldown
     local currentTime = GetTime()
     local lastTime = self.db.profile.lastTime or 0
     local elapsed = currentTime - lastTime
-    if elapsed < self.db.profile.cooldown then print("on global CD")  return end
+    if elapsed < self.db.profile.cooldown then
+        self:SpeakDbgPrint("Event on global CD:", elapsed, "<", self.db.profile.cooldown)
+        return
+    end
 
     -- Check event cooldown
     lastTime = msgData.lastTime or 0
     elapsed = currentTime - lastTime
-    if elapsed < msgData.cooldown then print("on local CD")  return end
+    if elapsed < msgData.cooldown then
+        self:SpeakDbgPrint("Event on local CD:", elapsed, "<", self.db.profile.cooldown)
+        return
+    end
 
     -- Check probability
-    if math.random(100) > msgData.proba * 100 then print("proba fail") return end
+    local rand = fastrandom(100)
+    if rand > msgData.proba * 100 then
+        self:SpeakDbgPrint("Probability check fail:", rand, ">", msgData.proba * 100)
+        return
+    end
 
-    -- All pass, speak to the world !
-    local message = self:GetRandomMsg(msgData.messages)
-    if not message then print("no message") return end
+    -- Get a random message !
+    local message = self:GetRandomFromTable(msgData.messages)
+    if not message then
+        self:SpeakDbgPrint("No message in table")
+        return
+    end
+
+    -- Sutbtistute special tokens
+    message = Verbose:ListSubstitution(message)
+    message = Verbose:TokenSubstitution(message, substitutions)
 
     -- Update times
     msgData.lastTime = currentTime  -- Event CD
@@ -64,7 +96,13 @@ function Verbose:Speak(msgData)
         -- SendChatMessage("msg", "chatType", "language", "channel");
         SendChatMessage(message, "SAY");
     else
-        print("NOT IN INSTANCE")
+        self:SpeakDbgPrint("NOT IN INSTANCE, emoting instead :(")
         SendChatMessage("dit : " .. message, "EMOTE");
+    end
+end
+
+function Verbose:SpeakDbgPrint(...)
+    if self.db.profile.speakDebug then
+        self:Print("(Speak)", ...)
     end
 end

@@ -1,5 +1,9 @@
 local addonName, Verbose = ...
 
+
+-------------------------------------------------------------------------------
+-- Multiline text and table
+-------------------------------------------------------------------------------
 function Verbose:TableToText(t)
     return table.concat(t, "\n")
 end
@@ -14,6 +18,10 @@ function Verbose:TextToTable(s, t)
     end
 end
 
+
+-------------------------------------------------------------------------------
+-- Spells : ID, name, icon, description
+-------------------------------------------------------------------------------
 -- To be used in option table
 Verbose.iconCropBorders = { 1/16, 15/16, 1/16, 15/16 }
 
@@ -55,6 +63,15 @@ function Verbose:SpellIconTexture(spellID)
     return Verbose:IconTextureFromID(iconID)
 end
 
+function Verbose:SpellDescription(spellID)
+    -- Text in yellowish like in tooltips
+    return NORMAL_FONT_COLOR_CODE .. GetSpellDescription(tonumber(spellID)) .. FONT_COLOR_CODE_CLOSE
+end
+
+
+-------------------------------------------------------------------------------
+-- Spells : ID, name, icon, description
+-------------------------------------------------------------------------------
 function Verbose:SpellDescription(spellID)
     -- Text in yellowish like in tooltips
     return NORMAL_FONT_COLOR_CODE .. GetSpellDescription(tonumber(spellID)) .. FONT_COLOR_CODE_CLOSE

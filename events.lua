@@ -127,7 +127,7 @@ function Verbose:OnSpellcastEvent(event, caster, target, spellID)
 
     -- Talk
     local msgData = self.db.profile.events.spells[spellID][event]
-    self:Speak(msgData, {
+    self:Speak(event, msgData, {
         caster = caster,
         target = target,
         spellname = spellname,
@@ -147,7 +147,7 @@ function Verbose:ManageNoArgEvent(event, ...)
     end
 
     local msgData = self.db.profile.events[event]
-    self:Speak(msgData)
+    self:Speak(event, msgData)
 end
 
 
@@ -159,7 +159,7 @@ function Verbose:RESURRECT_REQUEST(event, caster)
     print(event, caster)
 
     local msgData = self.db.profile.events[event]
-    self:Speak(msgData, { caster = caster })
+    self:Speak(event, msgData, { caster = caster })
 end
 
 
@@ -169,4 +169,7 @@ end
 function Verbose:DUMMYEvent(event, ...)
     -- DEBUG
     print("DUMMY", event, ...)
+
+    local msgData = self.db.profile.events[event]
+    self:Speak(event, msgData, ...)
 end

@@ -240,6 +240,7 @@ end
 Verbose.defaults = {
     profile = {
         enabled = true,
+        speakDebug = true,
         cooldown = 10,
         lastTime = 0,
 
