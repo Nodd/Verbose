@@ -123,7 +123,7 @@ function Verbose:Speak(event, msgData, substitutions)
     msgData.lastTime = currentTime  -- Event CD
     self.db.profile.lastTime = currentTime  -- Global CD
 
-    if self.db.profile.muteDebug then
+    if self.db.profile.mute then
         self:Print("MUTED:", message)
     else
         local inInstance = IsInInstance()
