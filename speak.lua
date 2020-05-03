@@ -34,7 +34,7 @@ function Verbose:TokenSubstitution(message, substitutions)
     if not substitutions then return message end
     -- Replace from list randomly
     for token, value in pairs(substitutions) do
-        local tokenStr = "@" .. token .. "@"
+        local tokenStr = "<" .. token .. ">"
         message = message:gsub(tokenStr, value)
     end
     return message
@@ -49,11 +49,11 @@ function Verbose:GetRandomMessageWithSubstitution(messages, substitutions)
     for index, msg in ipairs(messages) do
         -- Replace tokens
         msg = self:TokenSubstitution(msg, substitutions)
+        msg = self:ListSubstitution(msg)
 
         -- Check that all tokens were replaced
         local valid = true
-        if msg:find("@(%l+)@") then valid = false end
-        msg = msg:gsub("@@", "@")  -- permits to have '@' in string by doubling it
+        if msg:find("<(%l+)>") then valid = false end
 
         if valid then
             -- Message can be in the random pool
@@ -113,9 +113,6 @@ function Verbose:Speak(event, msgData, substitutions)
         self:SpeakDbgPrint("No valid message in table for substitutions")
         return
     end
-
-    -- List substitution
-    message = Verbose:ListSubstitution(message)
 
     -- Update times
     msgData.lastTime = currentTime  -- Event CD
