@@ -20,13 +20,14 @@ Verbose.options = {
         general = {
             -- General options
             type = "group",
-            name = "General",
+            name = "Options",
             order = 10,
             args = {
                 enable = {
                     type = "toggle",
                     name = "Enable speeches",
                     order = 10,
+                    width = "full",
                     get = function(info) return Verbose.db.profile.enabled end,
                     set = function(info, value) if value then Verbose:OnEnable() else Verbose:OnDisable() end end,
                 },
@@ -34,12 +35,18 @@ Verbose.options = {
                     type = "range",
                     name = "Global message cooldown (s)",
                     order = 20,
+                    width = "full",
                     min = 0,
                     max = 3600,
                     softMax = 60,
                     bigStep = 1,
                     get = function(info) return Verbose.db.profile.cooldown end,
                     set = function(info, value) Verbose.db.profile.cooldown = value end,
+                },
+                debugHeader = {
+                    type = "header",
+                    name = "DEBUG",
+                    order = 28,
                 },
                 speakDebug = {
                     type = "toggle",
@@ -60,7 +67,7 @@ Verbose.options = {
                 reloadui = {
                     type = "execute",
                     name = "Save data (/reloadui)",
-                    order = 50,
+                    order = 25,
                     func = ReloadUI,
                 },
             },
@@ -69,6 +76,7 @@ Verbose.options = {
             -- Tree of known events, and associated configuration
             type = "group",
             name = "Events",
+            desc = "Per event messages configuration",
             order = 20,
             childGroups = "tree",
             args = {
@@ -166,6 +174,7 @@ Verbose.options = {
             -- Replacement lists
             type = "group",
             name = "Lists",
+            desc = "Substitution lists",
             order = 30,
             childGroups = "tree",
             args = {
@@ -183,6 +192,8 @@ function Verbose:populateEvent(parent, event, title, icon)
     self.options.args.events.args[parent].args[event] = {
         type = "group",
         name = title,
+        icon = icon,
+        iconCoords = Verbose.iconCropBorders,
         args = {
             enable = {
                 type = "toggle",
@@ -218,7 +229,7 @@ function Verbose:populateEvent(parent, event, title, icon)
                 type = "input",
                 name = "Messages, one per line",
                 order = 40,
-                multiline = 20,
+                multiline = 18,
                 width = "full",
                 get = function(info)
                     return Verbose:TableToText(self:EventData(info).messages)
@@ -229,13 +240,13 @@ function Verbose:populateEvent(parent, event, title, icon)
     }
 end
 
-Verbose:populateEvent("combat", "PLAYER_DEAD", "Death")
+Verbose:populateEvent("combat", "PLAYER_DEAD", "Death", 237272)
 Verbose:populateEvent("combat", "PLAYER_ALIVE", "Return to life")
-Verbose:populateEvent("combat", "PLAYER_UNGHOST", "Return to life from ghost")
-Verbose:populateEvent("combat", "RESURRECT_REQUEST", "Resurrection request")
+Verbose:populateEvent("combat", "PLAYER_UNGHOST", "Return to life from ghost", 135898)
+Verbose:populateEvent("combat", "RESURRECT_REQUEST", "Resurrection request", 237542)
 Verbose:populateEvent("combat", "PLAYER_REGEN_DISABLED", "Entering combat")
 Verbose:populateEvent("combat", "PLAYER_REGEN_ENABLED", "Leaving combat")
-Verbose:populateEvent("achievements", "PLAYER_LEVEL_UP", "Level up")
+Verbose:populateEvent("achievements", "PLAYER_LEVEL_UP", "Level up", 1033586)
 Verbose:populateEvent("achievements", "ACHIEVEMENT_EARNED", "Achievement")
 Verbose:populateEvent("npc", "GOSSIP_SHOW", "Begin talking")
 Verbose:populateEvent("npc", "GOSSIP_CLOSED", "Stop talking")
