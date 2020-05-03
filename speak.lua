@@ -1,6 +1,12 @@
 local addonName, Verbose = ...
 
 
+function Verbose:SpeakDbgPrint(...)
+    if self.db.profile.speakDebug then
+        self:Print("(Speak)", ...)
+    end
+end
+
 function Verbose:GetRandomFromTable(t)
 	if not t then return end
 
@@ -98,12 +104,6 @@ function Verbose:Speak(event, msgData, substitutions)
         SendChatMessage(message, "SAY");
     else
         self:SpeakDbgPrint("NOT IN INSTANCE, emoting instead :(")
-        SendChatMessage("dit : " .. message, "EMOTE");
-    end
-end
-
-function Verbose:SpeakDbgPrint(...)
-    if self.db.profile.speakDebug then
-        self:Print("(Speak)", ...)
+        SendChatMessage("dit : " .. message, "EMOTE")
     end
 end
