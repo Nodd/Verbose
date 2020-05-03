@@ -27,7 +27,7 @@ end
 function Verbose:TokenSubstitution(message, substitutions)
     -- Replace from list randomly
     for token, value in pairs(substitutions) do
-        local tokenStr = "%%" .. token .. "%%"
+        local tokenStr = "@" .. token .. "@"
         message = message:gsub(tokenStr, value)
     end
 	return message
