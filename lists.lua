@@ -65,7 +65,7 @@ function Verbose:AddListToOptions(listID)
                 type = "input",
                 name = "List elements, one per line",
                 order = 30,
-                multiline = 18,  -- Shows the "Accept" button in the bottom with default windows height
+                multiline = 17,  -- Shows the "Accept" button in the bottom with default windows height
                 width = "full",
                 pattern = "^[^<>]+$",
                 usage = "No '<' nor '>' allowed",
