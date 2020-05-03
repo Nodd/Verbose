@@ -167,6 +167,19 @@ function Verbose:OnSpellcastEvent(event, caster, target, spellID)
      })
 end
 
+local genders = { nil, "male", "female" }
+function Verbose:GlobalSubstitutions()
+    local substitutions = {
+        targetname = UnitName("target"),
+        targetclass = UnitClass("target"),  -- Same as targetname for npc, even named ones
+        targetrace = UnitRace("target"),  -- Not set for NPCs
+        targettype = UnitCreatureType("target"),  -- Humanoid, Beast... can return "Not specified" (localized)
+        targetfamily = UnitCreatureFamily("target"),  -- For beasts and demons
+        targetgenre = genders[UnitSex("target")],
+    }
+    return substitutions
+end
+
 
 -------------------------------------------------------------------------------
 -- Events with no parameters
@@ -178,8 +191,11 @@ function Verbose:ManageNoArgEvent(event, ...)
         self:EventDbgPrint("NOARG event received args:", ...)
     end
 
-    local msgData = self.db.profile.events[event]
-    self:Speak(event, msgData)
+    self:Speak(
+        event,
+        self.db.profile.events[event],
+        Verbose:GlobalSubstitutions()
+    )
 end
 
 
@@ -191,7 +207,9 @@ function Verbose:RESURRECT_REQUEST(event, caster)
     self:EventDbgPrint(event, caster)
 
     local msgData = self.db.profile.events[event]
-    self:Speak(event, msgData, { caster = caster })
+    local substitutions = Verbose:GlobalSubstitutions()
+    substitutions.caster = caster
+    self:Speak(event, msgData, substitutions)
 end
 
 

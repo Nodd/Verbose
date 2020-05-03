@@ -40,6 +40,32 @@ function Verbose:TokenSubstitution(message, substitutions)
     return message
 end
 
+function Verbose:GetRandomMessageWithSubstitution(messages, substitutions)
+    -- Get a random message among messages where all substitutions are valid
+    local message
+    local filteredIndex = 1
+    -- Iterator for random choice without intermediate list
+    -- The final probability is uniform, yes Sir !
+    for index, msg in ipairs(messages) do
+        -- Replace tokens
+        msg = self:TokenSubstitution(msg, substitutions)
+
+        -- Check that all tokens were replaced
+        local valid = true
+        if msg:find("@(%l+)@") then valid = false end
+        msg = msg:gsub("@@", "@")  -- permits to have '@' in string by doubling it
+
+        if valid then
+            -- Message can be in the random pool
+            if fastrandom(1, filteredIndex) == 1 then
+                message = msg
+            end
+            filteredIndex = filteredIndex + 1
+        end
+    end
+    return message
+end
+
 function Verbose:Speak(event, msgData, substitutions)
     self:SpeakDbgPrint("Event", event)
 
@@ -84,15 +110,14 @@ function Verbose:Speak(event, msgData, substitutions)
     end
 
     -- Get a random message !
-    local message = self:GetRandomFromTable(msgData.messages)
+    local message = self:GetRandomMessageWithSubstitution(msgData.messages, substitutions)
     if not message then
-        self:SpeakDbgPrint("No message in table")
+        self:SpeakDbgPrint("No valid message in table for substitutions")
         return
     end
 
-    -- Sutbtistute special tokens
+    -- List substitution
     message = Verbose:ListSubstitution(message)
-    message = Verbose:TokenSubstitution(message, substitutions)
 
     -- Update times
     msgData.lastTime = currentTime  -- Event CD
