@@ -24,15 +24,15 @@ Verbose.options = {
             order = 10,
             args = {
                 enable = {
-                    name = "Enable speeches",
                     type = "toggle",
+                    name = "Enable speeches",
                     order = 10,
                     get = function(info) return Verbose.db.profile.enabled end,
-                    set = function(info, value) Verbose.db.profile.enabled = value end,
+                    set = function(info, value) if value then Verbose:OnEnable() else Verbose:OnDisable() end end,
                 },
                 cooldown = {
-                    name = "Global message cooldown (s)",
                     type = "range",
+                    name = "Global message cooldown (s)",
                     order = 20,
                     min = 0,
                     max = 3600,
@@ -40,6 +40,28 @@ Verbose.options = {
                     bigStep = 1,
                     get = function(info) return Verbose.db.profile.cooldown end,
                     set = function(info, value) Verbose.db.profile.cooldown = value end,
+                },
+                speakDebug = {
+                    type = "toggle",
+                    name = "Print debug info for muted messages",
+                    order = 30,
+                    width = "double",
+                    get = function(info) return Verbose.db.profile.speakDebug end,
+                    set = function(info, value) Verbose.db.profile.speakDebug = value end,
+                },
+                eventDebug = {
+                    type = "toggle",
+                    name = "Print all event info",
+                    order = 40,
+                    width = "double",
+                    get = function(info) return Verbose.db.profile.eventDebug end,
+                    set = function(info, value) Verbose.db.profile.eventDebug = value end,
+                },
+                reloadui = {
+                    type = "execute",
+                    name = "Save data (/reloadui)",
+                    order = 50,
+                    func = ReloadUI,
                 },
             },
         },
@@ -244,6 +266,9 @@ Verbose.defaults = {
         cooldown = 10,
         lastTime = 0,
 
+        -- For LibDBIcon
+        minimap = { hide = false, },
+
         events = {
             spells = {},
             PLAYER_DEAD = { enabled = false, proba = 0.5, cooldown = 30, messages = {} },
@@ -309,22 +334,22 @@ function Verbose:RegisterOptions()
     )
     self:RegisterChatCommand("verbose", "ChatCommand")
     self:RegisterChatCommand("verb", "ChatCommand")
-
-    -- Initialize GUI
-    self.optionsFrame = AceGUI:Create("Frame")
-    self.optionsFrame:SetTitle(addonName)
-    self.optionsFrame:SetStatusText("Verbose")
-    self.optionsFrame:SetCallback("OnClose", function(widget) AceGUI:Release(widget) end)
-    self.optionsFrame:SetLayout("Fill")
-    self.optionsFrame:Hide()
 end
 
 function Verbose:ShowOptions()
-    AceConfigDialog:Open(addonName, self.optionsFrame)
+    AceConfigDialog:Open(addonName)
 end
 
 function Verbose:HideOptions()
     AceConfigDialog:Close(addonName)
+end
+
+function Verbose:ToggleOptions()
+    if AceConfigDialog.OpenFrames[addonName] then
+        self:HideOptions()
+    else
+        self:ShowOptions()
+    end
 end
 
 function Verbose:ChatCommand(input)
