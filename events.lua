@@ -3,7 +3,7 @@ local addonName, Verbose = ...
 
 function Verbose:EventDbgPrint(...)
     if self.db.profile.eventDebug then
-        self:Print("(Event)", ...)
+        self:Print("EVENT:", ...)
     end
 end
 

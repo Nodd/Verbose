@@ -1,6 +1,8 @@
 local addonName, Verbose = ...
 
 LibStub("AceAddon-3.0"):NewAddon(Verbose, addonName, "AceConsole-3.0", "AceEvent-3.0")
+local LibDataBroker = LibStub("LibDataBroker-1.1")
+local LibDBIcon = LibStub("LibDBIcon-1.0")
 
 local VerboseIconID = 2056011  -- ui_chat
 
@@ -36,14 +38,14 @@ function Verbose:OnDisable()
 end
 
 function Verbose:SetupMinimapButton()
-    self.LDB = LibStub("LibDataBroker-1.1"):NewDataObject(addonName, {
+    self.LDB = LibDataBroker:NewDataObject(addonName, {
         type = "data source",
         text = addonName,
         icon = VerboseIconID,
         OnClick = function(...) self:OnLDBClick(...) end,
         OnTooltipShow = function(...) self:OnLDBTooltip(...) end,
     })
-    LibStub("LibDBIcon-1.0"):Register(addonName, self.LDB, self.db.profile.minimap)
+    LibDBIcon:Register(addonName, self.LDB, self.db.profile.minimap)
 end
 
 function Verbose:OnLDBClick(_, button)

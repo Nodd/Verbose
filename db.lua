@@ -3,7 +3,8 @@ local addonName, Verbose = ...
 Verbose.defaults = {
     profile = {
         enabled = true,
-        speakDebug = true,
+        eventDebug = false,
+        messageDebug = false,
         muteDebug = false,
         cooldown = 10,
         lastTime = 0,
@@ -16,11 +17,26 @@ Verbose.defaults = {
 
         events = {
             -- Populated below
+            -- EVENT = {
+            --     enabled = false,
+            --     proba = 0.5,
+            --     cooldown = 30,
+            --     messages = { "Foo", "Bar", "Baz" },
+            -- },
         },
         spells = {
-            -- spellID = { enabled = false, proba = 0.5, cooldown = 0, messages = { "Foo", "Bar", "Baz" } },
+            -- Populated dynamically
+            -- spellID = {
+            --     EVENT = {
+            --         enabled = false,
+            --         proba = 0.5,
+            --         cooldown = 30,
+            --         messages = { "Foo", "Bar", "Baz" },
+            --     },
+            -- },
         },
         lists = {
+            -- Populated dynamically
             -- listID = {
             --     name = "Foo",
             --     values = { "Bar", "Baz" }
