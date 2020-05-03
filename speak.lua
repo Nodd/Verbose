@@ -25,6 +25,7 @@ function Verbose:ListSubstitution(message)
 end
 
 function Verbose:TokenSubstitution(message, substitutions)
+    if not substitutions then return message end
     -- Replace from list randomly
     for token, value in pairs(substitutions) do
         local tokenStr = "@" .. token .. "@"
