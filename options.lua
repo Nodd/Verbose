@@ -189,6 +189,11 @@ Verbose.options = {
 }
 
 function Verbose:populateEvent(parent, event, title, icon)
+    if not title then
+        title = event:lower():gsub("_", " ")
+        title = title:sub(1,1):upper() .. title:sub(2)
+    end
+
     self.options.args.events.args[parent].args[event] = {
         type = "group",
         name = title,
@@ -248,20 +253,20 @@ Verbose:populateEvent("combat", "PLAYER_REGEN_DISABLED", "Entering combat")
 Verbose:populateEvent("combat", "PLAYER_REGEN_ENABLED", "Leaving combat")
 Verbose:populateEvent("achievements", "PLAYER_LEVEL_UP", "Level up", 1033586)
 Verbose:populateEvent("achievements", "ACHIEVEMENT_EARNED", "Achievement")
-Verbose:populateEvent("npc", "GOSSIP_SHOW", "Begin talking")
-Verbose:populateEvent("npc", "GOSSIP_CLOSED", "Stop talking")
-Verbose:populateEvent("npc", "BARBER_SHOP_OPEN", "BARBER_SHOP_OPEN")
-Verbose:populateEvent("npc", "BARBER_SHOP_CLOSE", "BARBER_SHOP_CLOSE")
-Verbose:populateEvent("npc", "MAIL_SHOW", "MAIL_SHOW")
-Verbose:populateEvent("npc", "MAIL_CLOSED", "MAIL_CLOSED")
-Verbose:populateEvent("npc", "MERCHANT_SHOW", "MERCHANT_SHOW")
-Verbose:populateEvent("npc", "MERCHANT_CLOSED", "MERCHANT_CLOSED")
-Verbose:populateEvent("npc", "QUEST_GREETING", "QUEST_GREETING")
-Verbose:populateEvent("npc", "QUEST_FINISHED", "QUEST_FINISHED")
-Verbose:populateEvent("npc", "TAXIMAP_OPENED", "TAXIMAP_OPENED")
-Verbose:populateEvent("npc", "TAXIMAP_CLOSED", "TAXIMAP_CLOSED")
-Verbose:populateEvent("npc", "TRAINER_SHOW", "TRAINER_SHOW")
-Verbose:populateEvent("npc", "TRAINER_CLOSED", "TRAINER_CLOSED")
+Verbose:populateEvent("npc", "GOSSIP_SHOW")
+--Verbose:populateEvent("npc", "GOSSIP_CLOSED")
+Verbose:populateEvent("npc", "BARBER_SHOP_OPEN")
+--Verbose:populateEvent("npc", "BARBER_SHOP_CLOSE")
+Verbose:populateEvent("npc", "MAIL_SHOW")
+--Verbose:populateEvent("npc", "MAIL_CLOSED")
+Verbose:populateEvent("npc", "MERCHANT_SHOW")
+--Verbose:populateEvent("npc", "MERCHANT_CLOSED")
+Verbose:populateEvent("npc", "QUEST_GREETING")
+--Verbose:populateEvent("npc", "QUEST_FINISHED")
+Verbose:populateEvent("npc", "TAXIMAP_OPENED")
+--Verbose:populateEvent("npc", "TAXIMAP_CLOSED")
+Verbose:populateEvent("npc", "TRAINER_SHOW")
+--Verbose:populateEvent("npc", "TRAINER_CLOSED")
 
 
 -- Return spell and event data for callbacks from info arg
