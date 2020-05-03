@@ -315,11 +315,7 @@ Verbose.defaults = {
 }
 
 function Verbose:UpdateOptionsGUI()
-    -- AceConfigRegistry:NotifyChange(addonName) doesn't work here
-    -- I guess it's because it's not the option values that change
-    -- but that new options are created
-    Verbose:HideOptions()
-    Verbose:ShowOptions()
+    AceConfigRegistry:NotifyChange(addonName)
 end
 
 function Verbose:SelectOption(...)
