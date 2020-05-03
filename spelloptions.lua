@@ -1,12 +1,5 @@
 local addonName, Verbose = ...
 
-function Verbose:spellEventDisplayNames(event)
-    -- UNIT_SPELLCAST_CHANNEL_START -> "Channel start"
-    local str =  event:sub(16):lower():gsub("_", " ")
-    return str:sub(1,1):upper() .. str:sub(2)
-end
-
-
 function Verbose:AddSpellToOptions(spellID, event)
     local spellOptions = self.options.args.events.args.spellcasts.args[tostring(spellID)]
 
@@ -23,7 +16,7 @@ function Verbose:AddSpellToOptions(spellID, event)
                     .. "\n".. self:SpellDescription(info[#info]))
                     .. "\n\nSpell ID: " .. info[#info]
                 end,
-            childGroups = "tree",
+            childGroups = "tab",
             args = {
             },
         }
@@ -34,7 +27,7 @@ function Verbose:AddSpellToOptions(spellID, event)
     if not spellOptions.args[event] then
         spellOptions.args[event] = {
             type = "group",
-            name = self:spellEventDisplayNames(event),
+            name = self.usedSpellEvents[event].title,
             args = {
                 enable = {
                     type = "toggle",

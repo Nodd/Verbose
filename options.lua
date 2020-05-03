@@ -245,29 +245,15 @@ function Verbose:populateEvent(parent, event, title, icon)
     }
 end
 
-Verbose:populateEvent("combat", "PLAYER_DEAD", "Death", 237272)
-Verbose:populateEvent("combat", "PLAYER_ALIVE", "Return to life")
-Verbose:populateEvent("combat", "PLAYER_UNGHOST", "Return to life from ghost", 135898)
-Verbose:populateEvent("combat", "RESURRECT_REQUEST", "Resurrection request", 237542)
-Verbose:populateEvent("combat", "PLAYER_REGEN_DISABLED", "Entering combat")
-Verbose:populateEvent("combat", "PLAYER_REGEN_ENABLED", "Leaving combat")
-Verbose:populateEvent("achievements", "PLAYER_LEVEL_UP", "Level up", 1033586)
-Verbose:populateEvent("achievements", "ACHIEVEMENT_EARNED", "Achievement")
-Verbose:populateEvent("npc", "GOSSIP_SHOW")
---Verbose:populateEvent("npc", "GOSSIP_CLOSED")
-Verbose:populateEvent("npc", "BARBER_SHOP_OPEN")
---Verbose:populateEvent("npc", "BARBER_SHOP_CLOSE")
-Verbose:populateEvent("npc", "MAIL_SHOW")
---Verbose:populateEvent("npc", "MAIL_CLOSED")
-Verbose:populateEvent("npc", "MERCHANT_SHOW")
---Verbose:populateEvent("npc", "MERCHANT_CLOSED")
-Verbose:populateEvent("npc", "QUEST_GREETING")
---Verbose:populateEvent("npc", "QUEST_FINISHED")
-Verbose:populateEvent("npc", "TAXIMAP_OPENED")
---Verbose:populateEvent("npc", "TAXIMAP_CLOSED")
-Verbose:populateEvent("npc", "TRAINER_SHOW")
---Verbose:populateEvent("npc", "TRAINER_CLOSED")
-
+-- Populate events config
+for event, eventData in pairs(Verbose.usedEvents) do
+    Verbose:populateEvent(
+        eventData.category,
+        event,
+        eventData.title,
+        eventData.icon
+    )
+end
 
 -- Return spell and event data for callbacks from info arg
 function Verbose:EventData(info)

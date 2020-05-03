@@ -8,13 +8,13 @@ function Verbose:SpeakDbgPrint(...)
 end
 
 function Verbose:GetRandomFromTable(t)
-	if not t then return end
+    if not t then return end
 
-	local len = #t
-	if len < 1 then return end
+    local len = #t
+    if len < 1 then return end
 
-	local n = fastrandom(1, len);
-	return t[n]
+    local n = fastrandom(1, len);
+    return t[n]
 end
 
 function Verbose:ListSubstitution(message)
@@ -27,7 +27,7 @@ function Verbose:ListSubstitution(message)
             message, n = message:gsub(listStr, element, 1)
         until(n == 0)
     end
-	return message
+    return message
 end
 
 function Verbose:TokenSubstitution(message, substitutions)
@@ -37,7 +37,7 @@ function Verbose:TokenSubstitution(message, substitutions)
         local tokenStr = "@" .. token .. "@"
         message = message:gsub(tokenStr, value)
     end
-	return message
+    return message
 end
 
 function Verbose:Speak(event, msgData, substitutions)
