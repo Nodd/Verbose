@@ -28,6 +28,7 @@ function Verbose:AddSpellToOptions(spellID, event)
         spellOptions.args[event] = {
             type = "group",
             name = self.usedSpellEvents[event].title,
+            order = self.usedSpellEvents[event].order,
             args = {
                 enable = {
                     type = "toggle",
