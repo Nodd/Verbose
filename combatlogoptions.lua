@@ -1,7 +1,7 @@
 local addonName, Verbose = ...
 
 function Verbose:AddCombatLogSpellToOptions(spellID, event)
-    local spellOptions = self.options.args.events.args.spellcasts.args[tostring(spellID)]
+    local spellOptions = self.options.args.events.args.spells.args[tostring(spellID)]
 
     -- Insert spell options
     if not spellOptions then
@@ -20,7 +20,7 @@ function Verbose:AddCombatLogSpellToOptions(spellID, event)
             args = {
             },
         }
-        self.options.args.events.args.spellcasts.args[tostring(spellID)] = spellOptions
+        self.options.args.events.args.spells.args[tostring(spellID)] = spellOptions
     end
 
     -- Insert event options for this spell
