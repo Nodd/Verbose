@@ -27,7 +27,11 @@ Verbose.iconCropBorders = { 1/16, 15/16, 1/16, 15/16 }
 
 -- Icon texture, 32 pixels
 function Verbose:IconTextureFromID(iconID)
-    return "|T" .. iconID .. ":32|t"
+    if iconID then
+        return "|T" .. iconID .. ":32|t"
+    else
+        return ""
+    end
 end
 
 -- Borderless icon texture, text height

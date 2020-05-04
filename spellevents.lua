@@ -38,7 +38,9 @@ end
 function Verbose:OnUnitSpellcastEnd(event, caster, castID, spellID)
     self:OnUnitSpellcastCommon(event, caster, castID, spellID)
     -- Clean targetTable
-    targetTable[castID] = nil
+    if castID then  -- is sometimes nil
+        targetTable[castID] = nil
+    end
 end
 
 function Verbose:RecordSpellcastEvent(spellID, event)
