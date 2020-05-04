@@ -25,6 +25,7 @@ function Verbose:PopulatecombatLogCategoriesOptions(parent, id, data)
         order = 10,
         icon = data.icon,
         iconCoords = Verbose.iconCropBorders,
+        hidden = true,
         childGroups = "tree",
         args = {
             title = {
@@ -54,6 +55,8 @@ end
 
 function Verbose:AddCombatLogSpellToOptions(castMode, category, spellID, event)
     local spellOptions = self.options.args.events.args.combatLog.args[castMode].args[category].args[tostring(spellID)]
+    self.options.args.events.args.combatLog.args[castMode].hidden = false
+    self.options.args.events.args.combatLog.args[castMode].args[category].hidden = false
 
     -- Insert spell options
     if not spellOptions then
