@@ -2,27 +2,27 @@ local addonName, Verbose = ...
 
 Verbose.combatLogOptionsSourceTarget = {
     self = { title="Self", order=10 },
-    done = { title="Done", order=10 },
-    received = { title="Received", order=10 },
-    noTarget = { title="No target", order=10 },
+    done = { title="Done", order=20 },
+    received = { title="Received", order=30 },
+    noTarget = { title="No target", order=40 },
 }
 
 Verbose.combatLogOptionsCategories = {
     swing = { title="Swing", order=10 },
-    spells = { title="Spells", order=10 },
-    damage = { title="Damage", order=10 },
-    heal = { title="Heal", order=10 },
-    buffs = { title="Buffs", order=10 },
-    debuffs = { title="Debuffs", order=10 },
-    environmental = { title="Environmental", order=10 },
-    other = { title="Other", order=10 },
+    spells = { title="Spells", order=20 },
+    damage = { title="Damage", order=30 },
+    heal = { title="Heal", order=40 },
+    buffs = { title="Buffs", order=50 },
+    debuffs = { title="Debuffs", order=60 },
+    environmental = { title="Environmental", order=70 },
+    other = { title="Other", order=80 },
 }
 
 function Verbose:PopulatecombatLogCategoriesOptions(parent, id, data)
     parent[id] = {
         type = "group",
         name = data.title,
-        order = 10,
+        order = data.order,
         icon = data.icon,
         iconCoords = Verbose.iconCropBorders,
         hidden = true,
