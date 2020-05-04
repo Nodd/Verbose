@@ -119,6 +119,7 @@ function Verbose:Speak(event, msgData, substitutions)
     self.db.profile.lastTime = currentTime  -- Global CD
 
     if self.db.profile.mute then
+        Verbose:DisplayTempMessage(message)
         self:Print("MUTED:", message)
     else
         local inInstance = IsInInstance()
@@ -128,6 +129,11 @@ function Verbose:Speak(event, msgData, substitutions)
         else
             self:SpeakDbgPrint("NOT IN INSTANCE, emoting instead :(")
             SendChatMessage("dit : " .. message, "EMOTE")
+            Verbose:DisplayTempMessage(message)
         end
     end
+end
+
+function Verbose:DisplayTempMessage(message)
+    UIErrorsFrame:AddMessage(self:IconTextureBorderlessFromID(self.VerboseIconID).." ".. message, 1.0, 0.8, 0.0, GetChatTypeIndex("CHANNEL_NOTICE"), 15);
 end
