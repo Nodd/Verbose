@@ -23,6 +23,9 @@ Verbose.defaults = {
             --     messages = { "Foo", "Bar", "Baz" },
             -- },
         },
+        combatLog = {
+            spells = {},
+        },
         spells = {
             -- Populated dynamically
             -- spellID = {

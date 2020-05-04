@@ -62,9 +62,9 @@ Verbose.usedEvents = {
 }
 
 function Verbose:RegisterEvents()
-    for event, eventData in pairs(Verbose.usedSpellEvents) do
-        self:RegisterEvent(event, eventData.callback)
-    end
+    -- for event, eventData in pairs(Verbose.usedSpellEvents) do
+    --     self:RegisterEvent(event, eventData.callback)
+    -- end
     for event, eventData in pairs(Verbose.usedEvents) do
         self:RegisterEvent(event, eventData.callback)
     end
@@ -101,8 +101,9 @@ end
 function Verbose:ManageNoArgEvent(event, ...)
     -- DEBUG
     self:EventDbgPrint(event, "(NOARG)")
-    if ... then
-        self:EventDbgPrint("NOARG event received args:", ...)
+    local nbArgs = select("#", ...)
+    if nbArgs > 0 then
+        self:EventDbgPrint("NOARG event received", nbArgs, "args")
     end
 
     self:Speak(

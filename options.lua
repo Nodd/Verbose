@@ -307,7 +307,8 @@ function Verbose:ManageOptions()
     self.db = LibStub("AceDB-3.0"):New("VerboseDB", self.defaults)
 
     -- Add dynamic data to options
-    self:SpellDBToOptions()
+    self:CombatLogSpellDBToOptions()
+    --self:SpellDBToOptions()
     self:ListDBToOptions()
 
     -- Add profile config tab to options

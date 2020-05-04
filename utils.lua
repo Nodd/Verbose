@@ -4,6 +4,7 @@ local addonName, Verbose = ...
 -------------------------------------------------------------------------------
 -- Multiline text and table
 -------------------------------------------------------------------------------
+
 function Verbose:TableToText(t)
     return table.concat(t, "\n")
 end
@@ -20,8 +21,35 @@ end
 
 
 -------------------------------------------------------------------------------
+-- String operations
+-------------------------------------------------------------------------------
+
+function Verbose.starts_with(str, ...)
+
+    for i = 1, select("#",...) do
+        start = select(i, ...)
+        if str:sub(1, #start) == start then
+            return true
+        end
+    end
+    return false
+end
+
+function Verbose.ends_with(str, ...)
+    for i = 1, select("#",...) do
+        ending = select(i, ...)
+        if ending == "" or str:sub(-#ending) == ending then
+            return true
+        end
+    end
+    return false
+end
+
+
+-------------------------------------------------------------------------------
 -- Spells : ID, name, icon, description
 -------------------------------------------------------------------------------
+
 -- To be used in option table
 Verbose.iconCropBorders = { 1/16, 15/16, 1/16, 15/16 }
 
@@ -76,6 +104,7 @@ end
 -------------------------------------------------------------------------------
 -- Spells : Extend WoW API
 -------------------------------------------------------------------------------
+
 -- Check if a given name corresponds to the player (with or without the realm name)
 local playerName = UnitName("player") -- realm result from UnitName("player") is always nil
 local realmName = GetRealmName()
