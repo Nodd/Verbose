@@ -97,7 +97,7 @@ Verbose.options = {
                     type = "execute",
                     name = "Save data by reloading UI",
                     desc = "Addon data is only saved to disk on few occasion, one of them being reloading the UI.",
-                    order = 25,
+                    order = 60,
                     width = "double",
                     func = ReloadUI,
                 },
