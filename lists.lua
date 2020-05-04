@@ -40,7 +40,7 @@ function Verbose:AddListToOptions(listID)
                 type = "input",
                 name = "List name",
                 order = 10,
-                pattern = "^[%w]+$",
+                pattern = "^%w+$",
                 usage = "Only alphanumeric characters allowed",
                 get = function(info)
                     return self.db.profile.lists[info[#info - 1]].name

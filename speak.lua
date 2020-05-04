@@ -53,7 +53,7 @@ function Verbose:GetRandomMessageWithSubstitution(messages, substitutions)
 
         -- Check that all tokens were replaced
         local valid = true
-        if msg:find("<(%l+)>") then valid = false end
+        if msg:find("<(%w+)>") then valid = false end
 
         if valid then
             -- Message can be in the random pool
