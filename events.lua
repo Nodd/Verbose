@@ -70,6 +70,7 @@ Verbose.usedEvents = {
     -- when speaking to another NPC for example.
     -- It would need some heavy filtering :/
     GOSSIP_SHOW = { callback="ManageNoArgEvent", category="npc", title=title, icon=icon, classic=true },
+    GOSSIP_CLOSED = { callback="ManageNoArgEvent", category="npc", title=title, icon=icon, classic=true },
     BARBER_SHOP_OPEN = { callback="ManageNoArgEvent", category="npc", title=title, icon=icon, classic=false },
     BARBER_SHOP_CLOSE = { callback="ManageNoArgEvent", category="npc", title=title, icon=icon, classic=false },
     MAIL_SHOW = { callback="ManageNoArgEvent", category="npc", title=title, icon=icon, classic=true },
@@ -134,6 +135,7 @@ function Verbose:RecordSpellcastEvent(spellID, event)
         spellData[event] = {
             enabled = false,
             cooldown = 10,
+            proba = 1,
             messages = {},
         }
 
@@ -171,11 +173,19 @@ local genders = { nil, "male", "female" }
 function Verbose:GlobalSubstitutions()
     local substitutions = {
         targetname = UnitName("target"),
+        targetguild = GetGuildInfo("target"),
         targetclass = UnitClass("target"),  -- Same as targetname for npc, even named ones
         targetrace = UnitRace("target"),  -- Not set for NPCs
         targettype = UnitCreatureType("target"),  -- Humanoid, Beast... can return "Not specified" (localized)
         targetfamily = UnitCreatureFamily("target"),  -- For beasts and demons
         targetgenre = genders[UnitSex("target")],
+        npcname = UnitName("npc"),
+        npcguild = GetGuildInfo("npc"),
+        npcclass = UnitClass("npc"),  -- Same as targetname for npc, even named ones
+        npcrace = UnitRace("npc"),  -- Not set for NPCs
+        npctype = UnitCreatureType("npc"),  -- Humanoid, Beast... can return "Not specified" (localized)
+        npcfamily = UnitCreatureFamily("npc"),  -- For beasts and demons
+        npcgenre = genders[UnitSex("npc")],
     }
     return substitutions
 end

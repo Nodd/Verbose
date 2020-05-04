@@ -239,7 +239,7 @@ function Verbose:populateEvent(parent, event, title, icon)
                 type = "range",
                 name = "Message cooldown (s)",
                 order = 30,
-                min = 0,
+                min = 1,
                 max = 3600,
                 softMax = 60,
                 bigStep = 1,
@@ -250,7 +250,7 @@ function Verbose:populateEvent(parent, event, title, icon)
                 type = "input",
                 name = "Messages, one per line",
                 order = 40,
-                multiline = 18,
+                multiline = 17,
                 width = "full",
                 get = function(info)
                     return Verbose:TableToText(self:EventData(info).messages)

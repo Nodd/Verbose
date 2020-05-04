@@ -18,8 +18,8 @@ Verbose.defaults = {
             -- Populated below
             -- EVENT = {
             --     enabled = false,
-            --     proba = 0.5,
-            --     cooldown = 30,
+            --     proba = 1,
+            --     cooldown = 1,
             --     messages = { "Foo", "Bar", "Baz" },
             -- },
         },
@@ -28,8 +28,8 @@ Verbose.defaults = {
             -- spellID = {
             --     EVENT = {
             --         enabled = false,
-            --         proba = 0.5,
-            --         cooldown = 30,
+            --         proba = 1,
+            --         cooldown = 10,
             --         messages = { "Foo", "Bar", "Baz" },
             --     },
             -- },
@@ -48,8 +48,8 @@ Verbose.defaults = {
 for event, eventData in pairs(Verbose.usedEvents) do
     Verbose.defaults.profile.events[event] = {
         enabled = false,
-        proba = 0.5,
-        cooldown = 30,
+        proba = 1,
+        cooldown = 1,
         messages = {},
     }
 end
