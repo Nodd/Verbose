@@ -12,15 +12,6 @@ Verbose.usedCombatLogEvents = {
     COMBAT_LOG_EVENT_UNFILTERED = { callback="CombatLog", category="combat", title="Combat log", icon=icon, classic=true },
 }
 
-Verbose.combatLogEventCallbacks = {  -- TODO
-    SPELL_AURA_APPLIED = "CombatLogSpellAura",
-    SPELL_AURA_REFRESH = "CombatLogSpellAura",
-    SPELL_AURA_REMOVED = "CombatLogSpellAura",
-    SPELL_DAMAGE = "CombatLogSpellRangeDamage",
-    RANGE_DAMAGE = "CombatLogSpellRangeDamage",
-    SWING_DAMAGE = "CombatLogSwingDamage",
-}
-
 function Verbose:CombatLog(event)
     local rawEventInfo = { CombatLogGetCurrentEventInfo() }
 
@@ -31,23 +22,25 @@ function Verbose:CombatLog(event)
     eventInfo.destName = rawEventInfo[9]
     -- Return early if the player is not involved in the event
     -- TODO: What about the pet(s) ?
-    if not (Verbose:NameIsPlayer(eventInfo.sourceName) or Verbose:NameIsPlayer(eventInfo.destName)) then return end
+    eventInfo.castMode = self:CombatLogCastMode(eventInfo)
+    if not eventInfo.castMode then return end
 
     eventInfo.timestamp = rawEventInfo[1]
     eventInfo.event = rawEventInfo[2]
-    eventInfo.hideCaster = rawEventInfo[3]
-    eventInfo.sourceGUID = rawEventInfo[4]
+    -- eventInfo.hideCaster = rawEventInfo[3]  -- useless
+    -- eventInfo.sourceGUID = rawEventInfo[4]  -- useless
     eventInfo.sourceFlags = rawEventInfo[6]
     eventInfo.sourceRaidFlags = rawEventInfo[7]
-    eventInfo.destGUID = rawEventInfo[8]
+    -- eventInfo.destGUID = rawEventInfo[8]  -- useless
     eventInfo.destFlags = rawEventInfo[10]
     eventInfo.destRaidFlags = rawEventInfo[11]
 
-    -- The rest ot the paramters depends on the subevent and will be managed in subfunctions
+    -- The rest of the paramters depends on the subevent and will be managed in subfunctions
     self:SetCombatLogArgs(eventInfo, rawEventInfo)
+    eventInfo.category = self:CombatLogCategory(eventInfo)
 
-    -- Ignore events from others
-    if eventInfo.spellId and not Verbose:NameIsPlayer(eventInfo.sourceName) then return end
+    -- Ignore events from others ?
+    -- if eventInfo.spellId and not Verbose:NameIsPlayer(eventInfo.sourceName) then return end
 
     -- Debug
     self:EventDbgPrint(event)
@@ -105,18 +98,67 @@ function Verbose:SetCombatLogArgs(eventInfo, rawEventInfo)
     end
 end
 
+function Verbose:CombatLogCastMode(eventInfo)
+    if Verbose:NameIsPlayer(eventInfo.destName) then
+        if Verbose:NameIsPlayer(eventInfo.sourceName) then
+            return "self"
+        else
+            return "received"
+        end
+    elseif Verbose:NameIsPlayer(eventInfo.sourceName) then
+        if eventInfo.destName then
+            return "done"
+        else
+            return "noTarget"
+        end
+    else
+        return nil
+    end
+end
+
+function Verbose:CombatLogCategory(eventInfo)
+    if Verbose.starts_with(eventInfo.event, "ENVIRONMENTAL_") then
+        return "environmental"
+    elseif Verbose.ends_with(eventInfo.event, "_HEAL") then
+        return "heal"
+    elseif Verbose.ends_with(eventInfo.event, "_DAMAGE") then
+        return "damage"
+    elseif Verbose.starts_with(eventInfo.event, "SWING_") then
+        return "swing"
+    elseif Verbose.starts_with(eventInfo.event, "SPELL_AURA_") then
+        if eventInfo.auraType == "BUFF" then
+            return "buffs"
+        else
+            return "debuffs"
+        end
+    elseif Verbose.starts_with(eventInfo.event, "SPELL_") then
+        return "spells"
+    else
+        return "other"
+    end
+end
 
 function Verbose:RecordCombatLogSpellEvent(eventInfo)
-    -- Ignore events from others
+    -- Ignore events from others ?
     if not Verbose:NameIsPlayer(eventInfo.sourceName) then return end
 
     local combatLog = self.db.profile.combatLog
 
-    -- If spell not known at all, register it
-    if not combatLog.spells[eventInfo.spellID] then
-        combatLog.spells[eventInfo.spellID] = {}
+    -- If cast mode not known at all, register it
+    if not combatLog[eventInfo.castMode] then
+        combatLog[eventInfo.castMode] = {}
     end
-    local spellData = combatLog.spells[eventInfo.spellID]
+
+    -- If category not known at all, register it
+    if not combatLog[eventInfo.castMode][eventInfo.category] then
+        combatLog[eventInfo.castMode][eventInfo.category] = {}
+    end
+
+    -- If spell not known at all, register it
+    if not combatLog[eventInfo.castMode][eventInfo.category][eventInfo.spellID] then
+        combatLog[eventInfo.castMode][eventInfo.category][eventInfo.spellID] = {}
+    end
+    local spellData = combatLog[eventInfo.castMode][eventInfo.category][eventInfo.spellID]
 
     -- If event not known for this spell, register it
     if not spellData[eventInfo.event] then
@@ -129,7 +171,7 @@ function Verbose:RecordCombatLogSpellEvent(eventInfo)
         }
 
         -- Update options
-        self:AddCombatLogSpellToOptions(eventInfo.spellID, eventInfo.event)
+        self:AddCombatLogSpellToOptions(eventInfo.castMode, eventInfo.category, eventInfo.spellID, eventInfo.event)
         self:UpdateOptionsGUI()
     end
     -- Update timestamp
@@ -138,7 +180,7 @@ end
 
 function Verbose:OnCombatLogSpellEvent(eventInfo)
     -- Talk
-    local msgData = self.db.profile.combatLog.spells[eventInfo.spellID][eventInfo.event]
+    local msgData = self.db.profile.combatLog[eventInfo.castMode][eventInfo.category][eventInfo.spellID][eventInfo.event]
     self:Speak(
         event,
         msgData,

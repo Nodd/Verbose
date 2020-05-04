@@ -1,7 +1,59 @@
 local addonName, Verbose = ...
 
-function Verbose:AddCombatLogSpellToOptions(spellID, event)
-    local spellOptions = self.options.args.events.args.spells.args[tostring(spellID)]
+Verbose.combatLogOptionsSourceTarget = {
+    self = { title="Self", order=10 },
+    done = { title="Done", order=10 },
+    received = { title="Received", order=10 },
+    noTarget = { title="No target", order=10 },
+}
+
+Verbose.combatLogOptionsCategories = {
+    swing = { title="Swing", order=10 },
+    spells = { title="Spells", order=10 },
+    damage = { title="Damage", order=10 },
+    heal = { title="Heal", order=10 },
+    buffs = { title="Buffs", order=10 },
+    debuffs = { title="Debuffs", order=10 },
+    environmental = { title="Environmental", order=10 },
+    other = { title="Other", order=10 },
+}
+
+function Verbose:PopulatecombatLogCategoriesOptions(parent, id, data)
+    parent[id] = {
+        type = "group",
+        name = data.title,
+        order = 10,
+        icon = data.icon,
+        iconCoords = Verbose.iconCropBorders,
+        childGroups = "tree",
+        args = {
+            title = {
+                type = "description",
+                name = data.title,
+                fontSize = "large",
+                order = 0,
+            },
+            info = {
+                type = "description",
+                name = "Documentation here.",
+                fontSize = "medium",
+                order = 1,
+            },
+        },
+    }
+    return parent[id]
+end
+
+for sourceTargetID, sourceTargetData in pairs(Verbose.combatLogOptionsSourceTarget) do
+    local options = Verbose:PopulatecombatLogCategoriesOptions(
+        Verbose.options.args.events.args.combatLog.args, sourceTargetID, sourceTargetData)
+    for categoryID, categoryData in pairs(Verbose.combatLogOptionsCategories) do
+        Verbose:PopulatecombatLogCategoriesOptions(options.args, categoryID, categoryData)
+    end
+end
+
+function Verbose:AddCombatLogSpellToOptions(castMode, category, spellID, event)
+    local spellOptions = self.options.args.events.args.combatLog.args[castMode].args[category].args[tostring(spellID)]
 
     -- Insert spell options
     if not spellOptions then
@@ -20,7 +72,7 @@ function Verbose:AddCombatLogSpellToOptions(spellID, event)
             args = {
             },
         }
-        self.options.args.events.args.spells.args[tostring(spellID)] = spellOptions
+        self.options.args.events.args.combatLog.args[castMode].args[category].args[tostring(spellID)] = spellOptions
     end
 
     -- Insert event options for this spell
@@ -78,14 +130,22 @@ end
 
 -- Return spell and event data for callbacks from info arg
 function Verbose:CombatLogSpellEventData(info)
-    return self.db.profile.combatLog.spells[tonumber(info[#info - 2])][info[#info - 1]]
+    local castMode = info[#info - 4]
+    local category = info[#info - 3]
+    local spellID = tonumber(info[#info - 2])
+    local event = info[#info - 1]
+    return self.db.profile.combatLog[castMode][category][spellID][event]
 end
 
 -- Load saved events to options table
 function Verbose:CombatLogSpellDBToOptions()
-    for spellID, spellData in pairs(self.db.profile.combatLog.spells) do
-        for event in pairs(spellData) do
-            self:AddCombatLogSpellToOptions(spellID, event)
+    for castMode, castModeData in pairs(self.db.profile.combatLog) do
+        for category, categoryData in pairs(self.db.profile.combatLog[castMode]) do
+            for spellID, spellData in pairs(self.db.profile.combatLog[castMode][category]) do
+                for event, eventData in pairs(spellData) do
+                    self:AddCombatLogSpellToOptions(castMode, category, spellID, event)
+                end
+            end
         end
     end
 end

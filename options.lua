@@ -111,6 +111,28 @@ Verbose.options = {
             order = 20,
             childGroups = "tree",
             args = {
+                combatLog = {
+                    type = "group",
+                    name = "Combat log",
+                    order = 5,
+                    icon = combatIconID,
+                    iconCoords = Verbose.iconCropBorders,
+                    childGroups = "tree",
+                    args = {
+                        title = {
+                            type = "description",
+                            name = Verbose:IconTextureBorderlessFromID(combatIconID) .. " Combat log",
+                            fontSize = "large",
+                            order = 0,
+                        },
+                        info = {
+                            type = "description",
+                            name = "Documentation here.",
+                            fontSize = "medium",
+                            order = 1,
+                        },
+                    },
+                },
                 spells = {
                     type = "group",
                     name = "Spells, Items...",

@@ -24,7 +24,6 @@ Verbose.defaults = {
             -- },
         },
         combatLog = {
-            spells = {},
         },
         spells = {
             -- Populated dynamically
