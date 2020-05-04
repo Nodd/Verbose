@@ -41,7 +41,7 @@ Verbose.usedEvents = {
     RESURRECT_REQUEST = { callback="DUMMYEvent", category="combat", title="Resurrection request", icon=237542, classic=true },
 
     -- Combat events
-    -- COMBAT_LOG_EVENT_UNFILTERED = { callback="DUMMYEvent", category=category, title=title, icon=icon, classic=true },
+    COMBAT_LOG_EVENT_UNFILTERED = { callback="CombatLog", category="combat", title="Combat log", icon=icon, classic=true },
     -- UNIT_THREAT_LIST_UPDATE = { callback="DUMMYEvent", category=category, title=title, icon=icon, classic=false }, --not in Classic
     -- COMPANION_UPDATE = { callback="DUMMYEvent", category=category, title=title, icon=icon, classic=false }, --not in Classic
     PLAYER_REGEN_DISABLED = { callback="ManageNoArgEvent", category="combat", title="Entering combat", icon=icon, classic=true },  -- Entering combat
@@ -220,6 +220,17 @@ function Verbose:RESURRECT_REQUEST(event, caster)
     local substitutions = Verbose:GlobalSubstitutions()
     substitutions.caster = caster
     self:Speak(event, msgData, substitutions)
+end
+
+function Verbose:CombatLog(event)
+    local params = { CombatLogGetCurrentEventInfo() }
+    local timestamp, subevent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags = unpack(params)
+    local eventArgs = { unpack(params, 12) }
+    if not (Verbose:NameIsPlayer(sourceName) or Verbose:NameIsPlayer(destName)) then return end
+    self:EventDbgPrint(event, timestamp, subevent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags)
+
+    self:EventDbgPrint(#eventArgs, eventArgs)
+    self:EventDbgPrint(#eventArgs, "args:", table.concat(eventArgs, " "))
 end
 
 

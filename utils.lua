@@ -70,9 +70,11 @@ end
 
 
 -------------------------------------------------------------------------------
--- Spells : ID, name, icon, description
+-- Spells : Extend WoW API
 -------------------------------------------------------------------------------
-function Verbose:SpellDescription(spellID)
-    -- Text in yellowish like in tooltips
-    return NORMAL_FONT_COLOR_CODE .. GetSpellDescription(tonumber(spellID)) .. FONT_COLOR_CODE_CLOSE
+-- Check if a given name corresponds to the player (with or without the realm name)
+local playerName = UnitName("player") -- realm result from UnitName("player") is always nil
+local realmName = GetRealmName()
+function Verbose:NameIsPlayer(name)
+    return name == playerName or name == playerName.."-"..realmName
 end
