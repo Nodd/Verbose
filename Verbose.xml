@@ -6,5 +6,6 @@
     <Script file="lists.lua"/>  <!-- No dependency -->
     <Script file="events.lua"/>  <!-- No dependency -->
     <Script file="db.lua"/>  <!-- Needs events.lua -->
-    <Script file="options.lua"/>  <!-- Needs events.lua -->
+    <Script file="help.lua"/>  <!-- No dependency -->
+    <Script file="options.lua"/>  <!-- Needs events.lua, help.lua -->
 </Ui>

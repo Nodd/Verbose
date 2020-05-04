@@ -271,6 +271,9 @@ for event, eventData in pairs(Verbose.usedEvents) do
     )
 end
 
+-- Insert help
+Verbose.options.args.help = Verbose:GenerateHelpOptionTable()
+
 -- Return spell and event data for callbacks from info arg
 function Verbose:EventData(info)
     return self.db.profile.events[info[#info - 1]]
