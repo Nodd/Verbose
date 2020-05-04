@@ -1,12 +1,10 @@
 local addonName, Verbose = ...
 
-
 function Verbose:EventDbgPrint(...)
     if self.db.profile.eventDebug then
         self:Print("EVENT:", ...)
     end
 end
-
 
 Verbose.usedEvents = {
     -- EVENT = {
@@ -61,10 +59,6 @@ Verbose.usedEvents = {
     QUEST_FINISHED = { callback="ManageNoArgEvent", category="npc", title=title, icon=icon, classic=true },
     TAXIMAP_OPENED = { callback="DUMMYEvent", category="npc", title=title, icon=icon, classic=true },
     TRAINER_SHOW = { callback="ManageNoArgEvent", category="npc", title=title, icon=icon, classic=true },
-}
-
-local spellBlacklist = {
-    [836] = true,  -- LOGINEFFECT, fired on login
 }
 
 function Verbose:RegisterEvents()
