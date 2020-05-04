@@ -4,7 +4,7 @@ LibStub("AceAddon-3.0"):NewAddon(Verbose, addonName, "AceConsole-3.0", "AceEvent
 local LibDataBroker = LibStub("LibDataBroker-1.1")
 local LibDBIcon = LibStub("LibDBIcon-1.0")
 
-local VerboseIconID = 2056011  -- ui_chat
+Verbose.VerboseIconID = 2056011  -- ui_chat
 
 function Verbose:OnInitialize()
   -- Code that you want to run when the addon is first loaded goes here.
@@ -41,7 +41,7 @@ function Verbose:SetupMinimapButton()
     self.LDB = LibDataBroker:NewDataObject(addonName, {
         type = "data source",
         text = addonName,
-        icon = VerboseIconID,
+        icon = Verbose.VerboseIconID,
         OnClick = function(...) self:OnLDBClick(...) end,
         OnTooltipShow = function(...) self:OnLDBTooltip(...) end,
     })
@@ -64,7 +64,7 @@ function Verbose:OnLDBClick(_, button)
 end
 
 function Verbose:OnLDBTooltip(tooltip)
-    tooltip:SetText(self:IconTextureBorderlessFromID(VerboseIconID) .. " " .. addonName)
+    tooltip:SetText(self:IconTextureBorderlessFromID(Verbose.VerboseIconID) .. " " .. addonName)
     tooltip:AddLine("Left clic: Enable/Disable", 1, 1, 1)
     tooltip:AddLine("Right clic: Toggle options window", 1, 1, 1)
     tooltip:AddLine("Middle clic: Go to events configuration", 1, 1, 1)
