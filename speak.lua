@@ -127,13 +127,53 @@ function Verbose:Speak(event, msgData, substitutions)
             -- SendChatMessage("msg", "chatType", "language", "channel");
             SendChatMessage(message, "SAY");
         else
+            -- Keybind workaround
+            table.insert(self.queue, { time = currentTime, message = message })
+            Verbose:DisplayTempMessage(message)
+
+            -- Emote workaround
             self:SpeakDbgPrint("NOT IN INSTANCE, emoting instead :(")
             SendChatMessage("dit : " .. message, "EMOTE")
-            Verbose:DisplayTempMessage(message)
         end
     end
 end
 
+
+-------------------------------------------------------------------------------
+-- Keybind workaround for open world
+-------------------------------------------------------------------------------
+
 function Verbose:DisplayTempMessage(message)
-    UIErrorsFrame:AddMessage(self:IconTextureBorderlessFromID(self.VerboseIconID).." ".. message, 1.0, 0.8, 0.0, GetChatTypeIndex("CHANNEL_NOTICE"), 15);
+    UIErrorsFrame:AddMessage(
+        self:IconTextureBorderlessFromID(self.VerboseIconID).." ".. message,
+        1.0, 0.8, 0.0,  -- R, G, B
+        GetChatTypeIndex("CHANNEL_NOTICE"),
+        5)  -- Display duration (ignored ?)
+end
+
+Verbose.queue = {}
+
+function Verbose:OpenWorldWorkaround()
+    self:SpeakDbgPrint("Keybind workaround")
+    if #Verbose.queue == 0 then
+        self:SpeakDbgPrint("Empty queue")
+        return
+    end
+
+    local currentTime = GetTime()
+    while #Verbose.queue >= 1 do
+        -- Get older message
+        local messageData = table.remove(Verbose.queue, 1)
+
+        -- Check obsolete
+        local elapsed = currentTime - messageData.time
+        if elapsed < 5 then
+            self:SpeakDbgPrint("Talk", elapsed, "seconds later")
+            SendChatMessage(messageData.message, "SAY")
+            break
+        else
+            self:SpeakDbgPrint("Obsolete message since", elapsed, "seconds:")
+            self:SpeakDbgPrint(messageData.message)
+        end
+    end
 end

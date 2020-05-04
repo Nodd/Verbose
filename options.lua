@@ -1,5 +1,6 @@
 local addonName, Verbose = ...
 
+local AceConsole = LibStub("AceConsole-3.0")
 local AceGUI = LibStub("AceGUI-3.0")
 local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
@@ -53,6 +54,20 @@ Verbose.options = {
                     set = function(info, value)
                         Verbose.db.profile.minimap.hide = not value
                         if value then LibDBIcon:Show(addonName) else LibDBIcon:Hide(addonName) end
+                    end,
+                },
+                keybindOpenWorld = {
+                    type = "keybinding",
+                    name = "Keybind for open world workaround",
+                    order = 24,
+                    width = "double",
+                    get = function(info) return Verbose.db.profile.keybindOpenWorld end,
+                    set = function(info, value)
+                        Verbose.db.profile.keybindOpenWorld = value
+                        -- Add Binding
+                        SetBindingClick(value, Verbose.BindingButton:GetName())
+                        SaveBindings(GetCurrentBindingSet())  -- Retail
+                        -- AttemptToSaveBindings(GetCurrentBindingSet())  -- Classic
                     end,
                 },
                 debugHeader = {
@@ -306,6 +321,12 @@ function Verbose:ManageOptions()
     )
     self:RegisterChatCommand("verbose", "ChatCommand")
     self:RegisterChatCommand("verb", "ChatCommand")
+
+    -- Create invisible button for keybind callback
+    self.BindingButton = CreateFrame("BUTTON", "VerboseOpenWorldWorkaroundBindingButton")
+    self.BindingButton:SetScript("OnClick", function(btn, button, down)
+        self:OpenWorldWorkaround()
+    end)
 end
 
 function Verbose:ShowOptions()
@@ -325,8 +346,11 @@ function Verbose:ToggleOptions()
 end
 
 function Verbose:ChatCommand(input)
-    if not input or input:trim() == "" then
+    arg1 = AceConsole:GetArgs(input, 1, 1)
+    if not arg1 then
         self:ShowOptions()
+    elseif arg1 == "openworld" then
+        Verbose:OpenWorldWorkaround()
     else
         LibStub("AceConfigCmd-3.0"):HandleCommand("verbose", "Verbose", input)
     end
