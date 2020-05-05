@@ -25,7 +25,6 @@ end
 -------------------------------------------------------------------------------
 
 function Verbose.starts_with(str, ...)
-
     for i = 1, select("#",...) do
         start = select(i, ...)
         if str:sub(1, #start) == start then
@@ -69,18 +68,21 @@ end
 
 function Verbose:SpellName(spellID)
     local name = GetSpellInfo(tonumber(spellID))
+    if not name then return "" end
     -- Text in white like in tooltips
     return "|cFFFFFFFF" .. name .. "|r"
 end
 
 function Verbose:SpellNameAndIconID(spellID)
     local name, _, iconID = GetSpellInfo(tonumber(spellID))
+    if not name then return "", "" end
     -- Text in white like in tooltips
     return "|cFFFFFFFF" .. name .. "|r", iconID
 end
 
 function Verbose:SpellNameAndIconTexture(spellID)
     local name, _, iconID = GetSpellInfo(tonumber(spellID))
+    if not name then return "", "" end
     -- Text in white like in tooltips
     return "|cFFFFFFFF" .. name .. "|r", Verbose:IconTextureFromID(iconID)
 end
@@ -96,8 +98,10 @@ function Verbose:SpellIconTexture(spellID)
 end
 
 function Verbose:SpellDescription(spellID)
+    local description = GetSpellDescription(tonumber(spellID))
+    if not description then return "" end
     -- Text in yellowish like in tooltips
-    return NORMAL_FONT_COLOR_CODE .. GetSpellDescription(tonumber(spellID)) .. FONT_COLOR_CODE_CLOSE
+    return NORMAL_FONT_COLOR_CODE .. description .. FONT_COLOR_CODE_CLOSE
 end
 
 
