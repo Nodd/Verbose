@@ -68,8 +68,8 @@ function Verbose:AddCombatLogSpellToOptions(castMode, category, spellID, event)
             desc = function(info)
                 return (
                     self:SpellIconTexture(info[#info])
-                    .. "\n".. self:SpellDescription(info[#info]))
-                    .. "\n\nSpell ID: " .. info[#info]
+                    .. "\n".. self:SpellDescription(info[#info])
+                    .. "\n\nSpell ID: " .. info[#info])
                 end,
             childGroups = "tab",
             args = {
