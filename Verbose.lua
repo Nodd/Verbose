@@ -23,6 +23,7 @@ end
 function Verbose:OnEnable()
     -- Called when the addon is enabled
     self.db.profile.enabled = true
+    Verbose:UpdateOptionsGUI()
     self:RegisterEvents()
     self.LDB.iconR = 0
     self.LDB.iconG = 1
@@ -31,6 +32,7 @@ end
 function Verbose:OnDisable()
     -- Called when the addon is disabled
     self.db.profile.enabled = false
+    Verbose:UpdateOptionsGUI()
     --self:UnregisterEvents()
     self:UnregisterAllEvents()
     self.LDB.iconR = 1
