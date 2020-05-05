@@ -186,8 +186,7 @@ local spellIDTreeFuncs = {
         )
     end,
 }
-local spellTreeCritical = { name="Critical" }
-local spellTreeNormal = { name="Normal" }
+local spellTreeCriticalName = { [true]="Critical", [false]="Normal" }
 
 Verbose.CategoryTreeFunc = {
     ENVIRONMENTAL_DAMAGE = function(eventInfo)
@@ -209,7 +208,7 @@ Verbose.CategoryTreeFunc = {
             { id=eventInfo.castMode, name=Verbose.combatLogCastModes[eventInfo.castMode].name },
             { id="damage", name=Verbose.combatLogOptionsCategories["damage"].name, order=Verbose.combatLogOptionsCategories["damage"].order },
             { id="swing", name="Swing" },
-            { id=eventInfo.critical and "critical" or "Normal", name=eventInfo.critical and spellTreeCritical or spellTreeNormal },
+            { id=eventInfo.critical and "critical" or "Normal", name=spellTreeCriticalName[eventInfo.critical] },
         }
     end,
     RANGE_DAMAGE = function(eventInfo)
@@ -217,7 +216,7 @@ Verbose.CategoryTreeFunc = {
             { id=eventInfo.castMode, name=Verbose.combatLogCastModes[eventInfo.castMode].name },
             { id="damage", name=Verbose.combatLogOptionsCategories["damage"].name, order=Verbose.combatLogOptionsCategories["damage"].order },
             { id="swing", name="Swing" },
-            { id=eventInfo.critical and "critical" or "Normal", name=eventInfo.critical and spellTreeCritical or spellTreeNormal },
+            { id=eventInfo.critical and "critical" or "Normal", name=spellTreeCriticalName[eventInfo.critical] },
         }
     end,
     SPELL_DAMAGE = function(eventInfo)
@@ -226,7 +225,7 @@ Verbose.CategoryTreeFunc = {
             { id="damage", name=Verbose.combatLogOptionsCategories["damage"].name, order=Verbose.combatLogOptionsCategories["damage"].order },
             { id=tostring(eventInfo.school), name=Verbose.SpellSchoolString[eventInfo.school] },
             { id=eventInfo.spellID, name=spellIDTreeFuncs.name, icon=spellIDTreeFuncs.icon, desc=spellIDTreeFuncs.desc },
-            { id=eventInfo.critical and "critical" or "Normal", name=eventInfo.critical and spellTreeCritical or spellTreeNormal },
+            { id=eventInfo.critical and "critical" or "Normal", name=spellTreeCriticalName[eventInfo.critical] },
         }
     end,
     SPELL_FAIL = function(eventInfo)
