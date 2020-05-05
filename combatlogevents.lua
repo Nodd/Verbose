@@ -292,6 +292,7 @@ function Verbose:spellsRecordCombatLogEvent(eventInfo)
                 proba = 1,
                 messages = {},
                 children = {},
+                categoryTable = categoryTable,
             }
 
             -- Update options

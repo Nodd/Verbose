@@ -95,9 +95,17 @@ function Verbose:CombatLogSpellEventData(info)
 end
 
 -- Load saved events to options table
-function Verbose:CombatLogSpellDBToOptions(optionGroupArgs, id, dbTable)
-    option = self:AddCombatLogEventToOptions(optionGroupArgs, id, dbTable)
-    for child, childTable in dbTable.children do
-        self:CombatLogSpellDBToOptions(option.args, child, childTable)
+function Verbose:CombatLogSpellDBToOptions()
+    local dbTable = self.db.profile.combatLog
+    local optionGroupArgs = self.options.args.events.args.combatLog.args
+    self:CombatLogSpellDBToOptionsRecursive(optionGroupArgs, dbTable)
+end
+
+function Verbose:CombatLogSpellDBToOptionsRecursive(optionGroupArgs, dbTable)
+    for id, dbTableData in pairs(dbTable) do
+        self:AddCombatLogEventToOptions(
+            optionGroupArgs, dbTableData.categoryTable)
+        self:CombatLogSpellDBToOptionsRecursive(
+            optionGroupArgs[id].args, dbTableData.children)
     end
 end
