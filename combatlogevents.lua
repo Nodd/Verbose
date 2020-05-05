@@ -60,6 +60,7 @@ function Verbose:SetCombatLogArgs(eventInfo, rawEventInfo)
     local suffixIndex = 12
     if Verbose.starts_with(eventInfo.event, "SPELL_", "RANGE_") then
         eventInfo.spellID, eventInfo.spellName, eventInfo.spellSchool = unpack(rawEventInfo, suffixIndex)
+        eventInfo.spellID = tostring(eventInfo.spellID)
         suffixIndex = 15
     elseif Verbose.starts_with(eventInfo.event, "ENVIRONMENTAL_") then
         eventInfo.environmentalType = unpack(rawEventInfo, suffixIndex)

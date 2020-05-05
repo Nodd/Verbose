@@ -54,7 +54,7 @@ for sourceTargetID, sourceTargetData in pairs(Verbose.combatLogOptionsSourceTarg
 end
 
 function Verbose:AddCombatLogSpellToOptions(castMode, category, spellID, event)
-    local spellOptions = self.options.args.events.args.combatLog.args[castMode].args[category].args[tostring(spellID)]
+    local spellOptions = self.options.args.events.args.combatLog.args[castMode].args[category].args[spellID]
     self.options.args.events.args.combatLog.args[castMode].hidden = false
     self.options.args.events.args.combatLog.args[castMode].args[category].hidden = false
 
@@ -75,7 +75,7 @@ function Verbose:AddCombatLogSpellToOptions(castMode, category, spellID, event)
             args = {
             },
         }
-        self.options.args.events.args.combatLog.args[castMode].args[category].args[tostring(spellID)] = spellOptions
+        self.options.args.events.args.combatLog.args[castMode].args[category].args[spellID] = spellOptions
     end
 
     -- Insert event options for this spell
@@ -135,7 +135,7 @@ end
 function Verbose:CombatLogSpellEventData(info)
     local castMode = info[#info - 4]
     local category = info[#info - 3]
-    local spellID = tonumber(info[#info - 2])
+    local spellID = info[#info - 2]
     local event = info[#info - 1]
     return self.db.profile.combatLog[castMode][category][spellID][event]
 end
