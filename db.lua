@@ -24,6 +24,18 @@ Verbose.defaults = {
             -- },
         },
         combatLog = {
+            -- category = {
+            --     enabled = false,
+            --     proba = 1,
+            --     cooldown = 1,
+            --     lastRecord = 0.0,
+            --     messages = { "Foo", "Bar", "Baz" },
+            --     children = {
+            --         category = {
+            --             ...
+            --         },
+            --     },
+            -- },
         },
         spells = {
             -- Populated dynamically

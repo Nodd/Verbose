@@ -12,6 +12,65 @@ Verbose.usedCombatLogEvents = {
     COMBAT_LOG_EVENT_UNFILTERED = { callback="CombatLog", category="combat", title="Combat log", icon=icon, classic=true },
 }
 
+Verbose.combatLogCastModes = {
+    self = { name="Self", order=10 },
+    done = { name="Done", order=20 },
+    received = { name="Received", order=30 },
+    noTarget = { name="No target", order=40 },
+}
+
+Verbose.combatLogOptionsCategories = {
+    swing = { name="Swing", order=10 },
+    spells = { name="Spells", order=20 },
+    damage = { name="Damage", order=30 },
+    heal = { name="Heal", order=40 },
+    buffs = { name="Buffs", order=50 },
+    debuffs = { name="Debuffs", order=60 },
+    environmental = { name="Environmental", order=70 },
+    other = { name="Other", order=80 },
+}
+
+
+-- https://github.com/ketho-wow/KethoCombatLog/blob/master/KethoCombatLog.lua for the table
+-- https://www.townlong-yak.com/framexml/8.1.5/GlobalStrings.lua#12934 for the strings
+-- https://wow.gamepedia.com/COMBAT_LOG_EVENT for the truth
+Verbose.SpellSchoolString = {
+	[0x1] = STRING_SCHOOL_PHYSICAL,
+	[0x2] = STRING_SCHOOL_HOLY,
+	[0x4] = STRING_SCHOOL_FIRE,
+	[0x8] = STRING_SCHOOL_NATURE,
+	[0x10] = STRING_SCHOOL_FROST,
+	[0x20] = STRING_SCHOOL_SHADOW,
+	[0x40] = STRING_SCHOOL_ARCANE,
+-- double
+	[0x3] = STRING_SCHOOL_HOLYSTRIKE,
+	[0x5] = STRING_SCHOOL_FLAMESTRIKE,
+	[0x6] = STRING_SCHOOL_HOLYFIRE,
+	[0x9] = STRING_SCHOOL_STORMSTRIKE,
+	[0xA] = STRING_SCHOOL_HOLYSTORM,
+	[0xC] = STRING_SCHOOL_FIRESTORM,
+	[0x11] = STRING_SCHOOL_FROSTSTRIKE,
+	[0x12] = STRING_SCHOOL_HOLYFROST,
+	[0x14] = STRING_SCHOOL_FROSTFIRE,
+	[0x18] = STRING_SCHOOL_FROSTSTORM,
+	[0x21] = STRING_SCHOOL_SHADOWSTRIKE,
+	[0x22] = STRING_SCHOOL_SHADOWLIGHT, -- Twilight
+	[0x24] = STRING_SCHOOL_SHADOWFLAME,
+	[0x28] = STRING_SCHOOL_SHADOWSTORM, -- Plague
+	[0x30] = STRING_SCHOOL_SHADOWFROST,
+	[0x41] = STRING_SCHOOL_SPELLSTRIKE,
+	[0x42] = STRING_SCHOOL_DIVINE,
+	[0x44] = STRING_SCHOOL_SPELLFIRE,
+	[0x48] = STRING_SCHOOL_SPELLSTORM,
+	[0x50] = STRING_SCHOOL_SPELLFROST,
+	[0x60] = STRING_SCHOOL_SPELLSHADOW,
+-- triple and more
+	[0x1C] = STRING_SCHOOL_ELEMENTAL,
+	[0x7C] = STRING_SCHOOL_CHROMATIC,
+	[0x7E] = STRING_SCHOOL_MAGIC,
+	[0x7F] = STRING_SCHOOL_CHAOS,
+}
+
 function Verbose:CombatLog(event)
     local rawEventInfo = { CombatLogGetCurrentEventInfo() }
 
@@ -37,7 +96,6 @@ function Verbose:CombatLog(event)
 
     -- The rest of the paramters depends on the subevent and will be managed in subfunctions
     self:SetCombatLogArgs(eventInfo, rawEventInfo)
-    eventInfo.category, eventInfo.subType = self:CombatLogCategoryAndSubtype(eventInfo)
 
     -- Debug
     self:EventDbgPrint(event)
@@ -47,14 +105,14 @@ function Verbose:CombatLog(event)
 
     -- Respond to event
     self:spellsRecordCombatLogEvent(eventInfo)
-    self:OnCombatLogEvent(eventInfo)
+    --self:OnCombatLogEvent(eventInfo)
 end
 
 function Verbose:SetCombatLogArgs(eventInfo, rawEventInfo)
     -- Prefixes
     local suffixIndex = 12
     if Verbose.starts_with(eventInfo.event, "SPELL_", "RANGE_") then
-        eventInfo.spellID, eventInfo.spellName, eventInfo.spellSchool = unpack(rawEventInfo, suffixIndex)
+        eventInfo.spellID, eventInfo.spellName, eventInfo.school = unpack(rawEventInfo, suffixIndex)
         eventInfo.spellID = tostring(eventInfo.spellID)
         suffixIndex = 15
     elseif Verbose.starts_with(eventInfo.event, "ENVIRONMENTAL_") then
@@ -117,69 +175,146 @@ function Verbose:CombatLogCastMode(eventInfo)
     end
 end
 
+local spellIDTreeFuncs = {
+    name = function(info) return Verbose:SpellName(info[#info]) end,
+    icon = function(info) return Verbose:SpellIconID(info[#info]) end,
+    desc = function(info)
+        return (
+            Verbose:SpellIconTexture(info[#info])
+            .. "\n".. Verbose:SpellDescription(info[#info])
+            .. "\n\nSpell ID: " .. info[#info]
+        )
+    end,
+}
+local spellTreeCritical = { name="Critical" }
+local spellTreeNormal = { name="Normal" }
 
-function Verbose:CombatLogCategoryAndSubtype(eventInfo)
-    local category, subType
-    if Verbose.starts_with(eventInfo.event, "ENVIRONMENTAL_") then
-        return "environmental", tostring(eventInfo.environmentalType)
-    elseif Verbose.ends_with(eventInfo.event, "_HEAL") then
-        return "heal", eventInfo.overhealing and "overhealing" or "nooverhealing"
-    elseif Verbose.starts_with(eventInfo.event, "SWING_DAMAGE") then
-        return "swing", eventInfo.critical and "critical" or "normal"
-    elseif Verbose.ends_with(eventInfo.event, "_DAMAGE") then
-        return "damage", tostring(eventInfo.school)
-    elseif Verbose.starts_with(eventInfo.event, "SPELL_AURA_") then
-        category = eventInfo.auraType == "BUFF" and "buffs" or "debuffs"
-        return category, eventInfo.event
-    elseif Verbose.starts_with(eventInfo.event, "SPELL_") then
-        subType = eventInfo.failedType or tostring(eventInfo.spellSchool)
-        return "spells", subType
+Verbose.CategoryTreeFunc = {
+    ENVIRONMENTAL_DAMAGE = function(eventInfo)
+        return {
+            { id=eventInfo.castMode, name=Verbose.combatLogCastModes[eventInfo.castMode].name },
+            { id="environmental", name=Verbose.combatLogOptionsCategories["environmental"].name, order=Verbose.combatLogOptionsCategories["environmental"].order },
+            { id=eventInfo.environmentalType, name=eventInfo.environmentalType },
+        }
+    end,
+    SPELL_HEAL = function(eventInfo)
+        return {
+            { id=eventInfo.castMode, name=Verbose.combatLogCastModes[eventInfo.castMode].name },
+            { id="heal", name=Verbose.combatLogOptionsCategories["heal"].name, order=Verbose.combatLogOptionsCategories["heal"].order },
+            { id=eventInfo.spellID, name=spellIDTreeFuncs.name, icon=spellIDTreeFuncs.icon, desc=spellIDTreeFuncs.desc },
+        }
+    end,
+    SWING_DAMAGE = function(eventInfo)
+        return {
+            { id=eventInfo.castMode, name=Verbose.combatLogCastModes[eventInfo.castMode].name },
+            { id="damage", name=Verbose.combatLogOptionsCategories["damage"].name, order=Verbose.combatLogOptionsCategories["damage"].order },
+            { id="swing", name="Swing" },
+            { id=eventInfo.critical and "critical" or "Normal", name=eventInfo.critical and spellTreeCritical or spellTreeNormal },
+        }
+    end,
+    RANGE_DAMAGE = function(eventInfo)
+        return {
+            { id=eventInfo.castMode, name=Verbose.combatLogCastModes[eventInfo.castMode].name },
+            { id="damage", name=Verbose.combatLogOptionsCategories["damage"].name, order=Verbose.combatLogOptionsCategories["damage"].order },
+            { id="swing", name="Swing" },
+            { id=eventInfo.critical and "critical" or "Normal", name=eventInfo.critical and spellTreeCritical or spellTreeNormal },
+        }
+    end,
+    SPELL_DAMAGE = function(eventInfo)
+        return {
+            { id=eventInfo.castMode, name=Verbose.combatLogCastModes[eventInfo.castMode].name },
+            { id="damage", name=Verbose.combatLogOptionsCategories["damage"].name, order=Verbose.combatLogOptionsCategories["damage"].order },
+            { id=tostring(eventInfo.school), name=Verbose.SpellSchoolString[eventInfo.school] },
+            { id=eventInfo.spellID, name=spellIDTreeFuncs.name, icon=spellIDTreeFuncs.icon, desc=spellIDTreeFuncs.desc },
+            { id=eventInfo.critical and "critical" or "Normal", name=eventInfo.critical and spellTreeCritical or spellTreeNormal },
+        }
+    end,
+    SPELL_FAIL = function(eventInfo)
+        return {
+            { id=eventInfo.castMode, name=Verbose.combatLogCastModes[eventInfo.castMode].name },
+            { id="damage", name=Verbose.combatLogOptionsCategories["damage"].name, order=Verbose.combatLogOptionsCategories["damage"].order },
+            { id=tostring(eventInfo.school), name=Verbose.SpellSchoolString[eventInfo.school] },
+            { id=eventInfo.spellID, name=spellIDTreeFuncs.name, icon=spellIDTreeFuncs.icon, desc=spellIDTreeFuncs.desc },
+            { id=eventInfo.failedType, name=eventInfo.failedType },
+        }
+    end,
+    SPELL_AURA_APPLIED = function(eventInfo)
+        return {
+            { id=eventInfo.castMode, name=Verbose.combatLogCastModes[eventInfo.castMode].name },
+            { id=eventInfo.auraType == "BUFF" and "buffs" or "debuffs", name=eventInfo.auraType == "BUFF" and "Buffs" or "Debuffs" },
+            { id=tostring(eventInfo.school), name=Verbose.SpellSchoolString[eventInfo.school] },
+            { id=eventInfo.spellID, name=spellIDTreeFuncs.name, icon=spellIDTreeFuncs.icon, desc=spellIDTreeFuncs.desc },
+            { id=eventInfo.event, name=eventInfo.event },  -- TODO
+        }
+    end,
+    SPELL_AURA_REFRESH = function(eventInfo)
+        return {
+            { id=eventInfo.castMode, name=Verbose.combatLogCastModes[eventInfo.castMode].name },
+            { id=eventInfo.auraType == "BUFF" and "buffs" or "debuffs", name=eventInfo.auraType == "BUFF" and "Buffs" or "Debuffs" },
+            { id=tostring(eventInfo.school), name=Verbose.SpellSchoolString[eventInfo.school] },
+            { id=eventInfo.spellID, name=spellIDTreeFuncs.name, icon=spellIDTreeFuncs.icon, desc=spellIDTreeFuncs.desc },
+            { id=eventInfo.event, name=eventInfo.event },  -- TODO
+        }
+    end,
+    SPELL_AURA_REMOVED = function(eventInfo)
+        return {
+            { id=eventInfo.castMode, name=Verbose.combatLogCastModes[eventInfo.castMode].name },
+            { id=eventInfo.auraType == "BUFF" and "buffs" or "debuffs", name=eventInfo.auraType == "BUFF" and "Buffs" or "Debuffs" },
+            { id=tostring(eventInfo.school), name=Verbose.SpellSchoolString[eventInfo.school] },
+            { id=eventInfo.spellID, name=spellIDTreeFuncs.name, icon=spellIDTreeFuncs.icon, desc=spellIDTreeFuncs.desc },
+            { id=eventInfo.event, name=eventInfo.event },  -- TODO
+        }
+    end,
+}
+
+function Verbose:CombatLogCategoryTree(eventInfo)
+    func = Verbose.CategoryTreeFunc[eventInfo.event]
+    if func then
+        return func(eventInfo)
     else
-        return "other", "nil"
+        return {
+            { id=eventInfo.castMode, name=Verbose.combatLogCastModes[eventInfo.castMode].name, order=Verbose.combatLogCastModes[eventInfo.castMode].order },
+            { id=eventInfo.event, name=eventInfo.event },
+            { id=eventInfo.spellID, name=spellIDTreeFuncs.name, icon=spellIDTreeFuncs.icon, desc=spellIDTreeFuncs.desc },
+        }
     end
 end
 
 function Verbose:spellsRecordCombatLogEvent(eventInfo)
-    local combatLog = self.db.profile.combatLog
+    local dbTable = self.db.profile.combatLog
+    local optionGroupArgs = self.options.args.events.args.combatLog.args
 
-    -- If cast mode not known, register it
-    if not combatLog[eventInfo.castMode] then
-        combatLog[eventInfo.castMode] = {}
+    -- Fill tree if necessary
+    for _, categoryTable in ipairs(Verbose:CombatLogCategoryTree(eventInfo)) do
+        if not dbTable[categoryTable.id] then
+            dbTable[categoryTable.id] = {
+                enabled = false,
+                cooldown = 10,
+                proba = 1,
+                messages = {},
+                children = {},
+            }
+
+            -- Update options
+            self:AddCombatLogEventToOptions(optionGroupArgs, categoryTable)
+        end
+        dbTable[categoryTable.id].lastRecord = eventInfo.timestamp
+
+        -- Prepare next iteration
+        dbTable = dbTable[categoryTable.id].children
+        optionGroupArgs = optionGroupArgs[categoryTable.id].args
     end
-
-    -- If category not known, register it
-    if not combatLog[eventInfo.castMode][eventInfo.category] then
-        combatLog[eventInfo.castMode][eventInfo.category] = {}
-    end
-
-    -- If spell not known, register it
-    if not combatLog[eventInfo.castMode][eventInfo.category][eventInfo.spellID] then
-        combatLog[eventInfo.castMode][eventInfo.category][eventInfo.spellID] = {}
-    end
-    local spellData = combatLog[eventInfo.castMode][eventInfo.category][eventInfo.spellID]
-
-    -- If subType not known, register it
-    if not spellData[eventInfo.subType] then
-        -- Store
-        spellData[eventInfo.subType] = {
-            enabled = false,
-            cooldown = 10,
-            proba = 1,
-            messages = {},
-        }
-
-        -- Update options
-        self:AddCombatLogSpellToOptions(eventInfo.castMode, eventInfo.category, eventInfo.spellID, eventInfo.subType)
-        self:UpdateOptionsGUI()
-    end
-    -- Update timestamp
-    spellData[eventInfo.subType].lastRecord = eventInfo.timestamp
+    self:UpdateOptionsGUI()
 end
 
 function Verbose:OnCombatLogEvent(eventInfo)
+    local db = self.db.profile.combatLog
+    for i, categoryTable in ipairs(self:CombatLogCategoryTree(eventInfo)) do
+        print(i, categoryTable, categoryTable.id, db)
+        db = db.children[categoryTable.id]
+    end
     -- Talk
-    local msgData = self.db.profile.combatLog[eventInfo.castMode][eventInfo.category][eventInfo.spellID][eventInfo.subType]
     self:Speak(
-        msgData,
+        db,
         eventInfo)
 end
