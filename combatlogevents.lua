@@ -30,6 +30,13 @@ Verbose.combatLogOptionsCategories = {
     other = { name="Other", order=80 },
 }
 
+Verbose.categoryData = {
+    castMode = function(id) return Verbose.combatLogCastModes[id] end,
+    combatLogCategory = function(id) return Verbose.combatLogOptionsCategories[id] end,
+    spellID = function(id) return Verbose.spellIDTreeFuncs end,
+    school = function(id) return { name=Verbose.SpellSchoolString[tonumber(id)] } end,
+    event = function(id) return { name=id } end,
+}
 
 -- https://github.com/ketho-wow/KethoCombatLog/blob/master/KethoCombatLog.lua for the table
 -- https://www.townlong-yak.com/framexml/8.1.5/GlobalStrings.lua#12934 for the strings
@@ -175,18 +182,36 @@ function Verbose:CombatLogCastMode(eventInfo)
     end
 end
 
-local spellIDTreeFuncs = {
-    name = function(info) return Verbose:SpellName(info[#info]) end,
-    icon = function(info) return Verbose:SpellIconID(info[#info]) end,
+Verbose.spellIDTreeFuncs = {
+    -- Skip "spellID#" to get the ID
+    name = function(info) return Verbose:SpellName(info[#info]:sub(9)) end,
+    icon = function(info) return Verbose:SpellIconID(info[#info]:sub(9)) end,
     desc = function(info)
+        local spellID = info[#info]:sub(9)
         return (
-            Verbose:SpellIconTexture(info[#info])
-            .. "\n".. Verbose:SpellDescription(info[#info])
-            .. "\n\nSpell ID: " .. info[#info]
+            Verbose:SpellIconTexture(spellID)
+            .. "\n".. Verbose:SpellDescription(spellID)
+            .. "\n\nSpell ID: " .. spellID
         )
     end,
 }
-local spellTreeCriticalName = { [true]="Critical", [false]="Normal" }
+
+function Verbose:CategoryIDTree(eventInfo)
+    local categories = { "castMode#"..eventInfo.castMode }
+    if eventInfo.event == "SPELL_HEAL" then
+        tinsert(categories, "combatLogCategory#heal")
+        tinsert(categories, "spellID#"..eventInfo.spellID)
+    elseif eventInfo.event == "SPELL_DAMAGE" then
+        tinsert(categories, "combatLogCategory#damage")
+        tinsert(categories, "school#"..eventInfo.school)
+        tinsert(categories, "spellID#"..eventInfo.spellID)
+    else
+        tinsert(categories, "event#"..eventInfo.event)
+        tinsert(categories, "spellID#"..eventInfo.spellID)
+    end
+    return categories
+end
+
 
 Verbose.CategoryTreeFunc = {
     ENVIRONMENTAL_DAMAGE = function(eventInfo)
@@ -266,45 +291,38 @@ Verbose.CategoryTreeFunc = {
     end,
 }
 
-function Verbose:CombatLogCategoryTree(eventInfo)
-    func = Verbose.CategoryTreeFunc[eventInfo.event]
-    if func then
-        return func(eventInfo)
-    else
-        return {
-            { id=eventInfo.castMode, name=Verbose.combatLogCastModes[eventInfo.castMode].name, order=Verbose.combatLogCastModes[eventInfo.castMode].order },
-            { id=eventInfo.event, name=eventInfo.event },
-            { id=eventInfo.spellID, name=spellIDTreeFuncs.name, icon=spellIDTreeFuncs.icon, desc=spellIDTreeFuncs.desc },
-        }
-    end
-end
-
 function Verbose:spellsRecordCombatLogEvent(eventInfo)
     local dbTable = self.db.profile.combatLog
     local optionGroupArgs = self.options.args.events.args.combatLog.args
 
     -- Fill tree if necessary
-    for _, categoryTable in ipairs(Verbose:CombatLogCategoryTree(eventInfo)) do
-        if not dbTable[categoryTable.id] then
-            dbTable[categoryTable.id] = {
+    for _, category in ipairs(Verbose:CategoryIDTree(eventInfo)) do
+        if not dbTable[category] then
+            dbTable[category] = {
                 enabled = false,
                 cooldown = 10,
                 proba = 1,
                 messages = {},
                 children = {},
-                categoryTable = categoryTable,
+                count = 0,
             }
 
             -- Update options
-            self:AddCombatLogEventToOptions(optionGroupArgs, categoryTable)
+            self:AddCombatLogEventToOptions(optionGroupArgs, category)
         end
-        dbTable[categoryTable.id].lastRecord = eventInfo.timestamp
+        dbTable[category].lastRecord = eventInfo.timestamp
+        dbTable[category].count = dbTable[category].count + 1
 
         -- Prepare next iteration
-        dbTable = dbTable[categoryTable.id].children
-        optionGroupArgs = optionGroupArgs[categoryTable.id].args
+        dbTable = dbTable[category].children
+        optionGroupArgs = optionGroupArgs[category].args
     end
     self:UpdateOptionsGUI()
+end
+
+function Verbose.CategoryTypeValue(category)
+    local typ, id = string.match(category, "^(.+)#(.+)$")
+    return typ, id
 end
 
 function Verbose:OnCombatLogEvent(eventInfo)

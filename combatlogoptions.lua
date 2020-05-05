@@ -1,51 +1,21 @@
 local addonName, Verbose = ...
 
-
-function Verbose:PopulatecombatLogCategoriesOptions(parent, id, data)
-    parent[id] = {
-        type = "group",
-        name = data.title,
-        order = data.order,
-        icon = data.icon,
-        iconCoords = Verbose.iconCropBorders,
-        hidden = true,
-        childGroups = "tree",
-        args = {
-            title = {
-                type = "description",
-                name = data.title,
-                fontSize = "large",
-                order = 0,
-            },
-            info = {
-                type = "description",
-                name = "Documentation here.",
-                fontSize = "medium",
-                order = 1,
-            },
-        },
-    }
-    return parent[id]
-end
-
-
-function Verbose:AddCombatLogEventToOptions(optionGroupArgs, categoryTable)
-    -- Insert subtype options for this spell
-    if not optionGroupArgs[categoryTable.id] then
-        optionGroupArgs[categoryTable.id] = {
+function Verbose:AddCombatLogEventToOptions(optionGroupArgs, category)
+    if not optionGroupArgs[category] then
+        optionGroupArgs[category] = {
             type = "group",
-            name = categoryTable.name,
-            icon = categoryTable.icon,
-            desc = categoryTable.desc,
-            order = categoryTable.order,
+            name = self.CombatLogOptionToName,
+            icon = self.CombatLogOptionToIcon,
+            desc = self.CombatLogOptionToDesc,
+            order = self.CombatLogOptionToOrder,
             args = {
                 enable = {
                     type = "toggle",
                     name = "Enable",
                     order = 10,
                     width = "full",
-                    get = function(info) return self:CombatLogSpellEventData(info).enabled end,
-                    set = function(info, value) self:CombatLogSpellEventData(info).enabled = value end,
+                    get = "GetCombatLogEnabled",
+                    set = "SetCombatLogEnabled",
                 },
                 proba = {
                     type = "range",
@@ -55,8 +25,8 @@ function Verbose:AddCombatLogEventToOptions(optionGroupArgs, categoryTable)
                     min = 0,
                     max = 1,
                     bigStep = 0.05,
-                    get = function(info) return self:CombatLogSpellEventData(info).proba end,
-                    set = function(info, value) self:CombatLogSpellEventData(info).proba = value end,
+                    get = "GetCombatLogProba",
+                    set = "SetCombatLogProba",
                 },
                 cooldown = {
                     type = "range",
@@ -66,8 +36,8 @@ function Verbose:AddCombatLogEventToOptions(optionGroupArgs, categoryTable)
                     max = 3600,
                     softMax = 60,
                     bigStep = 1,
-                    get = function(info) return self:CombatLogSpellEventData(info).cooldown end,
-                    set = function(info, value) self:CombatLogSpellEventData(info).cooldown = value end,
+                    get = "GetCombatLogCooldown",
+                    set = "GetCombatLogCooldown",
                 },
                 messages = {
                     type = "input",
@@ -75,14 +45,67 @@ function Verbose:AddCombatLogEventToOptions(optionGroupArgs, categoryTable)
                     order = 40,
                     multiline = 17,
                     width = "full",
-                    get = function(info)
-                        return Verbose:TableToText(self:CombatLogSpellEventData(info).messages)
-                    end,
-                    set = function(info, value) self:TextToTable(value, self:CombatLogSpellEventData(info).messages) end,
+                    get = "GetCombatLogmessages",
+                    set = "SetCombatLogmessages",
                 },
             },
         }
     end
+end
+
+-- Callbacks
+function Verbose.CombatLogOptionToName(info)
+    return Verbose.InfoToCategoryData(info, "name")
+end
+function Verbose.CombatLogOptionToIcon(info)
+    return Verbose.InfoToCategoryData(info, "icon")
+end
+function Verbose.CombatLogOptionToDesc(info)
+    return Verbose.InfoToCategoryData(info, "desc")
+end
+function Verbose.CombatLogOptionToOrder(info)
+    return Verbose.InfoToCategoryData(info, "order")
+end
+
+function Verbose.InfoToCategoryData(info, field)
+    local typ, id = Verbose.CategoryTypeValue(info[#info])
+    local value = Verbose.categoryData[typ](id)[field]
+    if type(value) == "function" then
+        value = value(info)
+    end
+    return value
+end
+
+function Verbose:GetCombatLogEnabled(info)
+    return self:CombatLogSpellEventData(info).enabled
+end
+
+function Verbose:GetCombatLogProba(info)
+    return self:CombatLogSpellEventData(info).proba
+end
+
+function Verbose:GetCombatLogCooldown(info)
+    return self:CombatLogSpellEventData(info).cooldown
+end
+
+function Verbose:GetCombatLogmessages(info)
+    return self:TableToText(self:CombatLogSpellEventData(info).messages)
+end
+
+function Verbose:SetCombatLogEnabled(info, value)
+    self:CombatLogSpellEventData(info).enabled = value
+end
+
+function Verbose:SetCombatLogProba(info, value)
+    self:CombatLogSpellEventData(info).proba = value
+end
+
+function Verbose:SetCombatLogCooldown(info, value)
+    self:CombatLogSpellEventData(info).cooldown = value
+end
+
+function Verbose:SetCombatLogmessages(info, value)
+    self:TextToTable(value, self:CombatLogSpellEventData(info).messages)
 end
 
 -- Return spell and event data for callbacks from info arg
@@ -102,10 +125,10 @@ function Verbose:CombatLogSpellDBToOptions()
 end
 
 function Verbose:CombatLogSpellDBToOptionsRecursive(optionGroupArgs, dbTable)
-    for id, dbTableData in pairs(dbTable) do
+    for category, dbTableData in pairs(dbTable) do
         self:AddCombatLogEventToOptions(
-            optionGroupArgs, dbTableData.categoryTable)
+            optionGroupArgs, category)
         self:CombatLogSpellDBToOptionsRecursive(
-            optionGroupArgs[id].args, dbTableData.children)
+            optionGroupArgs[category].args, dbTableData.children)
     end
 end
