@@ -65,6 +65,8 @@ function Verbose:SetCombatLogArgs(eventInfo, rawEventInfo)
     elseif Verbose.starts_with(eventInfo.event, "ENVIRONMENTAL_") then
         eventInfo.environmentalType = unpack(rawEventInfo, suffixIndex)
         suffixIndex = 13
+    elseif Verbose.starts_with(eventInfo.event, "SWING_") then
+        eventInfo.spellID = "6603"  -- Autoattack spell
     end
 
     -- Suffixes
