@@ -37,10 +37,7 @@ function Verbose:CombatLog(event)
 
     -- The rest of the paramters depends on the subevent and will be managed in subfunctions
     self:SetCombatLogArgs(eventInfo, rawEventInfo)
-    eventInfo.category = self:CombatLogCategory(eventInfo)
-
-    -- Ignore events from others ?
-    -- if eventInfo.spellId and not Verbose:NameIsPlayer(eventInfo.sourceName) then return end
+    eventInfo.category, eventInfo.subType = self:CombatLogCategoryAndSubtype(eventInfo)
 
     -- Debug
     self:EventDbgPrint(event)
@@ -120,51 +117,51 @@ function Verbose:CombatLogCastMode(eventInfo)
     end
 end
 
-function Verbose:CombatLogCategory(eventInfo)
+
+function Verbose:CombatLogCategoryAndSubtype(eventInfo)
+    local category, subType
     if Verbose.starts_with(eventInfo.event, "ENVIRONMENTAL_") then
-        return "environmental"
+        return "environmental", tostring(eventInfo.environmentalType)
     elseif Verbose.ends_with(eventInfo.event, "_HEAL") then
-        return "heal"
+        return "heal", eventInfo.overhealing and "overhealing" or "nooverhealing"
+    elseif Verbose.starts_with(eventInfo.event, "SWING_DAMAGE") then
+        return "swing", eventInfo.critical and "critical" or "normal"
     elseif Verbose.ends_with(eventInfo.event, "_DAMAGE") then
-        return "damage"
-    elseif Verbose.starts_with(eventInfo.event, "SWING_") then
-        return "swing"
+        return "damage", tostring(eventInfo.school)
     elseif Verbose.starts_with(eventInfo.event, "SPELL_AURA_") then
-        if eventInfo.auraType == "BUFF" then
-            return "buffs"
-        else
-            return "debuffs"
-        end
+        category = eventInfo.auraType == "BUFF" and "buffs" or "debuffs"
+        return category, eventInfo.event
     elseif Verbose.starts_with(eventInfo.event, "SPELL_") then
-        return "spells"
+        subType = eventInfo.failedType or tostring(eventInfo.spellSchool)
+        return "spells", subType
     else
-        return "other"
+        return "other", "nil"
     end
 end
 
 function Verbose:spellsRecordCombatLogEvent(eventInfo)
     local combatLog = self.db.profile.combatLog
 
-    -- If cast mode not known at all, register it
+    -- If cast mode not known, register it
     if not combatLog[eventInfo.castMode] then
         combatLog[eventInfo.castMode] = {}
     end
 
-    -- If category not known at all, register it
+    -- If category not known, register it
     if not combatLog[eventInfo.castMode][eventInfo.category] then
         combatLog[eventInfo.castMode][eventInfo.category] = {}
     end
 
-    -- If spell not known at all, register it
+    -- If spell not known, register it
     if not combatLog[eventInfo.castMode][eventInfo.category][eventInfo.spellID] then
         combatLog[eventInfo.castMode][eventInfo.category][eventInfo.spellID] = {}
     end
     local spellData = combatLog[eventInfo.castMode][eventInfo.category][eventInfo.spellID]
 
-    -- If event not known for this spell, register it
-    if not spellData[eventInfo.event] then
+    -- If subType not known, register it
+    if not spellData[eventInfo.subType] then
         -- Store
-        spellData[eventInfo.event] = {
+        spellData[eventInfo.subType] = {
             enabled = false,
             cooldown = 10,
             proba = 1,
@@ -172,18 +169,17 @@ function Verbose:spellsRecordCombatLogEvent(eventInfo)
         }
 
         -- Update options
-        self:AddCombatLogSpellToOptions(eventInfo.castMode, eventInfo.category, eventInfo.spellID, eventInfo.event)
+        self:AddCombatLogSpellToOptions(eventInfo.castMode, eventInfo.category, eventInfo.spellID, eventInfo.subType)
         self:UpdateOptionsGUI()
     end
     -- Update timestamp
-    spellData[eventInfo.event].lastRecord = eventInfo.timestamp
+    spellData[eventInfo.subType].lastRecord = eventInfo.timestamp
 end
 
 function Verbose:OnCombatLogEvent(eventInfo)
     -- Talk
-    local msgData = self.db.profile.combatLog[eventInfo.castMode][eventInfo.category][eventInfo.spellID][eventInfo.event]
+    local msgData = self.db.profile.combatLog[eventInfo.castMode][eventInfo.category][eventInfo.spellID][eventInfo.subType]
     self:Speak(
-        event,
         msgData,
         eventInfo)
 end

@@ -66,7 +66,7 @@ function Verbose:GetRandomMessageWithSubstitution(messages, substitutions)
     return message
 end
 
-function Verbose:Speak(event, msgData, substitutions)
+function Verbose:Speak(msgData, substitutions)
     -- Check arg
     if not msgData then
         self:SpeakDbgPrint("No message data")

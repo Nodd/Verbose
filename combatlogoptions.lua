@@ -53,7 +53,7 @@ for sourceTargetID, sourceTargetData in pairs(Verbose.combatLogOptionsSourceTarg
     end
 end
 
-function Verbose:AddCombatLogSpellToOptions(castMode, category, spellID, event)
+function Verbose:AddCombatLogSpellToOptions(castMode, category, spellID, subtype)
     local spellOptions = self.options.args.events.args.combatLog.args[castMode].args[category].args[spellID]
     self.options.args.events.args.combatLog.args[castMode].hidden = false
     self.options.args.events.args.combatLog.args[castMode].args[category].hidden = false
@@ -78,12 +78,12 @@ function Verbose:AddCombatLogSpellToOptions(castMode, category, spellID, event)
         self.options.args.events.args.combatLog.args[castMode].args[category].args[spellID] = spellOptions
     end
 
-    -- Insert event options for this spell
-    if not spellOptions.args[event] then
-        spellOptions.args[event] = {
+    -- Insert subtype options for this spell
+    if not spellOptions.args[subtype] then
+        spellOptions.args[subtype] = {
             type = "group",
-            name = event, --self.usedSpellEvents[event].title,
-            order = 100,  --self.usedSpellEvents[event].order,
+            name = subtype, --self.usedSpellEvents[subtype].title,
+            order = 100,  --self.usedSpellEvents[subtype].order,
             args = {
                 enable = {
                     type = "toggle",
@@ -136,8 +136,8 @@ function Verbose:CombatLogSpellEventData(info)
     local castMode = info[#info - 4]
     local category = info[#info - 3]
     local spellID = info[#info - 2]
-    local event = info[#info - 1]
-    return self.db.profile.combatLog[castMode][category][spellID][event]
+    local subType = info[#info - 1]
+    return self.db.profile.combatLog[castMode][category][spellID][subType]
 end
 
 -- Load saved events to options table
@@ -145,8 +145,8 @@ function Verbose:CombatLogSpellDBToOptions()
     for castMode, castModeData in pairs(self.db.profile.combatLog) do
         for category, categoryData in pairs(self.db.profile.combatLog[castMode]) do
             for spellID, spellData in pairs(self.db.profile.combatLog[castMode][category]) do
-                for event, eventData in pairs(spellData) do
-                    self:AddCombatLogSpellToOptions(castMode, category, spellID, event)
+                for subType in pairs(spellData) do
+                    self:AddCombatLogSpellToOptions(castMode, category, spellID, subType)
                 end
             end
         end
