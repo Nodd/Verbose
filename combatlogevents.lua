@@ -49,10 +49,8 @@ function Verbose:CombatLog(event)
     end
 
     -- Respond to event
-    if eventInfo.spellID then
-        self:RecordCombatLogSpellEvent(eventInfo)
-        self:OnCombatLogSpellEvent(eventInfo)
-    end
+    self:spellsRecordCombatLogEvent(eventInfo)
+    self:OnCombatLogEvent(eventInfo)
 end
 
 function Verbose:SetCombatLogArgs(eventInfo, rawEventInfo)
@@ -64,9 +62,12 @@ function Verbose:SetCombatLogArgs(eventInfo, rawEventInfo)
         suffixIndex = 15
     elseif Verbose.starts_with(eventInfo.event, "ENVIRONMENTAL_") then
         eventInfo.environmentalType = unpack(rawEventInfo, suffixIndex)
+        eventInfo.spellID = "-1"  -- Fake spell ID
         suffixIndex = 13
     elseif Verbose.starts_with(eventInfo.event, "SWING_") then
         eventInfo.spellID = "6603"  -- Autoattack spell
+    else
+        eventInfo.spellID = "-2"  -- Fake spell ID
     end
 
     -- Suffixes
@@ -141,10 +142,7 @@ function Verbose:CombatLogCategory(eventInfo)
     end
 end
 
-function Verbose:RecordCombatLogSpellEvent(eventInfo)
-    -- Ignore events from others ?
-    if not Verbose:NameIsPlayer(eventInfo.sourceName) then return end
-
+function Verbose:spellsRecordCombatLogEvent(eventInfo)
     local combatLog = self.db.profile.combatLog
 
     -- If cast mode not known at all, register it
@@ -181,7 +179,7 @@ function Verbose:RecordCombatLogSpellEvent(eventInfo)
     spellData[eventInfo.event].lastRecord = eventInfo.timestamp
 end
 
-function Verbose:OnCombatLogSpellEvent(eventInfo)
+function Verbose:OnCombatLogEvent(eventInfo)
     -- Talk
     local msgData = self.db.profile.combatLog[eventInfo.castMode][eventInfo.category][eventInfo.spellID][eventInfo.event]
     self:Speak(
