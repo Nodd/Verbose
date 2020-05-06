@@ -5,6 +5,11 @@ function Verbose:EventDbgPrint(...)
         self:Print("EVENT:", ...)
     end
 end
+function Verbose:EventDetailsDbgPrint(...)
+    if self.db.profile.eventDetailDebug then
+        self:Print("   EVENT:", ...)
+    end
+end
 
 Verbose.usedEvents = {
     -- EVENT = {

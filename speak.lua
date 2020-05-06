@@ -2,7 +2,7 @@ local addonName, Verbose = ...
 
 
 function Verbose:SpeakDbgPrint(...)
-    if self.db.profile.eventDebug then
+    if self.db.profile.speakDebug then
         self:Print("SPEAK:", ...)
     end
 end

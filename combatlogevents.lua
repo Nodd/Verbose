@@ -107,7 +107,7 @@ function Verbose:CombatLog(event)
     -- Debug
     self:EventDbgPrint(event)
     for k, v in pairs(eventInfo) do
-        self:EventDbgPrint("  ", k, "=", v)
+        self:EventDetailsDbgPrint("  ", k, "=", v)
     end
 
     -- Respond to event
