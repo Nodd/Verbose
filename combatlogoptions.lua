@@ -119,8 +119,8 @@ end
 
 -- Return spell and event data for callbacks from info arg
 function Verbose:CombatLogSpellEventData(info)
-    local dbTable = self.db.profile.combatLog[info[3]]
-    for i = 4, (#info - 1) do
+    local dbTable = self.db.profile.combatLog
+    for i = 3, (#info - 1) do
         dbTable = dbTable.children[info[i]]
     end
     return dbTable
@@ -128,7 +128,7 @@ end
 
 -- Load saved events to options table
 function Verbose:CombatLogSpellDBToOptions()
-    local dbTable = self.db.profile.combatLog
+    local dbTable = self.db.profile.combatLog.children
     local optionGroupArgs = self.options.args.events.args.combatLog.args
     self:CombatLogSpellDBToOptionsRecursive(optionGroupArgs, dbTable)
 end

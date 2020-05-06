@@ -118,7 +118,7 @@ function Verbose:CombatLog(event)
 
     -- Respond to event
     self:spellsRecordCombatLogEvent(eventInfo)
-    --self:OnCombatLogEvent(eventInfo)
+    self:OnCombatLogEvent(eventInfo)
 end
 
 function Verbose:SetCombatLogArgs(eventInfo, rawEventInfo)
@@ -331,11 +331,11 @@ Verbose.CategoryTreeFunc = {
 }
 
 function Verbose:spellsRecordCombatLogEvent(eventInfo)
-    local dbTable = self.db.profile.combatLog
+    local dbTable = self.db.profile.combatLog.children
     local optionGroupArgs = self.options.args.events.args.combatLog.args
 
     -- Fill tree if necessary
-    for _, category in ipairs(Verbose:CategoryIDTree(eventInfo)) do
+    for _, category in ipairs(self:CategoryIDTree(eventInfo)) do
         if not dbTable[category] then
             dbTable[category] = {
                 enabled = false,
@@ -365,13 +365,12 @@ function Verbose.CategoryTypeValue(category)
 end
 
 function Verbose:OnCombatLogEvent(eventInfo)
-    local db = self.db.profile.combatLog
-    for i, categoryTable in ipairs(self:CombatLogCategoryTree(eventInfo)) do
-        print(i, categoryTable, categoryTable.id, db)
-        db = db.children[categoryTable.id]
+    local dbTable = self.db.profile.combatLog
+    for i, categoryTable in ipairs(self:CategoryIDTree(eventInfo)) do
+        dbTable = dbTable.children[categoryTable]
     end
     -- Talk
     self:Speak(
-        db,
+        dbTable,
         eventInfo)
 end
