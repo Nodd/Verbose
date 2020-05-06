@@ -201,7 +201,7 @@ Verbose.spellIDTreeFuncs = {
     end,
 }
 
-function Verbose:CategoryIDTree(eventInfo)
+function Verbose:CategoryTree(eventInfo)
     local categories = { "castMode#"..eventInfo.castMode }
     if eventInfo.event == "SPELL_HEAL" then
         tinsert(categories, "combatLogCategory#heal")
@@ -255,7 +255,7 @@ function Verbose:spellsRecordCombatLogEvent(eventInfo)
     local optionGroupArgs = self.options.args.events.args.combatLog.args
 
     -- Fill tree if necessary
-    for _, category in ipairs(self:CategoryIDTree(eventInfo)) do
+    for _, category in ipairs(self:CategoryTree(eventInfo)) do
         if not dbTable[category] then
             dbTable[category] = {
                 enabled = false,
@@ -284,12 +284,37 @@ function Verbose.CategoryTypeValue(category)
     local typ, id = string.match(category, "^(.+)#(.+)$") -- use strsplit ?
     return typ, id
 end
+function Verbose:CategoryName(category)
+    local value
+    local typ, id = self.CategoryTypeValue(category)
+    if not id then
+        value = category
+    else
+        value = self.categoryData[typ](id).name
+        if type(value) == "function" then
+            value = Verbose:SpellName(id)
+        end
+    end
+    return value
+end
 
 function Verbose:OnCombatLogEvent(eventInfo)
     local dbTable = self.db.profile.combatLog
+    local enabled = true
+    local categoryPath = "Combat log"
     local messagesTable = {}
-    for i, categoryTable in ipairs(self:CategoryIDTree(eventInfo)) do
-        dbTable = dbTable.children[categoryTable]
+    for i, category in ipairs(self:CategoryTree(eventInfo)) do
+        dbTable = dbTable.children[category]
+
+        -- Check that the category is enabled
+        categoryPath = categoryPath.."/"..self:CategoryName(category)
+        enabled = enabled and dbTable.enabled
+        if not enabled then
+            self:SpeakDbgPrint("Disabled combat log category:", categoryPath)
+            return
+        end
+
+        -- Merge or wipe parent's messages
         if not dbTable.merge then
             wipe(messagesTable)
         end
@@ -297,6 +322,7 @@ function Verbose:OnCombatLogEvent(eventInfo)
             tinsert(messagesTable, m)
         end
     end
+
     -- Talk
     self:Speak(
         dbTable,
