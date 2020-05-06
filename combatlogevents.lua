@@ -190,10 +190,9 @@ end
 
 Verbose.spellIDTreeFuncs = {
     -- Skip "spellID#" to get the ID
-    name = function(info) return Verbose:SpellName(info[#info]:sub(9)) end,
-    icon = function(info) return Verbose:SpellIconID(info[#info]:sub(9)) end,
-    desc = function(info)
-        local spellID = info[#info]:sub(9)
+    name = function(spellID) return Verbose:SpellName(spellID) end,
+    icon = function(spellID) return Verbose:SpellIconID(spellID) end,
+    desc = function(spellID)
         return (
             Verbose:SpellIconTexture(spellID)
             .. "\n".. Verbose:SpellDescription(spellID)

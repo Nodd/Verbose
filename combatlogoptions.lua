@@ -85,7 +85,7 @@ function Verbose.InfoToCategoryData(info, field)
     else
         value = Verbose.categoryData[typ](id)[field]
         if type(value) == "function" then
-            value = value(info)
+            value = value(id)
         end
     end
     return value
