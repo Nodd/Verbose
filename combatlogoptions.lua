@@ -13,9 +13,15 @@ function Verbose:AddCombatLogEventToOptions(optionGroupArgs, category)
                     type = "toggle",
                     name = "Enable",
                     order = 10,
-                    width = "full",
                     get = "GetCombatLogEnabled",
                     set = "SetCombatLogEnabled",
+                },
+                merge = {
+                    type = "toggle",
+                    name = "Merge parent's messages",
+                    order = 15,
+                    get = "GetCombatLogMerge",
+                    set = "SetCombatLogMerge",
                 },
                 proba = {
                     type = "range",
@@ -70,7 +76,7 @@ end
 function Verbose.InfoToCategoryData(info, field)
     local value
     local typ, id = Verbose.CategoryTypeValue(info[#info])
-    if not typ or not id then
+    if not id then
         if field == "name" then
             value = info[#info]
         else
@@ -89,6 +95,10 @@ function Verbose:GetCombatLogEnabled(info)
     return self:CombatLogSpellEventData(info).enabled
 end
 
+function Verbose:GetCombatLogMerge(info)
+    return self:CombatLogSpellEventData(info).merge
+end
+
 function Verbose:GetCombatLogProba(info)
     return self:CombatLogSpellEventData(info).proba
 end
@@ -103,6 +113,10 @@ end
 
 function Verbose:SetCombatLogEnabled(info, value)
     self:CombatLogSpellEventData(info).enabled = value
+end
+
+function Verbose:SetCombatLogMerge(info, value)
+    self:CombatLogSpellEventData(info).merge = value
 end
 
 function Verbose:SetCombatLogProba(info, value)

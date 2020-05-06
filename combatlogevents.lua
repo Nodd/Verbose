@@ -260,6 +260,7 @@ function Verbose:spellsRecordCombatLogEvent(eventInfo)
         if not dbTable[category] then
             dbTable[category] = {
                 enabled = false,
+                merge = false,
                 cooldown = 10,
                 proba = 1,
                 messages = {},
@@ -281,17 +282,25 @@ function Verbose:spellsRecordCombatLogEvent(eventInfo)
 end
 
 function Verbose.CategoryTypeValue(category)
-    local typ, id = string.match(category, "^(.+)#(.+)$")
+    local typ, id = string.match(category, "^(.+)#(.+)$") -- use strsplit ?
     return typ, id
 end
 
 function Verbose:OnCombatLogEvent(eventInfo)
     local dbTable = self.db.profile.combatLog
+    local messagesTable = {}
     for i, categoryTable in ipairs(self:CategoryIDTree(eventInfo)) do
         dbTable = dbTable.children[categoryTable]
+        if not dbTable.merge then
+            wipe(messagesTable)
+        end
+        for _, m in ipairs(dbTable.messages) do
+            tinsert(messagesTable, m)
+        end
     end
     -- Talk
     self:Speak(
         dbTable,
-        eventInfo)
+        eventInfo,
+        messagesTable)
 end

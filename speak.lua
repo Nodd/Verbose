@@ -34,6 +34,7 @@ function Verbose:TokenSubstitution(message, substitutions)
     if not substitutions then return message end
     -- Replace from list randomly
     for token, value in pairs(substitutions) do
+        local tokenStr = "<" .. token .. ">"
         message = message:gsub(tokenStr, tostring(value))
     end
     return message
@@ -65,7 +66,7 @@ function Verbose:GetRandomMessageWithSubstitution(messages, substitutions)
     return message
 end
 
-function Verbose:Speak(msgData, substitutions)
+function Verbose:Speak(msgData, substitutions, messagesTable)
     -- Check arg
     if not msgData then
         self:SpeakDbgPrint("No message data")
@@ -107,7 +108,10 @@ function Verbose:Speak(msgData, substitutions)
     end
 
     -- Get a random message !
-    local message = self:GetRandomMessageWithSubstitution(msgData.messages, substitutions)
+    if not messagesTable then
+        messagesTable = msgData.messages
+    end
+    local message = self:GetRandomMessageWithSubstitution(messagesTable, substitutions)
     if not message then
         self:SpeakDbgPrint("No valid message in table for substitutions")
         return
