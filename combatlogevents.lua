@@ -13,10 +13,12 @@ Verbose.usedCombatLogEvents = {
 }
 
 Verbose.combatLogCastModes = {
-    self = { name="Self", order=10 },
-    done = { name="Done", order=20 },
-    received = { name="Received", order=30 },
-    noTarget = { name="No target", order=40 },
+    start = { name="Start casting", order=5 },
+    self = { name="Me@Me", order=10 },
+    done = { name="Me@Target", order=20 },
+    received = { name="Other@Me", order=30 },
+    noTarget = { name="Me@None", order=40 },
+    failed = { name="Failed", order=50 },
 }
 
 Verbose.combatLogOptionsCategories = {
@@ -26,8 +28,8 @@ Verbose.combatLogOptionsCategories = {
     heal = { name="Heal", order=40 },
     buffs = { name="Buffs", order=50 },
     debuffs = { name="Debuffs", order=60 },
-    environmental = { name="Environmental", order=70 },
     other = { name="Other", order=80 },
+    environmental = { name="Environmental", order=999 }
 }
 
 Verbose.auraEvent = {
@@ -134,6 +136,9 @@ function Verbose:SetCombatLogArgs(eventInfo, rawEventInfo)
         suffixIndex = 13
     elseif Verbose.starts_with(eventInfo.event, "SWING_") then
         eventInfo.spellID = "6603"  -- Autoattack spell
+    elseif Verbose.starts_with(eventInfo.event, "UNIT_") then
+        eventInfo.recapID, eventInfo.unconsciousOnDeath = unpack(rawEventInfo, suffixIndex)
+        suffixIndex = 14
     else
         eventInfo.spellID = "-2"  -- Fake spell ID
     end
@@ -202,30 +207,47 @@ Verbose.spellIDTreeFuncs = {
 }
 
 function Verbose:CategoryTree(eventInfo)
-    local categories = { "castMode#"..eventInfo.castMode }
+    local categories = {}
     if eventInfo.event == "SPELL_HEAL" then
+        tinsert(categories, "castMode#"..eventInfo.castMode)
         tinsert(categories, "combatLogCategory#heal")
         tinsert(categories, "spellID#"..eventInfo.spellID)
+
     elseif eventInfo.event == "SPELL_DAMAGE" then
+        tinsert(categories, "castMode#"..eventInfo.castMode)
         tinsert(categories, "combatLogCategory#damage")
         tinsert(categories, "school#"..eventInfo.school)
         tinsert(categories, "spellID#"..eventInfo.spellID)
+
     elseif eventInfo.event == "ENVIRONMENTAL_DAMAGE" then
+        tinsert(categories, "castMode#"..eventInfo.castMode)
         tinsert(categories, "combatLogCategory#damage")
-        tinsert(categories, Verbose.combatLogOptionsEnvironmental)
+        tinsert(categories, "combatLogCategory#environmental")
         tinsert(categories, eventInfo.environmentalType)
+
     elseif eventInfo.event == "SWING_DAMAGE" then
+        tinsert(categories, "castMode#"..eventInfo.castMode)
         tinsert(categories, "combatLogCategory#damage")
         tinsert(categories, "Swing")
+
     elseif eventInfo.event == "RANGE_DAMAGE" then
+        tinsert(categories, "castMode#"..eventInfo.castMode)
         tinsert(categories, "combatLogCategory#damage")
         tinsert(categories, "Range")
-    elseif eventInfo.event == "SPELL_FAIL" then
-        tinsert(categories, "combatLogCategory#damage")
+
+    elseif eventInfo.event == "SPELL_CAST_START" then
+        tinsert(categories, "castMode#start")
         tinsert(categories, "school#"..eventInfo.school)
         tinsert(categories, "spellID#"..eventInfo.spellID)
+
+    elseif eventInfo.event == "SPELL_CAST_FAILED" then
+        tinsert(categories, "castMode#failed")
         tinsert(categories, eventInfo.failedType)
+        tinsert(categories, "school#"..eventInfo.school)
+        tinsert(categories, "spellID#"..eventInfo.spellID)
+
     elseif eventInfo.event == "SPELL_AURA_APPLIED" or eventInfo.event == "SPELL_AURA_REFRESH" then
+        tinsert(categories, "castMode#"..eventInfo.castMode)
         if eventInfo.auraType == "BUFF" then
             tinsert(categories, "combatLogCategory#buffs")
         else
@@ -234,7 +256,9 @@ function Verbose:CategoryTree(eventInfo)
         tinsert(categories, "school#"..eventInfo.school)
         tinsert(categories, "spellID#"..eventInfo.spellID)
         tinsert(categories, "auraEvent#APPLIED")
+
     elseif eventInfo.event == "SPELL_AURA_REMOVED" then
+        tinsert(categories, "castMode#"..eventInfo.castMode)
         if eventInfo.auraType == "BUFF" then
             tinsert(categories, "combatLogCategory#buffs")
         else
@@ -243,9 +267,10 @@ function Verbose:CategoryTree(eventInfo)
         tinsert(categories, "school#"..eventInfo.school)
         tinsert(categories, "spellID#"..eventInfo.spellID)
         tinsert(categories, "auraEvent#REMOVED")
+
     else
+        tinsert(categories, "castMode#"..eventInfo.castMode)
         tinsert(categories, "event#"..eventInfo.event)
-        tinsert(categories, "spellID#"..eventInfo.spellID)
     end
     return categories
 end
