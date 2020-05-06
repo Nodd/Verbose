@@ -37,7 +37,7 @@ function Verbose:AddCombatLogEventToOptions(optionGroupArgs, category)
                     softMax = 60,
                     bigStep = 1,
                     get = "GetCombatLogCooldown",
-                    set = "GetCombatLogCooldown",
+                    set = "SetCombatLogCooldown",
                 },
                 messages = {
                     type = "input",
@@ -45,8 +45,8 @@ function Verbose:AddCombatLogEventToOptions(optionGroupArgs, category)
                     order = 40,
                     multiline = 17,
                     width = "full",
-                    get = "GetCombatLogmessages",
-                    set = "SetCombatLogmessages",
+                    get = "GetCombatLogMessages",
+                    set = "SetCombatLogMessages",
                 },
             },
         }
@@ -88,7 +88,7 @@ function Verbose:GetCombatLogCooldown(info)
     return self:CombatLogSpellEventData(info).cooldown
 end
 
-function Verbose:GetCombatLogmessages(info)
+function Verbose:GetCombatLogMessages(info)
     return self:TableToText(self:CombatLogSpellEventData(info).messages)
 end
 
@@ -104,7 +104,7 @@ function Verbose:SetCombatLogCooldown(info, value)
     self:CombatLogSpellEventData(info).cooldown = value
 end
 
-function Verbose:SetCombatLogmessages(info, value)
+function Verbose:SetCombatLogMessages(info, value)
     self:TextToTable(value, self:CombatLogSpellEventData(info).messages)
 end
 
