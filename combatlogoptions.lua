@@ -68,10 +68,19 @@ function Verbose.CombatLogOptionToOrder(info)
 end
 
 function Verbose.InfoToCategoryData(info, field)
+    local value
     local typ, id = Verbose.CategoryTypeValue(info[#info])
-    local value = Verbose.categoryData[typ](id)[field]
-    if type(value) == "function" then
-        value = value(info)
+    if not typ or not id then
+        if field == "name" then
+            value = info[#info]
+        else
+            value = nil
+        end
+    else
+        value = Verbose.categoryData[typ](id)[field]
+        if type(value) == "function" then
+            value = value(info)
+        end
     end
     return value
 end
