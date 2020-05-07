@@ -269,14 +269,14 @@ Verbose.options = {
                     type = "execute",
                     name = "Update current data",
                     func = "PrepareSaveData",
-                    desc = "Dump addon configuration to the input box. You can then copy the text to save or share it."
+                    desc = "Dump addon configuration to the input box. You can then copy the text to save or share it.",
                     order = 10,
                 },
                 load = {
                     type = "execute",
                     name = "Load data",
                     func = "LoadData",
-                    desc = "Loads the addon configuration in the input box. |dFFFF0000Warning: This will permanentely destroy all your current configuration !|r"
+                    desc = "Loads the addon configuration in the input box. |cFFFF0000Warning: This will permanentely destroy all your current configuration !|r",
                     order = 20,
                 },
                 data = {
@@ -431,7 +431,7 @@ function Verbose:LoadData(info)
     end
     local profile = self.db.profile
     wipe(profile)
-    for k, v in arg do
+    for k, v in pairs(arg) do
         profile[k] = v
     end
     ReloadUI() -- TODO: more subtle behavior...
