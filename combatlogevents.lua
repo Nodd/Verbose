@@ -263,6 +263,11 @@ function Verbose:CategoryTree(eventInfo)
         tinsert(categories, "school#"..eventInfo.school)
         tinsert(categories, "spellID#"..eventInfo.spellID)
 
+    elseif eventInfo.event == "SPELL_CAST_SUCCESS" then
+        tinsert(categories, "castMode#success")
+        tinsert(categories, "school#"..eventInfo.school)
+        tinsert(categories, "spellID#"..eventInfo.spellID)
+
     elseif eventInfo.event == "SPELL_AURA_APPLIED" or eventInfo.event == "SPELL_AURA_REFRESH" then
         tinsert(categories, "castMode#"..eventInfo.castMode)
         if eventInfo.auraType == "BUFF" then
