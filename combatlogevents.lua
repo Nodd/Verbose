@@ -269,8 +269,7 @@ function Verbose:CategoryTree(eventInfo)
         tinsert(categories, "auraEvent#REMOVED")
 
     else
-        tinsert(categories, "castMode#"..eventInfo.castMode)
-        tinsert(categories, "event#"..eventInfo.event)
+        self:Print("Unknown combat log event:", eventInfo.event)
     end
     return categories
 end
@@ -279,7 +278,7 @@ function Verbose:spellsRecordCombatLogEvent(eventInfo)
     local dbTable = self.db.profile.combatLog.children
     local optionGroupArgs = self.options.args.events.args.combatLog.args
 
-    -- Fill tree if necessary
+    -- Fill tree
     for _, category in ipairs(self:CategoryTree(eventInfo)) do
         if not dbTable[category] then
             dbTable[category] = {
@@ -346,6 +345,10 @@ function Verbose:OnCombatLogEvent(eventInfo)
         for _, m in ipairs(dbTable.messages) do
             tinsert(messagesTable, m)
         end
+    end
+    if #messagesTable == 0 then
+        self:SpeakDbgPrint("Empty message table")
+        return
     end
 
     -- Talk
