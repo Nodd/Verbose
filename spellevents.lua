@@ -18,10 +18,6 @@ Verbose.usedSpellEvents = {
     UNIT_SPELLCAST_CHANNEL_STOP = { callback="OnUnitSpellcastEnd", title="Channel stop", icon=icon, order=60, classic=true },
 }
 
-local spellBlacklist = {
-    [836] = true,  -- LOGINEFFECT, fired on login
-}
-
 -- Table to store spell targets, which are not provided for all events
 local targetTable = {}
 
@@ -33,8 +29,6 @@ function Verbose:OnUnitSpellcastSent(event, caster, target, castID, spellID)
 end
 
 function Verbose:OnUnitSpellcastCommon(event, caster, castID, spellID)
-    -- Ignore blacklisted spells
-    if spellBlacklist[spellID] then return end
     local target = targetTable[castID]
     spellID = tostring(spellID)
     self:OnSpellcastEvent(event, caster, target, spellID)
