@@ -222,6 +222,7 @@ Verbose.combatLogCastModes = {
     doneHarm = { name="Me@Harm", order=25, desc="Targetting events done by myself to an enemy.\n" },
     receivedHelp = { name="Help@Me", order=30, desc="Targeting events done by a friend to me.\n" },
     receivedHarm = { name="Harm@Me", order=35, desc="Targeting events done by an enemy to me.\n" },
+    other = { name="Other", order=40, desc="Not my problem.\n" },
 }
 
 function Verbose:CombatLogCastMode(eventInfo)
@@ -240,7 +241,7 @@ function Verbose:CombatLogCastMode(eventInfo)
             return "noTarget"
         end
     else
-        return nil
+        return "other"
     end
 end
 
