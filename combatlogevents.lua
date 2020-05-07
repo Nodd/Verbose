@@ -36,8 +36,8 @@ Verbose.combatLogOptionsCategories = {
 }
 
 Verbose.auraEvent = {
-    APPLIED = { name = "Applied", order = 10 },
-    REMOVED = { name = "Removed", order = 20 },
+    APPLIED = { name="Applied", order=10 },
+    REMOVED = { name="Removed", order=20 },
 }
 
 Verbose.categoryData = {
@@ -95,6 +95,11 @@ function Verbose:CombatLog(event)
     local eventInfo = {}
 
     -- The 11 first parameters are common to all events
+    eventInfo.event = rawEventInfo[2]
+    if eventInfo.event == "SPELL_PERIODIC_DAMAGE" then
+        return
+    end
+
     eventInfo.sourceName = rawEventInfo[5]
     eventInfo.sourceFlags = rawEventInfo[6]
     eventInfo.destName = rawEventInfo[9]
