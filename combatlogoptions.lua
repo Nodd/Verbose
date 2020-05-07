@@ -61,7 +61,7 @@ end
 
 -- Callbacks
 function Verbose.CombatLogOptionToName(info)
-    return Verbose.InfoToCategoryData(info, "name")
+    return "|cFFFFFFFF"..Verbose.InfoToCategoryData(info, "name").."|r"
 end
 function Verbose.CombatLogOptionToIcon(info)
     return Verbose.InfoToCategoryData(info, "icon")
@@ -69,6 +69,7 @@ end
 function Verbose.CombatLogOptionToDesc(info)
     -- Get desc
     local desc = Verbose.InfoToCategoryData(info, "desc")
+    desc = desc and NORMAL_FONT_COLOR_CODE..desc.."|r"
 
     -- Get saved data
     local eventData = Verbose.db.profile.combatLog
