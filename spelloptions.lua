@@ -78,7 +78,7 @@ end
 
 -- Return spell and event data for callbacks from info arg
 function Verbose:SpellEventData(info)
-    return self.db.profile.spells[tonumber(info[#info - 2])][info[#info - 1]]
+    return self.db.profile.spells[info[#info - 2]][info[#info - 1]]
 end
 
 -- Load saved events to options table
