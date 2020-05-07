@@ -36,6 +36,7 @@ function Verbose:OnUnitSpellcastCommon(event, caster, castID, spellID)
     -- Ignore blacklisted spells
     if spellBlacklist[spellID] then return end
     local target = targetTable[castID]
+    spellID = tostring(spellID)
     self:OnSpellcastEvent(event, caster, target, spellID)
 end
 
