@@ -13,12 +13,15 @@ Verbose.usedCombatLogEvents = {
 }
 
 Verbose.combatLogCastModes = {
-    start = { name="Start casting", order=5 },
-    self = { name="Me@Me", order=10 },
-    done = { name="Me@Target", order=20 },
-    received = { name="Other@Me", order=30 },
-    noTarget = { name="Me@None", order=40 },
-    failed = { name="Failed", order=50 },
+    start = { name="Start cast", order=5, desc="Start a non-instant, non-channelled cast.\n" },
+    success = { name="Successfull cast", order=7, desc="Successfully casting any spell.\n" },
+    failed = { name="Failed cast", order=8, desc="Failing to cast any spell. Shit happens.\n" },
+    self = { name="Me@Me", order=10, desc="Me, myself and I.\n" },
+    noTarget = { name="Me@None", order=15, desc="Non-targeted events done by myself.\n" },
+    doneHelp = { name="Me@Help", order=20, desc="Targetting events done by myself to a friend.\n" },
+    doneHarm = { name="Me@Harm", order=25, desc="Targetting events done by myself to an enemy.\n" },
+    receivedHelp = { name="Help@Me", order=30, desc="Targeting events done by a friend to me.\n" },
+    receivedHarm = { name="Harm@Me", order=35, desc="Targeting events done by an enemy to me.\n" },
 }
 
 Verbose.combatLogOptionsCategories = {
@@ -93,24 +96,28 @@ function Verbose:CombatLog(event)
 
     -- The 11 first parameters are common to all events
     eventInfo.sourceName = rawEventInfo[5]
+    eventInfo.sourceFlags = rawEventInfo[6]
     eventInfo.destName = rawEventInfo[9]
+    eventInfo.destFlags = rawEventInfo[10]
+    -- eventInfo.timestamp = rawEventInfo[1]  -- useless
+    -- eventInfo.hideCaster = rawEventInfo[3]  -- useless
+    -- eventInfo.sourceGUID = rawEventInfo[4]  -- useless
+    -- eventInfo.sourceRaidFlags = rawEventInfo[7]  -- ?
+    -- eventInfo.destGUID = rawEventInfo[8]  -- useless
+    -- eventInfo.destRaidFlags = rawEventInfo[11]  -- ?
+
+    -- Computed values
+    eventInfo.destReaction = Verbose:FlagToReaction(eventInfo.destFlags)
+    eventInfo.sourceReaction = Verbose:FlagToReaction(eventInfo.sourceFlags)
+
     -- Return early if the player is not involved in the event
     -- TODO: What about the pet(s) ?
     eventInfo.castMode = self:CombatLogCastMode(eventInfo)
     if not eventInfo.castMode then return end
 
-    eventInfo.timestamp = rawEventInfo[1]
-    eventInfo.event = rawEventInfo[2]
-    -- eventInfo.hideCaster = rawEventInfo[3]  -- useless
-    -- eventInfo.sourceGUID = rawEventInfo[4]  -- useless
-    eventInfo.sourceFlags = rawEventInfo[6]
-    eventInfo.sourceRaidFlags = rawEventInfo[7]
-    -- eventInfo.destGUID = rawEventInfo[8]  -- useless
-    eventInfo.destFlags = rawEventInfo[10]
-    eventInfo.destRaidFlags = rawEventInfo[11]
-
-    -- The rest of the paramters depends on the subevent and will be managed in subfunctions
+    -- The rest of the parameters depends on the event and will be managed in subfunctions
     self:SetCombatLogArgs(eventInfo, rawEventInfo)
+
 
     -- Debug
     self:EventDbgPrint(event)
@@ -121,6 +128,16 @@ function Verbose:CombatLog(event)
     -- Respond to event
     self:spellsRecordCombatLogEvent(eventInfo)
     self:OnCombatLogEvent(eventInfo)
+end
+
+local reactionID = {
+    [COMBATLOG_OBJECT_REACTION_HOSTILE] = "Harm",
+    [COMBATLOG_OBJECT_REACTION_NEUTRAL] = "Harm",
+    [COMBATLOG_OBJECT_REACTION_FRIENDLY] = "Help",
+}
+function Verbose:FlagToReaction(UnitFlag)
+    local reaction = bit.band(UnitFlag, COMBATLOG_OBJECT_REACTION_MASK)
+    return reactionID[reaction]
 end
 
 function Verbose:SetCombatLogArgs(eventInfo, rawEventInfo)
@@ -180,11 +197,11 @@ function Verbose:CombatLogCastMode(eventInfo)
         if Verbose:NameIsPlayer(eventInfo.sourceName) then
             return "self"
         else
-            return "received"
+            return "received"..eventInfo.sourceReaction
         end
     elseif Verbose:NameIsPlayer(eventInfo.sourceName) then
         if eventInfo.destName then
-            return "done"
+            return "done"..eventInfo.destReaction
         else
             return "noTarget"
         end
