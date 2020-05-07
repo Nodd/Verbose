@@ -113,30 +113,31 @@ end
 function Verbose:CategoryTree(eventInfo)
     local categories = {}
     if eventInfo.event == "SPELL_HEAL" then
-        tinsert(categories, "castMode#"..eventInfo.castMode)
         tinsert(categories, "combatLogCategory#heal")
+        tinsert(categories, "castMode#"..eventInfo.castMode)
+        tinsert(categories, "school#"..eventInfo.school)
         tinsert(categories, "spellID#"..eventInfo.spellID)
 
     elseif eventInfo.event == "SPELL_DAMAGE" then
-        tinsert(categories, "castMode#"..eventInfo.castMode)
         tinsert(categories, "combatLogCategory#damage")
+        tinsert(categories, "castMode#"..eventInfo.castMode)
         tinsert(categories, "school#"..eventInfo.school)
         tinsert(categories, "spellID#"..eventInfo.spellID)
 
     elseif eventInfo.event == "ENVIRONMENTAL_DAMAGE" then
-        tinsert(categories, "castMode#"..eventInfo.castMode)
         tinsert(categories, "combatLogCategory#damage")
+        tinsert(categories, "castMode#"..eventInfo.castMode)
         tinsert(categories, "combatLogCategory#environmental")
         tinsert(categories, eventInfo.environmentalType)
 
     elseif eventInfo.event == "SWING_DAMAGE" then
-        tinsert(categories, "castMode#"..eventInfo.castMode)
         tinsert(categories, "combatLogCategory#damage")
+        tinsert(categories, "castMode#"..eventInfo.castMode)
         tinsert(categories, "Swing")
 
     elseif eventInfo.event == "RANGE_DAMAGE" then
-        tinsert(categories, "castMode#"..eventInfo.castMode)
         tinsert(categories, "combatLogCategory#damage")
+        tinsert(categories, "castMode#"..eventInfo.castMode)
         tinsert(categories, "Range")
 
     elseif eventInfo.event == "SPELL_CAST_START" then
@@ -156,23 +157,23 @@ function Verbose:CategoryTree(eventInfo)
         tinsert(categories, "spellID#"..eventInfo.spellID)
 
     elseif eventInfo.event == "SPELL_AURA_APPLIED" or eventInfo.event == "SPELL_AURA_REFRESH" then
-        tinsert(categories, "castMode#"..eventInfo.castMode)
         if eventInfo.auraType == "BUFF" then
             tinsert(categories, "combatLogCategory#buffs")
         else
             tinsert(categories, "combatLogCategory#debuffs")
         end
+        tinsert(categories, "castMode#"..eventInfo.castMode)
         tinsert(categories, "school#"..eventInfo.school)
         tinsert(categories, "spellID#"..eventInfo.spellID)
         tinsert(categories, "auraEvent#APPLIED")
 
     elseif eventInfo.event == "SPELL_AURA_REMOVED" then
-        tinsert(categories, "castMode#"..eventInfo.castMode)
         if eventInfo.auraType == "BUFF" then
             tinsert(categories, "combatLogCategory#buffs")
         else
             tinsert(categories, "combatLogCategory#debuffs")
         end
+        tinsert(categories, "castMode#"..eventInfo.castMode)
         tinsert(categories, "school#"..eventInfo.school)
         tinsert(categories, "spellID#"..eventInfo.spellID)
         tinsert(categories, "auraEvent#REMOVED")
