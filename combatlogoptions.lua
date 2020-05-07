@@ -67,7 +67,20 @@ function Verbose.CombatLogOptionToIcon(info)
     return Verbose.InfoToCategoryData(info, "icon")
 end
 function Verbose.CombatLogOptionToDesc(info)
-    return Verbose.InfoToCategoryData(info, "desc")
+    -- Get desc
+    local desc = Verbose.InfoToCategoryData(info, "desc")
+
+    -- Get saved data
+    local eventData = Verbose.db.profile.combatLog
+    for i = 3, #info do
+        eventData = eventData.children[info[i]]
+    end
+
+    -- Append count and last time to description
+    if not desc then desc = "" else desc = desc.."\n" end
+    local elapsed = Verbose:secondsToString(GetServerTime() - eventData.lastRecord)
+    desc = desc .. "Count: "..eventData.count.."\nLast: "..elapsed.." ago"
+    return desc
 end
 function Verbose.CombatLogOptionToOrder(info)
     return Verbose.InfoToCategoryData(info, "order")

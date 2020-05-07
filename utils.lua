@@ -115,3 +115,27 @@ local realmName = GetRealmName()
 function Verbose:NameIsPlayer(name)
     return name == playerName or name == playerName.."-"..realmName
 end
+
+-------------------------------------------------------------------------------
+-- Time
+-------------------------------------------------------------------------------
+function Verbose:secondsToString(value)
+    local seconds = mod(value, 60)
+    value = (value - seconds) / 60
+    local minutes = mod(value, 60)
+    value = (value - minutes) / 60
+    local hours = mod(value, 60)
+    value = (value - hours) / 60
+    local days = mod(value, 24)
+    value = (value - days) / 24
+
+    if days > 0 then
+        return format("%u |4day:days;", days)
+    elseif hours > 0 then
+        return format("%u |4hour:hours;", hours)
+    elseif minutes > 0 then
+        return format("%u |4minute:minutes;", minutes)
+    else
+        return format("%u |4second:seconds;", seconds)
+    end
+end
