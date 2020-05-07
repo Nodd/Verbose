@@ -227,6 +227,8 @@ function Verbose:CombatLogCastMode(eventInfo)
     if Verbose:NameIsPlayer(eventInfo.destName) then
         if Verbose:NameIsPlayer(eventInfo.sourceName) then
             return "self"
+        elseif eventInfo.event == "ENVIRONMENTAL_DAMAGE" then
+            return "receivedHarm"
         else
             return "received"..eventInfo.sourceReaction
         end
