@@ -12,6 +12,7 @@ local combatIconID = 132349  -- ability_warrior_offensivestance
 local npcIconID = 2056011  -- ability_warrior_offensivestance
 local achievementsIconID = 236670  -- ui_chat
 
+local displayedData = ""
 
 Verbose.options = {
     name = addonName,
@@ -256,6 +257,39 @@ Verbose.options = {
                 },
             },
         },
+        save = {
+            -- Replacement lists
+            type = "group",
+            name = "Save",
+            desc = "Save or Load configuration",
+            order = 35,
+            childGroups = "tree",
+            args = {
+                save = {
+                    type = "execute",
+                    name = "Update current data",
+                    func = "PrepareSaveData",
+                    desc = "Dump addon configuration to the input box. You can then copy the text to save or share it."
+                    order = 10,
+                },
+                load = {
+                    type = "execute",
+                    name = "Load data",
+                    func = "LoadData",
+                    desc = "Loads the addon configuration in the input box. |dFFFF0000Warning: This will permanentely destroy all your current configuration !|r"
+                    order = 20,
+                },
+                data = {
+                    type = "input",
+                    name = "Addon data",
+                    order = 30,
+                    multiline = 17,
+                    width = "full",
+                    get = function(info) return displayedData end,
+                    set = function(info, value) displayedData = value end,
+                },
+            },
+        },
     },
 }
 
@@ -384,6 +418,23 @@ function Verbose:ToggleOptions()
     else
         self:ShowOptions()
     end
+end
+
+function Verbose:PrepareSaveData(info)
+    displayedData = self:Serialize(self.db.profile)
+    self:UpdateOptionsGUI()
+end
+function Verbose:LoadData(info)
+    status, arg = self:Deserialize(displayedData)
+    if not status then
+        error("Data loading error: "..arg)
+    end
+    local profile = self.db.profile
+    wipe(profile)
+    for k, v in arg do
+        profile[k] = v
+    end
+    ReloadUI() -- TODO: more subtle behavior...
 end
 
 function Verbose:ChatCommand(input)
