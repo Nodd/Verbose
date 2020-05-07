@@ -382,7 +382,7 @@ function Verbose:ManageOptions()
 
     -- Add dynamic data to options
     self:CombatLogSpellDBToOptions()
-    --self:SpellDBToOptions()
+    self:SpellDBToOptions()
     self:ListDBToOptions()
 
     -- Add profile config tab to options
