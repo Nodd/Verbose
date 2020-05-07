@@ -295,7 +295,7 @@ function Verbose:spellsRecordCombatLogEvent(eventInfo)
             -- Update options
             self:AddCombatLogEventToOptions(optionGroupArgs, category)
         end
-        dbTable[category].lastRecord = eventInfo.timestamp
+        dbTable[category].lastRecord = GetServerTime()  -- eventInfo.timestamp is unreliable :/
         dbTable[category].count = dbTable[category].count + 1
 
         -- Prepare next iteration
