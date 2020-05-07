@@ -12,83 +12,6 @@ Verbose.usedCombatLogEvents = {
     COMBAT_LOG_EVENT_UNFILTERED = { callback="CombatLog", category="combat", title="Combat log", icon=icon, classic=true },
 }
 
-Verbose.combatLogCastModes = {
-    start = { name="Start cast", order=5, desc="Start a non-instant, non-channelled cast.\n" },
-    success = { name="Successfull cast", order=7, desc="Successfully casting any spell.\n" },
-    failed = { name="Failed cast", order=8, desc="Failing to cast any spell. Shit happens.\n" },
-    self = { name="Me@Me", order=10, desc="Me, myself and I.\n" },
-    noTarget = { name="Me@None", order=15, desc="Non-targeted events done by myself.\n" },
-    doneHelp = { name="Me@Help", order=20, desc="Targetting events done by myself to a friend.\n" },
-    doneHarm = { name="Me@Harm", order=25, desc="Targetting events done by myself to an enemy.\n" },
-    receivedHelp = { name="Help@Me", order=30, desc="Targeting events done by a friend to me.\n" },
-    receivedHarm = { name="Harm@Me", order=35, desc="Targeting events done by an enemy to me.\n" },
-}
-
-Verbose.combatLogOptionsCategories = {
-    swing = { name="Swing", order=10 },
-    spells = { name="Spells", order=20 },
-    damage = { name="Damage", order=30 },
-    heal = { name="Heal", order=40 },
-    buffs = { name="Buffs", order=50 },
-    debuffs = { name="Debuffs", order=60 },
-    other = { name="Other", order=80 },
-    environmental = { name="Environmental", order=999 }
-}
-
-Verbose.auraEvent = {
-    APPLIED = { name="Applied", order=10 },
-    REMOVED = { name="Removed", order=20 },
-}
-
-Verbose.categoryData = {
-    castMode = function(id) return Verbose.combatLogCastModes[id] end,
-    combatLogCategory = function(id) return Verbose.combatLogOptionsCategories[id] end,
-    spellID = function(id) return Verbose.spellIDTreeFuncs end,
-    school = function(id) return { name=Verbose.SpellSchoolString[tonumber(id)] } end,
-    auraEvent = function(id) return Verbose.auraEvent[id] end,
-    event = function(id) return { name=id } end,
-}
-
--- https://github.com/ketho-wow/KethoCombatLog/blob/master/KethoCombatLog.lua for the table
--- https://www.townlong-yak.com/framexml/8.1.5/GlobalStrings.lua#12934 for the strings
--- https://wow.gamepedia.com/COMBAT_LOG_EVENT for the truth
-Verbose.SpellSchoolString = {
-	[0x1] = STRING_SCHOOL_PHYSICAL:sub(2, -2),
-	[0x2] = STRING_SCHOOL_HOLY:sub(2, -2),
-	[0x4] = STRING_SCHOOL_FIRE:sub(2, -2),
-	[0x8] = STRING_SCHOOL_NATURE:sub(2, -2),
-	[0x10] = STRING_SCHOOL_FROST:sub(2, -2),
-	[0x20] = STRING_SCHOOL_SHADOW:sub(2, -2),
-	[0x40] = STRING_SCHOOL_ARCANE:sub(2, -2),
--- double
-	[0x3] = STRING_SCHOOL_HOLYSTRIKE:sub(2, -2),
-	[0x5] = STRING_SCHOOL_FLAMESTRIKE:sub(2, -2),
-	[0x6] = STRING_SCHOOL_HOLYFIRE:sub(2, -2),
-	[0x9] = STRING_SCHOOL_STORMSTRIKE:sub(2, -2),
-	[0xA] = STRING_SCHOOL_HOLYSTORM:sub(2, -2),
-	[0xC] = STRING_SCHOOL_FIRESTORM:sub(2, -2),
-	[0x11] = STRING_SCHOOL_FROSTSTRIKE:sub(2, -2),
-	[0x12] = STRING_SCHOOL_HOLYFROST:sub(2, -2),
-	[0x14] = STRING_SCHOOL_FROSTFIRE:sub(2, -2),
-	[0x18] = STRING_SCHOOL_FROSTSTORM:sub(2, -2),
-	[0x21] = STRING_SCHOOL_SHADOWSTRIKE:sub(2, -2),
-	[0x22] = STRING_SCHOOL_SHADOWLIGHT:sub(2, -2), -- Twilight
-	[0x24] = STRING_SCHOOL_SHADOWFLAME:sub(2, -2),
-	[0x28] = STRING_SCHOOL_SHADOWSTORM:sub(2, -2), -- Plague
-	[0x30] = STRING_SCHOOL_SHADOWFROST:sub(2, -2),
-	[0x41] = STRING_SCHOOL_SPELLSTRIKE:sub(2, -2),
-	[0x42] = STRING_SCHOOL_DIVINE:sub(2, -2),
-	[0x44] = STRING_SCHOOL_SPELLFIRE:sub(2, -2),
-	[0x48] = STRING_SCHOOL_SPELLSTORM:sub(2, -2),
-	[0x50] = STRING_SCHOOL_SPELLFROST:sub(2, -2),
-	[0x60] = STRING_SCHOOL_SPELLSHADOW:sub(2, -2),
--- triple and more
-	[0x1C] = STRING_SCHOOL_ELEMENTAL:sub(2, -2),
-	[0x7C] = STRING_SCHOOL_CHROMATIC:sub(2, -2),
-	[0x7E] = STRING_SCHOOL_MAGIC:sub(2, -2),
-	[0x7F] = STRING_SCHOOL_CHAOS:sub(2, -2),
-}
-
 function Verbose:CombatLog(event)
     local rawEventInfo = { CombatLogGetCurrentEventInfo() }
 
@@ -133,16 +56,6 @@ function Verbose:CombatLog(event)
     -- Respond to event
     self:spellsRecordCombatLogEvent(eventInfo)
     self:OnCombatLogEvent(eventInfo)
-end
-
-local reactionID = {
-    [COMBATLOG_OBJECT_REACTION_HOSTILE] = "Harm",
-    [COMBATLOG_OBJECT_REACTION_NEUTRAL] = "Harm",
-    [COMBATLOG_OBJECT_REACTION_FRIENDLY] = "Help",
-}
-function Verbose:FlagToReaction(UnitFlag)
-    local reaction = bit.band(UnitFlag, COMBATLOG_OBJECT_REACTION_MASK)
-    return reactionID[reaction]
 end
 
 function Verbose:SetCombatLogArgs(eventInfo, rawEventInfo)
@@ -196,37 +109,6 @@ function Verbose:SetCombatLogArgs(eventInfo, rawEventInfo)
         self:Print("Combat log event has unknown extra arguments:", eventInfo.event)
     end
 end
-
-function Verbose:CombatLogCastMode(eventInfo)
-    if Verbose:NameIsPlayer(eventInfo.destName) then
-        if Verbose:NameIsPlayer(eventInfo.sourceName) then
-            return "self"
-        else
-            return "received"..eventInfo.sourceReaction
-        end
-    elseif Verbose:NameIsPlayer(eventInfo.sourceName) then
-        if eventInfo.destName then
-            return "done"..eventInfo.destReaction
-        else
-            return "noTarget"
-        end
-    else
-        return nil
-    end
-end
-
-Verbose.spellIDTreeFuncs = {
-    -- Skip "spellID#" to get the ID
-    name = function(spellID) return Verbose:SpellName(spellID) end,
-    icon = function(spellID) return Verbose:SpellIconID(spellID) end,
-    desc = function(spellID)
-        return (
-            Verbose:SpellIconTexture(spellID)
-            .. "\n".. Verbose:SpellDescription(spellID)
-            .. "\n\nSpell ID: " .. spellID
-        )
-    end,
-}
 
 function Verbose:CategoryTree(eventInfo)
     local categories = {}
@@ -301,6 +183,143 @@ function Verbose:CategoryTree(eventInfo)
     return categories
 end
 
+function Verbose.CategoryTypeValue(category)
+    local typ, id = string.match(category, "^(.+)#(.+)$") -- use strsplit ?
+    return typ, id
+end
+
+function Verbose:CategoryName(category)
+    local value
+    local typ, id = self.CategoryTypeValue(category)
+    if not id then
+        value = category
+    else
+        value = self.categoryData[typ](id).name
+        if type(value) == "function" then
+            value = Verbose:SpellName(id)
+        end
+    end
+    return value
+end
+
+Verbose.categoryData = {
+    castMode = function(id) return Verbose.combatLogCastModes[id] end,
+    combatLogCategory = function(id) return Verbose.combatLogOptionsCategories[id] end,
+    spellID = function(id) return Verbose.spellIDTreeFuncs end,
+    school = function(id) return { name=Verbose.SpellSchoolString[tonumber(id)] } end,
+    auraEvent = function(id) return Verbose.auraEvent[id] end,
+    event = function(id) return { name=id } end,
+}
+
+Verbose.combatLogCastModes = {
+    start = { name="Start cast", order=5, desc="Start a non-instant, non-channelled cast.\n" },
+    success = { name="Successfull cast", order=7, desc="Successfully casting any spell.\n" },
+    failed = { name="Failed cast", order=8, desc="Failing to cast any spell. Shit happens.\n" },
+    self = { name="Me@Me", order=10, desc="Me, myself and I.\n" },
+    noTarget = { name="Me@None", order=15, desc="Non-targeted events done by myself.\n" },
+    doneHelp = { name="Me@Help", order=20, desc="Targetting events done by myself to a friend.\n" },
+    doneHarm = { name="Me@Harm", order=25, desc="Targetting events done by myself to an enemy.\n" },
+    receivedHelp = { name="Help@Me", order=30, desc="Targeting events done by a friend to me.\n" },
+    receivedHarm = { name="Harm@Me", order=35, desc="Targeting events done by an enemy to me.\n" },
+}
+
+function Verbose:CombatLogCastMode(eventInfo)
+    if Verbose:NameIsPlayer(eventInfo.destName) then
+        if Verbose:NameIsPlayer(eventInfo.sourceName) then
+            return "self"
+        else
+            return "received"..eventInfo.sourceReaction
+        end
+    elseif Verbose:NameIsPlayer(eventInfo.sourceName) then
+        if eventInfo.destName then
+            return "done"..eventInfo.destReaction
+        else
+            return "noTarget"
+        end
+    else
+        return nil
+    end
+end
+
+local reactionID = {
+    [COMBATLOG_OBJECT_REACTION_HOSTILE] = "Harm",
+    [COMBATLOG_OBJECT_REACTION_NEUTRAL] = "Harm",
+    [COMBATLOG_OBJECT_REACTION_FRIENDLY] = "Help",
+}
+function Verbose:FlagToReaction(UnitFlag)
+    local reaction = bit.band(UnitFlag, COMBATLOG_OBJECT_REACTION_MASK)
+    return reactionID[reaction]
+end
+
+Verbose.combatLogOptionsCategories = {
+    swing = { name="Swing", order=10 },
+    spells = { name="Spells", order=20 },
+    damage = { name="Damage", order=30 },
+    heal = { name="Heal", order=40 },
+    buffs = { name="Buffs", order=50 },
+    debuffs = { name="Debuffs", order=60 },
+    other = { name="Other", order=80 },
+    environmental = { name="Environmental", order=999 }
+}
+
+Verbose.auraEvent = {
+    APPLIED = { name="Applied", order=10 },
+    REMOVED = { name="Removed", order=20 },
+}
+
+-- https://github.com/ketho-wow/KethoCombatLog/blob/master/KethoCombatLog.lua for the table
+-- https://www.townlong-yak.com/framexml/8.1.5/GlobalStrings.lua#12934 for the strings
+-- https://wow.gamepedia.com/COMBAT_LOG_EVENT for the truth
+Verbose.SpellSchoolString = {
+	[0x1] = STRING_SCHOOL_PHYSICAL:sub(2, -2),
+	[0x2] = STRING_SCHOOL_HOLY:sub(2, -2),
+	[0x4] = STRING_SCHOOL_FIRE:sub(2, -2),
+	[0x8] = STRING_SCHOOL_NATURE:sub(2, -2),
+	[0x10] = STRING_SCHOOL_FROST:sub(2, -2),
+	[0x20] = STRING_SCHOOL_SHADOW:sub(2, -2),
+	[0x40] = STRING_SCHOOL_ARCANE:sub(2, -2),
+    -- double
+	[0x3] = STRING_SCHOOL_HOLYSTRIKE:sub(2, -2),
+	[0x5] = STRING_SCHOOL_FLAMESTRIKE:sub(2, -2),
+	[0x6] = STRING_SCHOOL_HOLYFIRE:sub(2, -2),
+	[0x9] = STRING_SCHOOL_STORMSTRIKE:sub(2, -2),
+	[0xA] = STRING_SCHOOL_HOLYSTORM:sub(2, -2),
+	[0xC] = STRING_SCHOOL_FIRESTORM:sub(2, -2),
+	[0x11] = STRING_SCHOOL_FROSTSTRIKE:sub(2, -2),
+	[0x12] = STRING_SCHOOL_HOLYFROST:sub(2, -2),
+	[0x14] = STRING_SCHOOL_FROSTFIRE:sub(2, -2),
+	[0x18] = STRING_SCHOOL_FROSTSTORM:sub(2, -2),
+	[0x21] = STRING_SCHOOL_SHADOWSTRIKE:sub(2, -2),
+	[0x22] = STRING_SCHOOL_SHADOWLIGHT:sub(2, -2), -- Twilight
+	[0x24] = STRING_SCHOOL_SHADOWFLAME:sub(2, -2),
+	[0x28] = STRING_SCHOOL_SHADOWSTORM:sub(2, -2), -- Plague
+	[0x30] = STRING_SCHOOL_SHADOWFROST:sub(2, -2),
+	[0x41] = STRING_SCHOOL_SPELLSTRIKE:sub(2, -2),
+	[0x42] = STRING_SCHOOL_DIVINE:sub(2, -2),
+	[0x44] = STRING_SCHOOL_SPELLFIRE:sub(2, -2),
+	[0x48] = STRING_SCHOOL_SPELLSTORM:sub(2, -2),
+	[0x50] = STRING_SCHOOL_SPELLFROST:sub(2, -2),
+	[0x60] = STRING_SCHOOL_SPELLSHADOW:sub(2, -2),
+    -- triple and more
+	[0x1C] = STRING_SCHOOL_ELEMENTAL:sub(2, -2),
+	[0x7C] = STRING_SCHOOL_CHROMATIC:sub(2, -2),
+	[0x7E] = STRING_SCHOOL_MAGIC:sub(2, -2),
+	[0x7F] = STRING_SCHOOL_CHAOS:sub(2, -2),
+}
+
+Verbose.spellIDTreeFuncs = {
+    -- Skip "spellID#" to get the ID
+    name = function(spellID) return Verbose:SpellName(spellID) end,
+    icon = function(spellID) return Verbose:SpellIconID(spellID) end,
+    desc = function(spellID)
+        return (
+            Verbose:SpellIconTexture(spellID)
+            .. "\n".. Verbose:SpellDescription(spellID)
+            .. "\n\nSpell ID: " .. spellID
+        )
+    end,
+}
+
 function Verbose:spellsRecordCombatLogEvent(eventInfo)
     local dbTable = self.db.profile.combatLog.children
     local optionGroupArgs = self.options.args.events.args.combatLog.args
@@ -329,24 +348,6 @@ function Verbose:spellsRecordCombatLogEvent(eventInfo)
         optionGroupArgs = optionGroupArgs[category].args
     end
     self:UpdateOptionsGUI()
-end
-
-function Verbose.CategoryTypeValue(category)
-    local typ, id = string.match(category, "^(.+)#(.+)$") -- use strsplit ?
-    return typ, id
-end
-function Verbose:CategoryName(category)
-    local value
-    local typ, id = self.CategoryTypeValue(category)
-    if not id then
-        value = category
-    else
-        value = self.categoryData[typ](id).name
-        if type(value) == "function" then
-            value = Verbose:SpellName(id)
-        end
-    end
-    return value
 end
 
 function Verbose:OnCombatLogEvent(eventInfo)
