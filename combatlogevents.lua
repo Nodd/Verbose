@@ -106,7 +106,7 @@ function Verbose:SetCombatLogArgs(eventInfo, rawEventInfo)
     elseif Verbose.ends_with(eventInfo.event, "_ABSORBED") then
         eventInfo.amount = unpack(rawEventInfo, suffixIndex)
     elseif #rawEventInfo ~= suffixIndex - 1 then
-        self:Print("Combat log event has unknown extra arguments:", eventInfo.event)
+        self:Print(eventInfo.event.." has unknown extra arguments:", unpack(rawEventInfo, suffixIndex))
     end
 end
 
@@ -156,7 +156,7 @@ function Verbose:CategoryTree(eventInfo)
         tinsert(categories, "school#"..eventInfo.school)
         tinsert(categories, "spellID#"..eventInfo.spellID)
 
-    elseif eventInfo.event == "SPELL_AURA_APPLIED" or eventInfo.event == "SPELL_AURA_REFRESH" then
+    elseif eventInfo.event == "SPELL_AURA_APPLIED" or eventInfo.event == "SPELL_AURA_APPLIED_DOSE" or eventInfo.event == "SPELL_AURA_REFRESH" then
         if eventInfo.auraType == "BUFF" then
             tinsert(categories, "combatLogCategory#buffs")
         else
@@ -178,6 +178,10 @@ function Verbose:CategoryTree(eventInfo)
         tinsert(categories, "spellID#"..eventInfo.spellID)
         tinsert(categories, "auraEvent#REMOVED")
 
+    elseif eventInfo.event == "SPELL_ENERGIZE" then
+    elseif eventInfo.event == "SWING_MISSSED" then
+    elseif eventInfo.event == "SPELL_ABSORBED" then
+    elseif eventInfo.event == "PARTY_KILL" then -- Has arguments sometimes ?
     else
         self:Print("Unknown combat log event:", eventInfo.event)
     end
@@ -241,7 +245,7 @@ function Verbose:CombatLogCastMode(eventInfo)
             return "noTarget"
         end
     else
-        return "other"
+        return nil
     end
 end
 
