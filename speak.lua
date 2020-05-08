@@ -121,20 +121,18 @@ function Verbose:Speak(msgData, substitutions, messagesTable)
     msgData.lastTime = currentTime  -- Event CD
     self.db.profile.lastTime = currentTime  -- Global CD
 
-    if strsub(message, 1, 1) == "/" then
-        local command = strmatch(message, "^(/[^%s]+)") or "";
-        local emote = hash_EmoteTokenList[strupper(command)]
-        if emote then
-            DoEmote(emote)
-            return
-        end
-    end
-
-
     if self.db.profile.mute then
         Verbose:DisplayTempMessage(message)
         self:Print("MUTED:", message)
     else
+        if strsub(message, 1, 1) == "/" then
+            local command = strmatch(message, "^(/[^%s]+)") or "";
+            local emote = hash_EmoteTokenList[strupper(command)]
+            if emote then
+                DoEmote(emote)
+                return
+            end
+        end
         local inInstance = IsInInstance()
         if inInstance then
             -- SendChatMessage("msg", "chatType", "language", "channel");
