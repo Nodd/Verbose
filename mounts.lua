@@ -41,17 +41,20 @@ function Verbose:InitMounts()
             local category = Verbose.mountTypeString[mountTypeID]
             spellID = tostring(spellID)
             if not mountsDB[spellID] then
-                mountsDB[spellID] = {}
-                print(creatureName)
-                for event, _ in pairs(Verbose.mountEvents) do
-                    print(spellID, event)
-                    self.db.profile.mounts[spellID][event] = {
+                mountsDB[spellID] = {
+                    UNIT_SPELLCAST_START = {
                         enabled = false,
                         cooldown = 10,
                         proba = 1,
                         messages = {},
-                    }
-                end
+                    },
+                    UNIT_SPELLCAST_SUCCEEDED = {
+                        enabled = false,
+                        cooldown = 10,
+                        proba = 1,
+                        messages = { "/mountspecial" },
+                    },
+                }
             end
             Verbose.mountSpells[spellID] = {
                 name=creatureName,
@@ -159,7 +162,6 @@ end
 -- Return spell and event data for callbacks from info arg
 function Verbose:MountEventData(info)
     -- spellID, event
-    print(info[#info - 2], info[#info - 1])
     return self.db.profile.mounts[info[#info - 2]][info[#info - 1]]
 end
 
