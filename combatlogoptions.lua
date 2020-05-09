@@ -49,7 +49,7 @@ function Verbose:AddCombatLogEventToOptions(optionGroupArgs, category)
                     type = "input",
                     name = "Messages, one per line",
                     order = 40,
-                    multiline = 17,
+                    multiline = Verbose.multilineHeightNoTab,
                     width = "full",
                     get = "GetCombatLogMessages",
                     set = "SetCombatLogMessages",

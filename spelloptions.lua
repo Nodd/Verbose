@@ -64,7 +64,7 @@ function Verbose:AddSpellToOptions(spellID, event)
                     type = "input",
                     name = "Messages, one per line",
                     order = 40,
-                    multiline = 17,
+                    multiline = Verbose.multilineHeightTab,
                     width = "full",
                     get = function(info)
                         return Verbose:TableToText(self:SpellEventData(info).messages)

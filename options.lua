@@ -14,6 +14,9 @@ local achievementsIconID = 236670  -- ui_chat
 
 local displayedData = ""
 
+Verbose.multilineHeightNoTab = 17
+Verbose.multilineHeightTab = 14
+
 Verbose.options = {
     name = addonName,
     handler = Verbose,
@@ -283,7 +286,7 @@ Verbose.options = {
                     type = "input",
                     name = "Addon data",
                     order = 30,
-                    multiline = 17,
+                    multiline = Verbose.multilineHeightNoTab,
                     width = "full",
                     get = function(info) return displayedData end,
                     set = function(info, value) displayedData = value end,
@@ -292,6 +295,8 @@ Verbose.options = {
         },
     },
 }
+
+VerboseOptionsTableForDebug = Verbose.options
 
 function Verbose:populateEvent(parent, event, title, icon)
     if not title then
@@ -339,7 +344,7 @@ function Verbose:populateEvent(parent, event, title, icon)
                 type = "input",
                 name = "Messages, one per line",
                 order = 40,
-                multiline = 17,
+                multiline = Verbose.multilineHeightNoTab,
                 width = "full",
                 get = function(info)
                     return Verbose:TableToText(self:EventData(info).messages)
