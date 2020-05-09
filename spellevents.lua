@@ -30,7 +30,6 @@ end
 
 function Verbose:OnUnitSpellcastCommon(event, caster, castID, spellID)
     local target = targetTable[castID]
-    spellID = tostring(spellID)
     self:OnSpellcastEvent(event, caster, target, spellID)
 end
 
@@ -78,12 +77,21 @@ function Verbose:OnSpellcastEvent(event, caster, target, spellID)
     -- Debug
     self:EventDbgPrint(event, caster, target, spellID, spellName)
 
-    -- Record Spell/event
-    self:RecordSpellcastEvent(spellID, event)
+    spellID = tostring(spellID)
+    local msgData
+    if Verbose.mountSpells[spellID] then
+        if not Verbose.mountEvents[event] then
+            return
+        end
+        msgData = self.db.profile.mounts[spellID][event]
+    else
+        -- Record Spell/event
+        self:RecordSpellcastEvent(spellID, event)
+        msgData = self.db.profile.spells[spellID][event]
+    end
 
     -- Talk
-    local msgData = self.db.profile.spells[spellID][event]
-    self:Speak(event, msgData, {
+    self:Speak(msgData, {
         caster = caster,
         target = target,
         spellname = spellname,

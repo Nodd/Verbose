@@ -52,6 +52,9 @@ Verbose.defaults = {
             --     },
             -- },
         },
+        mounts = {
+            -- Same as spells
+        },
         lists = {
             -- Populated dynamically
             -- listID = {

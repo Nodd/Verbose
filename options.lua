@@ -133,6 +133,28 @@ Verbose.options = {
             order = 20,
             childGroups = "tree",
             args = {
+                mounts = {
+                    type = "group",
+                    name = "Mounts",
+                    order = 1,
+                    -- icon = spellsIconID,
+                    iconCoords = Verbose.iconCropBorders,
+                    childGroups = "tree",
+                    args = {
+                        title = {
+                            type = "description",
+                            name = Verbose:IconTextureBorderlessFromID(spellsIconID) .. " Mounts",
+                            fontSize = "large",
+                            order = 0,
+                        },
+                        info = {
+                            type = "description",
+                            name = "Documentation here.",
+                            fontSize = "medium",
+                            order = 1,
+                        },
+                    },
+                },
                 combatLog = {
                     type = "group",
                     name = "Combat log",
@@ -386,6 +408,7 @@ function Verbose:ManageOptions()
     self.db = LibStub("AceDB-3.0"):New("VerboseDB", self.defaults)
 
     -- Add dynamic data to options
+    self:InitMounts()
     self:CombatLogSpellDBToOptions()
     self:SpellDBToOptions()
     self:ListDBToOptions()

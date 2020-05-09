@@ -79,7 +79,7 @@ function Verbose:Speak(msgData, substitutions, messagesTable)
         return
     end
     if not msgData.enabled then
-        self:SpeakDbgPrint("Event disabled")
+        self:SpeakDbgPrint("Speak event disabled")
         return
     end
 
@@ -130,11 +130,15 @@ function Verbose:Speak(msgData, substitutions, messagesTable)
             local emote = hash_EmoteTokenList[strupper(command)]
             if emote then
                 DoEmote(emote)
+                self:SpeakDbgPrint("EMOTE:", command)
                 return
+            else
+                self:SpeakDbgPrint("EMOTE skipped, not an emote:", emote)
             end
         end
         local inInstance = IsInInstance()
         if inInstance then
+            self:SpeakDbgPrint("In instance, speaking:", message)
             -- SendChatMessage("msg", "chatType", "language", "channel");
             SendChatMessage(message, "SAY");
         else
@@ -143,7 +147,7 @@ function Verbose:Speak(msgData, substitutions, messagesTable)
             Verbose:DisplayTempMessage(message)
 
             -- Emote workaround
-            self:SpeakDbgPrint("NOT IN INSTANCE, emoting instead :(")
+            self:SpeakDbgPrint("Not in instance, emoting:", message)
             SendChatMessage("dit : " .. message, "EMOTE")
         end
     end
