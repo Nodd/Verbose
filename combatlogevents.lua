@@ -12,6 +12,21 @@ Verbose.usedCombatLogEvents = {
     COMBAT_LOG_EVENT_UNFILTERED = { callback="CombatLog", category="combat", title="Combat log", icon=icon, classic=true },
 }
 
+local blacklist = {
+    SPELL_ENERGIZE = true,
+    SPELL_ABSORBED = true,
+    SPELL_PERIODIC_DAMAGE = true,
+    SPELL_PERIODIC_ENERGIZE = true,
+    SPELL_PERIODIC_MISSED = true,
+    SPELL_PERIODIC_HEAL = true,
+
+    -- TODO
+    DAMAGE_SHIELD = true,
+    SPELL_MISSED = true,
+    SPELL_DISPEL = true,
+    SPELL_SUMMON = true,
+}
+
 function Verbose:CombatLog(event)
     local rawEventInfo = { CombatLogGetCurrentEventInfo() }
 
@@ -19,7 +34,7 @@ function Verbose:CombatLog(event)
 
     -- The 11 first parameters are common to all events
     eventInfo.event = rawEventInfo[2]
-    if eventInfo.event == "SPELL_PERIODIC_DAMAGE" then
+    if blacklist[eventInfo.event] then
         return
     end
 
@@ -178,9 +193,6 @@ function Verbose:CategoryTree(eventInfo)
         tinsert(categories, "spellID#"..eventInfo.spellID)
         tinsert(categories, "auraEvent#REMOVED")
 
-    elseif eventInfo.event == "SPELL_ENERGIZE" then
-    elseif eventInfo.event == "SWING_MISSSED" then
-    elseif eventInfo.event == "SPELL_ABSORBED" then
     elseif eventInfo.event == "PARTY_KILL" then -- Has arguments sometimes ?
     else
         self:Print("Unknown combat log event:", eventInfo.event)
