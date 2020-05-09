@@ -68,7 +68,7 @@ end
 
 function Verbose:SpellName(spellID)
     local name = GetSpellInfo(tonumber(spellID))
-    if not name then return "" end
+    if not name then return "|cFFFFFFFF???|r" end
     -- Text in white like in tooltips
     return "|cFFFFFFFF" .. name .. "|r"
 end
