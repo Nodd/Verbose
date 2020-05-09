@@ -79,18 +79,22 @@ function Verbose:SetCombatLogArgs(eventInfo, rawEventInfo)
     if Verbose.starts_with(eventInfo.event, "SPELL_", "RANGE_") then
         eventInfo.spellID, eventInfo.spellName, eventInfo.school = unpack(rawEventInfo, suffixIndex)
         eventInfo.spellID = tostring(eventInfo.spellID)
-        suffixIndex = 15
+        suffixIndex = suffixIndex + 3
     elseif Verbose.starts_with(eventInfo.event, "ENVIRONMENTAL_") then
         eventInfo.environmentalType = unpack(rawEventInfo, suffixIndex)
-        eventInfo.spellID = "-1"  -- Fake spell ID
-        suffixIndex = 13
+        suffixIndex = suffixIndex + 1
     elseif Verbose.starts_with(eventInfo.event, "SWING_") then
         eventInfo.spellID = "6603"  -- Autoattack spell
     elseif Verbose.starts_with(eventInfo.event, "UNIT_") then
         eventInfo.recapID, eventInfo.unconsciousOnDeath = unpack(rawEventInfo, suffixIndex)
-        suffixIndex = 14
+        suffixIndex = suffixIndex + 2
     else
         eventInfo.spellID = "-2"  -- Fake spell ID
+    end
+
+    if eventInfo.event == "PARTY_KILL" then
+        eventInfo.arg1, eventInfo.arg2 = unpack(rawEventInfo, suffixIndex)
+        suffixIndex = suffixIndex + 2
     end
 
     -- Suffixes
@@ -149,6 +153,11 @@ function Verbose:CategoryTree(eventInfo)
         tinsert(categories, "combatLogCategory#damage")
         tinsert(categories, "castMode#"..eventInfo.castMode)
         tinsert(categories, "Swing")
+
+    elseif eventInfo.event == "SWING_MISSED" then
+        tinsert(categories, "combatLogCategory#damage")
+        tinsert(categories, "castMode#"..eventInfo.castMode)
+        tinsert(categories, "Swing missed")
 
     elseif eventInfo.event == "RANGE_DAMAGE" then
         tinsert(categories, "combatLogCategory#damage")
