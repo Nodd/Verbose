@@ -13,10 +13,14 @@ local tremove = tremove
 -- WoW globals
 local DoEmote = DoEmote
 local GetChatTypeIndex = GetChatTypeIndex
-local GetTime = GetTime
+local GetServerTime = GetServerTime
 local IsInInstance = IsInInstance
 local SendChatMessage = SendChatMessage
 local UIErrorsFrame = UIErrorsFrame
+
+-- Local variables
+local globalLastTime = 0
+local elapsedTimeForObsoleteMessage = 3
 
 function Verbose:SpeakDbgPrint(...)
     if self.db.profile.speakDebug then
@@ -101,17 +105,15 @@ function Verbose:Speak(msgData, substitutions, messagesTable)
     end
 
     -- Check global cooldown
-    local currentTime = GetTime()
-    local lastTime = self.db.profile.lastTime or 0
-    local elapsed = currentTime - lastTime
+    local currentTime = GetServerTime()
+    local elapsed = currentTime - globalLastTime
     if elapsed < self.db.profile.cooldown then
         self:SpeakDbgPrint("Event on global CD:", elapsed, "<", self.db.profile.cooldown)
         return
     end
 
     -- Check event cooldown
-    lastTime = msgData.lastTime or 0
-    elapsed = currentTime - lastTime
+    elapsed = currentTime - (msgData.lastTime or 0)
     if elapsed < msgData.cooldown then
         self:SpeakDbgPrint("Event on local CD:", elapsed, "<", self.db.profile.cooldown)
         return
@@ -136,7 +138,7 @@ function Verbose:Speak(msgData, substitutions, messagesTable)
 
     -- Update times
     msgData.lastTime = currentTime  -- Event CD
-    self.db.profile.lastTime = currentTime  -- Global CD
+    globalLastTime = currentTime  -- Global CD
 
     if self.db.profile.mute then
         self:DisplayTempMessage(message)
@@ -193,14 +195,14 @@ function Verbose:OpenWorldWorkaround()
         return
     end
 
-    local currentTime = GetTime()
+    local currentTime = GetServerTime()
     while #Verbose.queue >= 1 do
         -- Get older message
         local messageData = tremove(Verbose.queue, 1)
 
         -- Check obsolete
         local elapsed = currentTime - messageData.time
-        if elapsed < 5 then
+        if elapsed < elapsedTimeForObsoleteMessage then
             self:SpeakDbgPrint("Talk", elapsed, "seconds later")
             SendChatMessage(messageData.message, "SAY")
             break
