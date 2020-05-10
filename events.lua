@@ -34,10 +34,10 @@ Verbose.usedEvents = {
     -- },
 
     -- Death events
-    PLAYER_DEAD = { callback="ManageNoArgEvent", category="combat", name="Death", classic=true },
-    PLAYER_ALIVE = { callback="ManageNoArgEvent", category="combat", name="Return to life", classic=true },
-    PLAYER_UNGHOST = { callback="ManageNoArgEvent", category="combat", name="Return to life from ghost", classic=true },  -- From ghost to alive
-    RESURRECT_REQUEST = { callback="DUMMYEvent", category="combat", name="Resurrection request", classic=true },
+    PLAYER_DEAD = { callback="ManageNoArgEvent", category="combat", name="Death", order=20, classic=true },
+    PLAYER_ALIVE = { callback="ManageNoArgEvent", category="combat", name="Resurrection", order=30, classic=true },
+    -- PLAYER_UNGHOST: cf Verbose.usedEventsAlias
+    RESURRECT_REQUEST = { callback="DUMMYEvent", category="combat", name="Resurrection request", order=25, classic=true },
 
     -- Combat events
     -- UNIT_THREAT_LIST_UPDATE = { callback="DUMMYEvent", category=category, name=title, classic=false }, --not in Classic
@@ -78,6 +78,10 @@ Verbose.usedEvents = {
     TAXIMAP_OPENED = { callback="DUMMYEvent", category="npc", name="Taxi map", classic=true },
     TRAINER_SHOW = { callback="ManageNoArgEvent", category="npc", name="Trainer", classic=true },
 }
+Verbose.usedEventsAlias = {
+    -- Those events should be registered but are processed as another event from Verbose.usedEvents
+    PLAYER_UNGHOST = "PLAYER_ALIVE",
+}
 
 function Verbose:RegisterEvents()
     for event, eventData in pairs(Verbose.usedSpellEvents) do
@@ -85,6 +89,9 @@ function Verbose:RegisterEvents()
     end
     for event, eventData in pairs(Verbose.usedEvents) do
         self:RegisterEvent(event, eventData.callback)
+    end
+    for event, alias in pairs(Verbose.usedEventsAlias) do
+        self:RegisterEvent(event, Verbose.usedEvents[alias].callback)
     end
     for event, eventData in pairs(Verbose.usedCombatLogEvents) do
         self:RegisterEvent(event, eventData.callback)
@@ -122,6 +129,10 @@ function Verbose:ManageNoArgEvent(event, ...)
     local nbArgs = select("#", ...)
     if nbArgs > 0 then
         self:EventDbgPrint("NOARG event received", nbArgs, "args")
+    end
+
+    if Verbose.usedEventsAlias[event] then
+        event = Verbose.usedEventsAlias[event]
     end
 
     self:Speak(
