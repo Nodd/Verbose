@@ -125,12 +125,14 @@ function Verbose:Speak(msgData, substitutions, messagesTable)
         Verbose:DisplayTempMessage(message)
         self:Print("MUTED:", message)
     else
-        if strsub(message, 1, 1) == "/" then
+        if message:sub(1, 1) == "/" then
             local command = strmatch(message, "^(/[^%s]+)") or "";
+            local args = strmatch(message, "^/[^%s]+%s*(.*)$") or "";
+            print(message, command, args)
             local emote = hash_EmoteTokenList[strupper(command)]
             if emote then
-                DoEmote(emote)
-                self:SpeakDbgPrint("EMOTE:", command)
+                DoEmote(emote, args)
+                self:SpeakDbgPrint("EMOTE:", command, args)
                 return
             else
                 self:SpeakDbgPrint("EMOTE skipped, not an emote:", emote)
