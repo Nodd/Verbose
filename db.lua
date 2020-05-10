@@ -77,23 +77,6 @@ function Verbose:UpdateDefaultDB()
             messages = {},
         }
     end
-
-    for spellID, mountData in pairs(self.mountSpells) do
-        defaultDB.profile.spells[spellID] = {
-            UNIT_SPELLCAST_START = {
-                enabled = false,
-                cooldown = 10,
-                proba = 1,
-                messages = {},
-            },
-            UNIT_SPELLCAST_SUCCEEDED = {
-                enabled = false,
-                cooldown = 10,
-                proba = 1,
-                messages = { "/mountspecial" },
-            },
-        }
-    end
 end
 
 function Verbose:SetupDB()

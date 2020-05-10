@@ -14,7 +14,6 @@ local GetCurrentBindingSet = GetCurrentBindingSet
 local ReloadUI = ReloadUI
 
 local AceDBOptions = LibStub("AceDBOptions-3.0")
-local AceConsole = LibStub("AceConsole-3.0")
 local AceGUI = LibStub("AceGUI-3.0")
 local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
@@ -431,20 +430,7 @@ function Verbose:SelectOption(...)
     AceConfigDialog:SelectGroup(addonName, ...)
 end
 
-function Verbose:ManageOptions()
-    -- Get data from game and populaite self.options
-    self:InitSpellbook()
-    self:InitMounts()
-
-    -- Initialize dB
-    self:UpdateDefaultDB()
-    self:SetupDB()
-
-    -- Load DB to options
-    self:SpellDBToOptions()
-    self:CombatLogSpellDBToOptions()
-    self:ListDBToOptions()
-
+function Verbose:RegisterOptions()
     -- Add profile config tab to options
     self.options.args.profiles = AceDBOptions:GetOptionsTable(self.db)
     self.options.args.profiles.order = 40
@@ -487,15 +473,4 @@ function Verbose:LoadData(info)
         profile[k] = v
     end
     ReloadUI() -- TODO: more subtle behavior...
-end
-
-function Verbose:ChatCommand(input)
-    local arg1 = AceConsole:GetArgs(input, 1, 1)
-    if not arg1 then
-        self:ShowOptions()
-    elseif arg1 == "openworld" then
-        self:OpenWorldWorkaround()
-    else
-        AceConfigCmd:HandleCommand("verbose", "Verbose", input)
-    end
 end

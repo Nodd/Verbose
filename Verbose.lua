@@ -3,6 +3,7 @@ local addonName, Verbose = ...
 -- GLOBALS: CreateFrame
 
 LibStub("AceAddon-3.0"):NewAddon(Verbose, addonName, "AceConsole-3.0", "AceEvent-3.0", "AceSerializer-3.0")
+local AceConsole = LibStub("AceConsole-3.0")
 local LibDataBroker = LibStub("LibDataBroker-1.1")
 local LibDBIcon = LibStub("LibDBIcon-1.0")
 
@@ -10,31 +11,42 @@ Verbose.VerboseIconID = 2056011  -- ui_chat
 
 function Verbose:OnInitialize()
   -- Code that you want to run when the addon is first loaded goes here.
-    self:ManageOptions()
-
-    self:SetupMinimapButton()
-
-    -- Manage enabled state
-    self:SetEnabledState(self.db.profile.enabled)
-    if not self.db.profile.enabled then
-        self:OnDisable()
-    end
-
     self:RegisterEvent("SPELLS_CHANGED", "OnPostInitialize")
-end
 
-function Verbose:OnPostInitialize()
-    self:UnregisterEvent("SPELLS_CHANGED")
+    -- Initialize dB
+    self:UpdateDefaultDB()
+    self:SetupDB()
 
-    self:ManageOptions()
     self:RegisterChatCommand("verbose", "ChatCommand")
     self:RegisterChatCommand("verb", "ChatCommand")
+    self:SetupMinimapButton()
 
     -- Create invisible button for keybind callback
     self.BindingButton = CreateFrame("BUTTON", "VerboseOpenWorldWorkaroundBindingButton")
     self.BindingButton:SetScript("OnClick", function(btn, button, down)
         self:OpenWorldWorkaround()
     end)
+
+    -- Manage enabled state
+    self:SetEnabledState(self.db.profile.enabled)
+    if not self.db.profile.enabled then
+        self:OnDisable()
+    end
+end
+
+function Verbose:OnPostInitialize()
+    self:UnregisterEvent("SPELLS_CHANGED")
+
+    self:InitSpellbook()
+    self:InitMounts()
+
+    -- Load DB to options
+    self:SpellDBToOptions()
+    self:CombatLogSpellDBToOptions()
+    self:ListDBToOptions()
+
+    -- Populate self.options
+    self:RegisterOptions()
 end
 
 function Verbose:OnEnable()
@@ -88,4 +100,15 @@ function Verbose:OnLDBTooltip(tooltip)
     tooltip:AddLine("Right clic: Toggle options window", 1, 1, 1)
     tooltip:AddLine("Middle clic: Go to events configuration", 1, 1, 1)
     tooltip:Show()
+end
+
+function Verbose:ChatCommand(input)
+    local arg1 = AceConsole:GetArgs(input, 1, 1)
+    if not arg1 then
+        self:ShowOptions()
+    elseif arg1 == "openworld" then
+        self:OpenWorldWorkaround()
+    else
+        AceConfigCmd:HandleCommand("verbose", "Verbose", input)
+    end
 end
