@@ -16,7 +16,7 @@ Verbose.mountTypeString = {
     ["231"] = "WATER", -- Turtles
     ["232"] = "WATER", -- Abyssal / Vashj'ir Seahorse, 450% swim speed, zone limited
     ["241"] = "GROUND",  -- AQ40
-    ["242"] = "GHOST",  -- Spectral gryphon, hidden, used only while dead
+    ["242"] = "AIR",  -- Spectral gryphon, hidden, used only while dead
     ["247"] = "AIR", -- Red Flying Cloud
     ["248"] = "AIR",
     ["254"] = "WATER", -- Subdued Seahorse, 300% swim speed
@@ -25,10 +25,9 @@ Verbose.mountTypeString = {
     ["398"] = "AIR", -- Kua'fon's Harness
 }
 Verbose.mountTypeData = {
-    AIR = { name="Flying", icon=icon, desc=desc },
-    GROUND = { name="Ground", icon=icon, desc=desc },
-    WATER = { name="Water", icon=icon, desc=desc },
-    GHOST = { name="Ghost", icon=icon, desc=desc },
+    AIR = { name="Flying", icon=618976 },  -- icon_petfamily_flying
+    GROUND = { name="Ground", icon=618973 },  -- icon_petfamily_critter
+    WATER = { name="Water", icon=618981 },  -- icon_petfamily_water
 }
 Verbose.mountEvents = {
     UNIT_SPELLCAST_START = { name="Start casting", order=0 },
@@ -72,9 +71,8 @@ function Verbose:AddMountToOptions(spellID)
         mountsOptions.args[categoryTag] = {
             type = "group",
             name = mountTypeData.name,
-            icon = mountTypeData.name,
+            icon = mountTypeData.icon,
             iconCoords = Verbose.iconCropBorders,
-            desc = mountTypeData.name,
             args = {},
         }
     end
