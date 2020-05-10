@@ -1,5 +1,10 @@
 local addonName, Verbose = ...
 
+-- Lua functions
+local pairs = pairs
+local tonumber = tonumber
+local tostring = tostring
+
 -- Find next unused ID
 function Verbose:NextUnusedListID()
     -- IDs are stringifyed ints

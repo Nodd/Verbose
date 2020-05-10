@@ -1,5 +1,18 @@
 local addonName, Verbose = ...
 
+-- Lua functions
+local pairs = pairs
+local select = select
+
+-- WoW globals
+local GetGuildInfo = GetGuildInfo
+local UnitClass = UnitClass
+local UnitCreatureFamily = UnitCreatureFamily
+local UnitCreatureType = UnitCreatureType
+local UnitName = UnitName
+local UnitRace = UnitRace
+local UnitSex = UnitSex
+
 function Verbose:EventDbgPrint(...)
     if self.db.profile.eventDebug then
         self:Print("EVENT:", ...)

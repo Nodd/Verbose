@@ -1,5 +1,8 @@
 local addonName, Verbose = ...
 
+-- Lua functions
+local pairs = pairs
+
 local AceDB = LibStub("AceDB-3.0")
 
 local defaultDB = {

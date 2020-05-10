@@ -1,11 +1,25 @@
 local addonName, Verbose = ...
 
+-- GLOBALS: VerboseOptionsTableForDebug
+
+-- Lua functions
+local error = error
+local pairs = pairs
+local wipe = wipe
+
+-- WoW globals
+local SetBindingClick = SetBindingClick
+local SaveBindings = SaveBindings
+local GetCurrentBindingSet = GetCurrentBindingSet
+local ReloadUI = ReloadUI
+
 local AceDBOptions = LibStub("AceDBOptions-3.0")
 local AceConsole = LibStub("AceConsole-3.0")
 local AceGUI = LibStub("AceGUI-3.0")
 local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
+local AceConfigCmd = AceConfigCmdLibStub("AceConfigCmd-3.0")
 local LibDBIcon = LibStub("LibDBIcon-1.0")
 
 local spellsIconID = 134414  -- inv_misc_rune_01 (Hearthstone)
@@ -474,7 +488,7 @@ function Verbose:PrepareSaveData(info)
     self:UpdateOptionsGUI()
 end
 function Verbose:LoadData(info)
-    status, arg = self:Deserialize(displayedData)
+    local status, arg = self:Deserialize(displayedData)
     if not status then
         error("Data loading error: "..arg)
     end
@@ -487,12 +501,12 @@ function Verbose:LoadData(info)
 end
 
 function Verbose:ChatCommand(input)
-    arg1 = AceConsole:GetArgs(input, 1, 1)
+    local arg1 = AceConsole:GetArgs(input, 1, 1)
     if not arg1 then
         self:ShowOptions()
     elseif arg1 == "openworld" then
         Verbose:OpenWorldWorkaround()
     else
-        LibStub("AceConfigCmd-3.0"):HandleCommand("verbose", "Verbose", input)
+        AceConfigCmd:HandleCommand("verbose", "Verbose", input)
     end
 end

@@ -1,5 +1,13 @@
 local addonName, Verbose = ...
 
+-- Lua functions
+local pairs = pairs
+local type = type
+
+-- WoW globals
+local GetServerTime = GetServerTime
+local NORMAL_FONT_COLOR_CODE = NORMAL_FONT_COLOR_CODE
+
 function Verbose:AddCombatLogEventToOptions(optionGroupArgs, category)
     if not optionGroupArgs[category] then
         optionGroupArgs[category] = {

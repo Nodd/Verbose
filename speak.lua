@@ -1,5 +1,22 @@
 local addonName, Verbose = ...
 
+-- GLOBALS: hash_EmoteTokenList,
+
+-- Lua functions
+local fastrandom = fastrandom
+local ipairs = ipairs
+local pairs = pairs
+local tinsert = tinsert
+local tostring = tostring
+local tremove = tremove
+
+-- WoW globals
+local DoEmote = DoEmote
+local GetChatTypeIndex = GetChatTypeIndex
+local GetTime = GetTime
+local IsInInstance = IsInInstance
+local SendChatMessage = SendChatMessage
+local UIErrorsFrame = UIErrorsFrame
 
 function Verbose:SpeakDbgPrint(...)
     if self.db.profile.speakDebug then
@@ -126,10 +143,9 @@ function Verbose:Speak(msgData, substitutions, messagesTable)
         self:Print("MUTED:", message)
     else
         if message:sub(1, 1) == "/" then
-            local command = strmatch(message, "^(/[^%s]+)") or "";
-            local args = strmatch(message, "^/[^%s]+%s*(.*)$") or "";
-            print(message, command, args)
-            local emote = hash_EmoteTokenList[strupper(command)]
+            local command = message:match("^(/[^%s]+)") or "";
+            local args = message:match("^/[^%s]+%s*(.*)$") or "";
+            local emote = hash_EmoteTokenList[command:upper()]
             if emote then
                 DoEmote(emote, args)
                 self:SpeakDbgPrint("EMOTE:", command, args)
@@ -145,7 +161,7 @@ function Verbose:Speak(msgData, substitutions, messagesTable)
             SendChatMessage(message, "SAY");
         else
             -- Keybind workaround
-            table.insert(self.queue, { time = currentTime, message = message })
+            tinsert(self.queue, { time = currentTime, message = message })
             Verbose:DisplayTempMessage(message)
 
             -- Emote workaround
@@ -180,7 +196,7 @@ function Verbose:OpenWorldWorkaround()
     local currentTime = GetTime()
     while #Verbose.queue >= 1 do
         -- Get older message
-        local messageData = table.remove(Verbose.queue, 1)
+        local messageData = tremove(Verbose.queue, 1)
 
         -- Check obsolete
         local elapsed = currentTime - messageData.time

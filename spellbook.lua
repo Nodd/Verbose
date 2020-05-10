@@ -1,6 +1,20 @@
 local addonName, Verbose = ...
 -- Spellcasts are managed in Verbose:OnSpellcastEvent (spellevents.lua)
 
+-- Lua functions
+local ipairs = ipairs
+local tinsert = tinsert
+local tostring = tostring
+local wipe = wipe
+
+-- WoW globals
+local GetNumSpellTabs = GetNumSpellTabs
+local GetSpellBookItemInfo = GetSpellBookItemInfo
+local GetSpellBookItemName = GetSpellBookItemName
+local GetSpellTabInfo = GetSpellTabInfo
+local IsPassiveSpell = IsPassiveSpell
+local BOOKTYPE_SPELL = BOOKTYPE_SPELL
+
 Verbose.spellbookSpells = {}
 function Verbose:InitSpellbook(event)
     local spellbookOptions = self.options.args.events.args.spellbook
@@ -9,7 +23,7 @@ function Verbose:InitSpellbook(event)
 
     -- Scan spellbook and add spell structures
     for tabIndex = 1, GetNumSpellTabs() do
-        tabName, tabTexture, tabOffset, tabNumEntries, tabIsGuild, tabOffspecID = GetSpellTabInfo(tabIndex)
+        local tabName, tabTexture, tabOffset, tabNumEntries, tabIsGuild, tabOffspecID = GetSpellTabInfo(tabIndex)
 
         spellbookOptions.args[tostring(tabIndex)] = {
             type = "group",
@@ -22,7 +36,7 @@ function Verbose:InitSpellbook(event)
         tabIndex = tostring(tabIndex)
         local spellbookTabOptions = spellbookOptions.args[tostring(tabIndex)]
 
-        for index=tabOffset + 1, tabOffset + tabNumEntries do
+        for index = tabOffset + 1, tabOffset + tabNumEntries do
             local spellName, spellSubName = GetSpellBookItemName(index, BOOKTYPE_SPELL)
             local skillType, spellID = GetSpellBookItemInfo(index, BOOKTYPE_SPELL)
             local isPassive = IsPassiveSpell(spellID)

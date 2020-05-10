@@ -1,5 +1,7 @@
 local addonName, Verbose = ...
 
+-- GLOBALS: CreateFrame
+
 LibStub("AceAddon-3.0"):NewAddon(Verbose, addonName, "AceConsole-3.0", "AceEvent-3.0", "AceSerializer-3.0")
 local LibDataBroker = LibStub("LibDataBroker-1.1")
 local LibDBIcon = LibStub("LibDBIcon-1.0")
@@ -15,10 +17,10 @@ function Verbose:OnInitialize()
     -- Manage enabled state
     self:SetEnabledState(self.db.profile.enabled)
     if not self.db.profile.enabled then
-        Verbose:OnDisable()
+        self:OnDisable()
     end
 
-    Verbose:RegisterEvent("SPELLS_CHANGED", "OnPostInitialize")
+    self:RegisterEvent("SPELLS_CHANGED", "OnPostInitialize")
 end
 
 function Verbose:OnPostInitialize()

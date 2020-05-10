@@ -1,6 +1,15 @@
 local addonName, Verbose = ...
 -- Spellcasts are managed in Verbose:OnSpellcastEvent (spellevents.lua)
 
+-- Lua functions
+local wipe = wipe
+local ipairs = ipairs
+local tostring = tostring
+local pairs = pairs
+
+-- WoW globals
+local C_MountJournal = C_MountJournal
+
 Verbose.mountTypeString = {
     -- http://www.wowinterface.com/forums/showthread.php?p=294988#post294988
     ["230"] = "GROUND",
@@ -31,7 +40,7 @@ local playerOppositeFaction = UnitFactionGroup("player") == "Horde" and 1 or 0
 
 Verbose.mountSpells = {}
 function Verbose:InitMounts()
-    mountIDs = C_MountJournal.GetMountIDs()
+    local mountIDs = C_MountJournal.GetMountIDs()
     wipe(Verbose.mountSpells)
     for _, mountID in ipairs(mountIDs) do
         local creatureName, spellID, icon, _, _, _, isFavorite, _, faction, hideOnChar, isCollected = C_MountJournal.GetMountInfoByID(mountID)

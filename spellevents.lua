@@ -1,5 +1,11 @@
 local addonName, Verbose = ...
 
+-- Lua functions
+local tostring = tostring
+
+-- WoW globals
+local GetServerTime = GetServerTime
+
 Verbose.usedSpellEvents = {
     -- EVENT = {
     --     callback,  -- Function to call
@@ -72,7 +78,7 @@ function Verbose:OnSpellcastEvent(event, caster, target, spellID)
     -- Ignore events from others
     if caster ~= "player" and caster ~= "pet" then return end
 
-    spellName, iconTexture = self:SpellNameAndIconTexture(spellID)
+    local spellName, iconTexture = self:SpellNameAndIconTexture(spellID)
     spellID = tostring(spellID)
 
     -- Debug
@@ -86,7 +92,7 @@ function Verbose:OnSpellcastEvent(event, caster, target, spellID)
     self:Speak(msgData, {
         caster = caster,
         target = target,
-        spellname = spellname,
+        spellName = spellName,
         icon = nil
      })
 end

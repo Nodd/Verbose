@@ -1,5 +1,8 @@
 local addonName, Verbose = ...
 
+-- Lua functions
+local pairs = pairs
+
 function Verbose:AddSpellToOptions(spellID, event)
     -- Check spell book
     if Verbose:CheckAndAddSpellbookToOptions(spellID, event) then
@@ -11,7 +14,7 @@ function Verbose:AddSpellToOptions(spellID, event)
 
     else
         -- Insert spell options
-        spellOptionsGroup = self:AddSpellOptionsGroup(
+        local spellOptionsGroup = self:AddSpellOptionsGroup(
             self.options.args.events.args.spells, spellID)
         -- Insert event options for this spell
         self:AddSpellEventOptions(spellOptionsGroup, event)

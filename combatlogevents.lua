@@ -1,5 +1,21 @@
 local addonName, Verbose = ...
 
+-- Lua functions
+local bit = bit
+local ipairs = ipairs
+local pairs = pairs
+local tinsert = tinsert
+local tonumber = tonumber
+local tostring = tostring
+local type = type
+local unpack = unpack
+local wipe = wipe
+
+-- WoW globals
+local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
+local GetServerTime = GetServerTime
+local COMBATLOG_OBJECT_REACTION_MASK = COMBATLOG_OBJECT_REACTION_MASK
+
 Verbose.usedCombatLogEvents = {
     -- EVENT = {
     --     callback,  -- Function to call
@@ -210,7 +226,7 @@ function Verbose:CategoryTree(eventInfo)
 end
 
 function Verbose.CategoryTypeValue(category)
-    local typ, id = string.match(category, "^(.+)#(.+)$") -- use strsplit ?
+    local typ, id = category:match(category, "^(.+)#(.+)$") -- use strsplit ?
     return typ, id
 end
 

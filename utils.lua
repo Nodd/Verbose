@@ -1,21 +1,36 @@
 local addonName, Verbose = ...
 
+-- Lua functions
+local format = format
+local mod = mod
+local select = select
+local tconcat = table.concat
+local tinsert = tinsert
+local tonumber = tonumber
+local wipe = wipe
+
+-- WoW globals
+local GetSpellDescription = GetSpellDescription
+local GetSpellInfo = GetSpellInfo
+local FONT_COLOR_CODE_CLOSE = FONT_COLOR_CODE_CLOSE
+local NORMAL_FONT_COLOR_CODE = NORMAL_FONT_COLOR_CODE
+
 
 -------------------------------------------------------------------------------
 -- Multiline text and table
 -------------------------------------------------------------------------------
 
 function Verbose:TableToText(t)
-    return table.concat(t, "\n")
+    return tconcat(t, "\n")
 end
 
 function Verbose:TextToTable(s, t)
     -- clear table
-    table.wipe(t)
+    wipe(t)
 
     -- Split on \n, skipping empty lines
     for v in s:gmatch("([^\n]+)") do
-        table.insert(t, v)
+        tinsert(t, v)
     end
 end
 
@@ -26,7 +41,7 @@ end
 
 function Verbose.starts_with(str, ...)
     for i = 1, select("#",...) do
-        start = select(i, ...)
+        local start = select(i, ...)
         if str:sub(1, #start) == start then
             return true
         end
@@ -36,7 +51,7 @@ end
 
 function Verbose.ends_with(str, ...)
     for i = 1, select("#",...) do
-        ending = select(i, ...)
+        local ending = select(i, ...)
         if ending == "" or str:sub(-#ending) == ending then
             return true
         end

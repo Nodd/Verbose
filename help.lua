@@ -1,5 +1,18 @@
 local addonName, Verbose = ...
 
+-- Lua functions
+local assert = assert
+local error = error
+local ipairs = ipairs
+local type = type
+local wipe = wipe
+local _G = _G
+
+-- WoW globals
+local EmoteList = EmoteList
+local TextEmoteSpeechList = TextEmoteSpeechList
+local FONT_COLOR_CODE_CLOSE = FONT_COLOR_CODE_CLOSE
+local NORMAL_FONT_COLOR_CODE = NORMAL_FONT_COLOR_CODE
 
 local function GenerateEmoteCommandsHelp()
     local typ
