@@ -1,6 +1,59 @@
 local addonName, Verbose = ...
 
 
+local function GenerateEmoteCommandsHelp()
+    local typ
+    local txt = {
+        anim = "",
+        speech = "",
+        nothing = "",
+    }
+    local cmds = {}
+    for i = 1, 600 do -- local MAXEMOTEINDEX=522 (in WoW 8.3) in ChatFrame.lua
+        local token = _G["EMOTE"..i.."_TOKEN"]
+        if token then
+            local found = false
+            -- Find emote type
+            for _, e in ipairs(EmoteList) do  -- Incomplete list defined in ChatFrame.lua
+                if e == token then
+                    typ = "anim"
+                    found = true
+                    break
+                end
+            end
+            if not found then
+                for _, e in ipairs(TextEmoteSpeechList) do  -- Incomplete list defined in ChatFrame.lua
+                    if e == token then
+                        typ = "speech"
+                        found = true
+                        break
+                    end
+                end
+            end
+            if not found then
+                typ = "nothing"
+            end
+
+            -- Find commands
+            local j = 1
+            local cmdString = _G["EMOTE"..i.."_CMD"..j]
+            while cmdString do
+                -- Avoid duplicates
+                if not cmds[cmdString] then
+                    txt[typ] = txt[typ]..cmdString.." "
+                end
+                cmds[cmdString] = true
+                j = j + 1
+                cmdString = _G["EMOTE"..i.."_CMD"..j]
+            end
+            txt[typ] = txt[typ]:sub(1,-2).."\n"  -- Remove trailing space
+            wipe(cmds)
+        end
+    end
+    return txt.anim:sub(1,-2), txt.speech:sub(1,-2), txt.nothing:sub(1,-2)
+end
+local txt_anim, txt_speech, txt_nothing = GenerateEmoteCommandsHelp()
+
 local helpData = {
     "Help",
     {
@@ -43,6 +96,19 @@ local helpData = {
             "\n|cFFFF0000Don't forget to validate the modifications with the 'Accept' button !|r"
         },
     },
+    {
+        "Messages",
+        {
+            "Emotes",
+            "Emotes can be used instead of text. Here is a list of existing emotes:",
+            "Known emotes with animation:",
+            txt_anim,
+            "Known emotes with sound:",
+            txt_speech,
+            "Other emotes (wich may have animation or sound):",
+            txt_nothing,
+        }
+    },
 }
 
 
@@ -81,7 +147,6 @@ local function InsertHelp(thisHelpData, optionGroupTable)
         end
     end
 end
-
 
 function Verbose:GenerateHelpOptionTable()
     local helpConfig = {
