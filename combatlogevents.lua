@@ -100,7 +100,7 @@ function Verbose:SetCombatLogArgs(eventInfo, rawEventInfo)
         eventInfo.environmentalType = unpack(rawEventInfo, suffixIndex)
         suffixIndex = suffixIndex + 1
     elseif Verbose.starts_with(eventInfo.event, "SWING_") then
-        eventInfo.spellID = "6603"  -- Autoattack spell
+        eventInfo.spellID = "6603"  -- Autoattack spell, useless ?
     elseif Verbose.starts_with(eventInfo.event, "UNIT_") then
         eventInfo.recapID, eventInfo.unconsciousOnDeath = unpack(rawEventInfo, suffixIndex)
         suffixIndex = suffixIndex + 2
