@@ -153,7 +153,7 @@ Verbose.options = {
                 spellbook = {
                     type = "group",
                     name = "Spellbook",
-                    order = 1,
+                    order = 3,
                     icon = spellbookIcon,
                     iconCoords = Verbose.iconCropBorders,
                     childGroups = "tree",
@@ -175,7 +175,7 @@ Verbose.options = {
                 mounts = {
                     type = "group",
                     name = "Mounts",
-                    order = 3,
+                    order = 1,
                     icon = mountsIconID,
                     iconCoords = Verbose.iconCropBorders,
                     childGroups = "tree",
@@ -219,7 +219,7 @@ Verbose.options = {
                 spells = {
                     type = "group",
                     name = "Spells, Items...",
-                    order = 10,
+                    order = 20,
                     icon = spellsIconID,
                     iconCoords = Verbose.iconCropBorders,
                     childGroups = "tree",
@@ -241,7 +241,7 @@ Verbose.options = {
                 combat = {
                     type = "group",
                     name = "Combat",
-                    order = 20,
+                    order = 10,
                     icon = combatIconID,
                     iconCoords = Verbose.iconCropBorders,
                     childGroups = "tree",
@@ -359,17 +359,11 @@ Verbose.options = {
 
 VerboseOptionsTableForDebug = Verbose.options
 
-function Verbose:populateEvent(parent, event, title, icon)
-    if not title then
-        title = event:lower():gsub("_", " ")
-        title = title:sub(1,1):upper() .. title:sub(2)
-    end
-
-    self.options.args.events.args[parent].args[event] = {
+function Verbose:populateEvent(event, eventData)
+    self.options.args.events.args[eventData.category].args[event] = {
         type = "group",
-        name = title,
-        icon = icon,
-        iconCoords = Verbose.iconCropBorders,
+        name = eventData.name,
+        order = eventData.order,
         args = {
             enable = {
                 type = "toggle",
@@ -418,12 +412,7 @@ end
 
 -- Populate events config
 for event, eventData in pairs(Verbose.usedEvents) do
-    Verbose:populateEvent(
-        eventData.category,
-        event,
-        eventData.title,
-        eventData.icon
-    )
+    Verbose:populateEvent(event, eventData)
 end
 
 -- Insert help
