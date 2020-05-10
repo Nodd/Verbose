@@ -9,6 +9,7 @@ local wipe = wipe
 
 -- WoW globals
 local GetNumSpellTabs = GetNumSpellTabs
+local GetProfessions = GetProfessions
 local GetSpellBookItemInfo = GetSpellBookItemInfo
 local GetSpellBookItemName = GetSpellBookItemName
 local GetSpellTabInfo = GetSpellTabInfo
@@ -21,8 +22,19 @@ function Verbose:InitSpellbook(event)
 
     wipe(Verbose.spellbookSpells)
 
-    -- Scan spellbook and add spell structures
+    local allTabs = {}
     for tabIndex = 1, GetNumSpellTabs() do
+        tinsert(allTabs, tabIndex)
+    end
+    local prof1, prof2, archaeology, fishing, cooking = GetProfessions()
+    if prof1 then tinsert(allTabs, prof1) end
+    if prof2 then tinsert(allTabs, prof2) end
+    if archaeology then tinsert(allTabs, archaeology) end
+    if fishing then tinsert(allTabs, fishing) end
+    if cooking then tinsert(allTabs, cooking) end
+
+    -- Scan spellbook and add spell structures
+    for _, tabIndex in ipairs(allTabs) do
         local tabName, tabTexture, tabOffset, tabNumEntries, tabIsGuild, tabOffspecID = GetSpellTabInfo(tabIndex)
 
         spellbookOptions.args[tostring(tabIndex)] = {
