@@ -53,8 +53,8 @@ function Verbose:AddSpellEventOptions(spellOptionsGroup, event)
                     name = "Enable",
                     order = 10,
                     width = "full",
-                    get = function(info) return self:SpellEventData(info).enabled end,
-                    set = function(info, value) self:SpellEventData(info).enabled = value end,
+                    get = "GetSpellEventEnabled",
+                    set = "SetSpellEventEnabled",
                 },
                 proba = {
                     type = "range",
@@ -64,8 +64,8 @@ function Verbose:AddSpellEventOptions(spellOptionsGroup, event)
                     min = 0,
                     max = 1,
                     bigStep = 0.05,
-                    get = function(info) return self:SpellEventData(info).proba end,
-                    set = function(info, value) self:SpellEventData(info).proba = value end,
+                    get = "GetSpellEventProba",
+                    set = "SetSpellEventProba",
                 },
                 cooldown = {
                     type = "range",
@@ -75,8 +75,8 @@ function Verbose:AddSpellEventOptions(spellOptionsGroup, event)
                     max = 3600,
                     softMax = 60,
                     bigStep = 1,
-                    get = function(info) return self:SpellEventData(info).cooldown end,
-                    set = function(info, value) self:SpellEventData(info).cooldown = value end,
+                    get = "GetSpellEventCooldown",
+                    set = "SetSpellEventCooldown",
                 },
                 list = {
                     type = "input",
@@ -84,10 +84,8 @@ function Verbose:AddSpellEventOptions(spellOptionsGroup, event)
                     order = 40,
                     multiline = Verbose.multilineHeightTab,
                     width = "full",
-                    get = function(info)
-                        return Verbose:TableToText(self:SpellEventData(info).messages)
-                    end,
-                    set = function(info, value) self:TextToTable(value, self:SpellEventData(info).messages) end,
+                    get = "GetSpellEventMessages",
+                    set = "SetSpellEventMessages",
                 },
             },
         }
@@ -97,6 +95,30 @@ end
 -- Return spell and event data for callbacks from info arg
 function Verbose:SpellEventData(info)
     return self.db.profile.spells[info[#info - 2]][info[#info - 1]]
+end
+function Verbose:GetSpellEventEnabled(info)
+    return self:SpellEventData(info).enabled
+end
+function Verbose:SetSpellEventEnabled(info, value)
+    self:SpellEventData(info).enabled = value
+end
+function Verbose:GetSpellEventProba(info)
+    return self:SpellEventData(info).proba
+end
+function Verbose:SetSpellEventProba(info, value)
+    self:SpellEventData(info).proba = value
+end
+function Verbose:GetSpellEventCooldown(info)
+    return self:SpellEventData(info).cooldown
+end
+function Verbose:SetSpellEventCooldown(info, value)
+    self:SpellEventData(info).cooldown = value
+end
+function Verbose:GetSpellEventMessages(info)
+    return Verbose:TableToText(self:SpellEventData(info).messages)
+end
+function Verbose:SetSpellEventMessages(info, value)
+    self:TextToTable(value, self:SpellEventData(info).messages)
 end
 
 -- Load saved events to options table
