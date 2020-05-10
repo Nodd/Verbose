@@ -226,7 +226,7 @@ function Verbose:CategoryTree(eventInfo)
 end
 
 function Verbose.CategoryTypeValue(category)
-    local typ, id = category:match(category, "^(.+)#(.+)$") -- use strsplit ?
+    local typ, id = category:match("^(.+)#(.+)$") -- use strsplit ?
     return typ, id
 end
 
