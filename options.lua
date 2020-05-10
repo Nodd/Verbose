@@ -429,9 +429,15 @@ function Verbose:SelectOption(...)
 end
 
 function Verbose:ManageOptions()
-    -- Add dynamic data to options
+    -- Get data from game and populaite self.options
     self:InitSpellbook()
     self:InitMounts()
+
+    -- Initialize dB
+    self:UpdateDefaultDB()
+    self:SetupDB()
+
+    -- Load DB to options
     self:SpellDBToOptions()
     self:CombatLogSpellDBToOptions()
     self:ListDBToOptions()

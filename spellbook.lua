@@ -4,7 +4,6 @@ local addonName, Verbose = ...
 Verbose.spellbookSpells = {}
 function Verbose:InitSpellbook(event)
     local spellbookOptions = self.options.args.events.args.spellbook
-    local spellbookDB = self.db.profile.spellbook
 
     wipe(Verbose.spellbookSpells)
 
@@ -35,9 +34,6 @@ function Verbose:InitSpellbook(event)
                     Verbose.spellbookSpells[spellID] = {}
                 end
                 tinsert(Verbose.spellbookSpells[spellID], tabIndex)
-
-                -- Add in DB
-                --spellbookDB
 
                 -- Add optionsGroup
                 local spellOptionsGroup = self:AddSpellOptionsGroup(spellbookTabOptions, spellID)

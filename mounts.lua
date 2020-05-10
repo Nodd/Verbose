@@ -31,7 +31,6 @@ local playerOppositeFaction = UnitFactionGroup("player") == "Horde" and 1 or 0
 
 Verbose.mountSpells = {}
 function Verbose:InitMounts()
-    local spellsDB = self.db.profile.spells
     mountIDs = C_MountJournal.GetMountIDs()
     wipe(Verbose.mountSpells)
     for _, mountID in ipairs(mountIDs) do
@@ -41,22 +40,6 @@ function Verbose:InitMounts()
             mountTypeID = tostring(mountTypeID)
             local category = Verbose.mountTypeString[mountTypeID]
             spellID = tostring(spellID)
-            if not spellsDB[spellID] then
-                spellsDB[spellID] = {
-                    UNIT_SPELLCAST_START = {
-                        enabled = false,
-                        cooldown = 10,
-                        proba = 1,
-                        messages = {},
-                    },
-                    UNIT_SPELLCAST_SUCCEEDED = {
-                        enabled = false,
-                        cooldown = 10,
-                        proba = 1,
-                        messages = { "/mountspecial" },
-                    },
-                }
-            end
             Verbose.mountSpells[spellID] = {
                 name=creatureName,
                 icon=icon,

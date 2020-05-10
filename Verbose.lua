@@ -8,7 +8,6 @@ Verbose.VerboseIconID = 2056011  -- ui_chat
 
 function Verbose:OnInitialize()
   -- Code that you want to run when the addon is first loaded goes here.
-    self:SetupDB()
     self:ManageOptions()
 
     self:SetupMinimapButton()

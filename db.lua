@@ -65,13 +65,32 @@ local defaultDB = {
 }
 
 -- Populate events
-for event, eventData in pairs(Verbose.usedEvents) do
-    defaultDB.profile.events[event] = {
-        enabled = false,
-        proba = 1,
-        cooldown = 1,
-        messages = {},
-    }
+function Verbose:UpdateDefaultDB()
+    for event, eventData in pairs(self.usedEvents) do
+        defaultDB.profile.events[event] = {
+            enabled = false,
+            proba = 1,
+            cooldown = 1,
+            messages = {},
+        }
+    end
+
+    for spellID, mountData in pairs(self.mountSpells) do
+        defaultDB.profile.spells[spellID] = {
+            UNIT_SPELLCAST_START = {
+                enabled = false,
+                cooldown = 10,
+                proba = 1,
+                messages = {},
+            },
+            UNIT_SPELLCAST_SUCCEEDED = {
+                enabled = false,
+                cooldown = 10,
+                proba = 1,
+                messages = { "/mountspecial" },
+            },
+        }
+    end
 end
 
 function Verbose:SetupDB()
