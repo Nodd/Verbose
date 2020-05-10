@@ -126,7 +126,7 @@ function Verbose:ManageNoArgEvent(event, ...)
 
     self:Speak(
         self.db.profile.events[event],
-        Verbose:GlobalSubstitutions()
+        self:GlobalSubstitutions()
     )
 end
 
@@ -139,7 +139,7 @@ function Verbose:RESURRECT_REQUEST(event, caster)
     self:EventDbgPrint(event, caster)
 
     local msgData = self.db.profile.events[event]
-    local substitutions = Verbose:GlobalSubstitutions()
+    local substitutions = self:GlobalSubstitutions()
     substitutions.caster = caster
     self:Speak(msgData, substitutions)
 end

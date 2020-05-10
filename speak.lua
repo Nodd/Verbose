@@ -139,7 +139,7 @@ function Verbose:Speak(msgData, substitutions, messagesTable)
     self.db.profile.lastTime = currentTime  -- Global CD
 
     if self.db.profile.mute then
-        Verbose:DisplayTempMessage(message)
+        self:DisplayTempMessage(message)
         self:Print("MUTED:", message)
     else
         if message:sub(1, 1) == "/" then
@@ -162,7 +162,7 @@ function Verbose:Speak(msgData, substitutions, messagesTable)
         else
             -- Keybind workaround
             tinsert(self.queue, { time = currentTime, message = message })
-            Verbose:DisplayTempMessage(message)
+            self:DisplayTempMessage(message)
 
             -- Emote workaround
             self:SpeakDbgPrint("Not in instance, emoting:", message)

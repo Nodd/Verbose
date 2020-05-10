@@ -66,8 +66,8 @@ function Verbose:CombatLog(event)
     -- eventInfo.destRaidFlags = rawEventInfo[11]  -- ?
 
     -- Computed values
-    eventInfo.destReaction = Verbose:FlagToReaction(eventInfo.destFlags)
-    eventInfo.sourceReaction = Verbose:FlagToReaction(eventInfo.sourceFlags)
+    eventInfo.destReaction = self:FlagToReaction(eventInfo.destFlags)
+    eventInfo.sourceReaction = self:FlagToReaction(eventInfo.sourceFlags)
 
     -- Return early if the player is not involved in the event
     -- TODO: What about the pet(s) ?
@@ -238,7 +238,7 @@ function Verbose:CategoryName(category)
     else
         value = self.categoryData[typ](id).name
         if type(value) == "function" then
-            value = Verbose:SpellName(id)
+            value = self:SpellName(id)
         end
     end
     return value
@@ -267,15 +267,15 @@ Verbose.combatLogCastModes = {
 }
 
 function Verbose:CombatLogCastMode(eventInfo)
-    if Verbose:NameIsPlayer(eventInfo.destName) then
-        if Verbose:NameIsPlayer(eventInfo.sourceName) then
+    if self:NameIsPlayer(eventInfo.destName) then
+        if self:NameIsPlayer(eventInfo.sourceName) then
             return "self"
         elseif eventInfo.event == "ENVIRONMENTAL_DAMAGE" then
             return "receivedHarm"
         else
             return "received"..eventInfo.sourceReaction
         end
-    elseif Verbose:NameIsPlayer(eventInfo.sourceName) then
+    elseif self:NameIsPlayer(eventInfo.sourceName) then
         if eventInfo.destName then
             return "done"..eventInfo.destReaction
         else

@@ -408,7 +408,7 @@ function Verbose:populateEvent(parent, event, title, icon)
                 multiline = Verbose.multilineHeightNoTab,
                 width = "full",
                 get = function(info)
-                    return Verbose:TableToText(self:EventData(info).messages)
+                    return self:TableToText(self:EventData(info).messages)
                 end,
                 set = function(info, value) self:TextToTable(value, self:EventData(info).messages) end,
             },
@@ -505,7 +505,7 @@ function Verbose:ChatCommand(input)
     if not arg1 then
         self:ShowOptions()
     elseif arg1 == "openworld" then
-        Verbose:OpenWorldWorkaround()
+        self:OpenWorldWorkaround()
     else
         AceConfigCmd:HandleCommand("verbose", "Verbose", input)
     end

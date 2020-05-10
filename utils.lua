@@ -99,7 +99,7 @@ function Verbose:SpellNameAndIconTexture(spellID)
     local name, _, iconID = GetSpellInfo(tonumber(spellID))
     if not name then return "", "" end
     -- Text in white like in tooltips
-    return "|cFFFFFFFF" .. name .. "|r", Verbose:IconTextureFromID(iconID)
+    return "|cFFFFFFFF" .. name .. "|r", self:IconTextureFromID(iconID)
 end
 
 function Verbose:SpellIconID(spellID)
@@ -109,7 +109,7 @@ end
 
 function Verbose:SpellIconTexture(spellID)
     local _, _, iconID = GetSpellInfo(tonumber(spellID))
-    return Verbose:IconTextureFromID(iconID)
+    return self:IconTextureFromID(iconID)
 end
 
 function Verbose:SpellDescription(spellID)

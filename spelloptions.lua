@@ -5,11 +5,11 @@ local pairs = pairs
 
 function Verbose:AddSpellToOptions(spellID, event)
     -- Check spell book
-    if Verbose:CheckAndAddSpellbookToOptions(spellID, event) then
+    if self:CheckAndAddSpellbookToOptions(spellID, event) then
         return
 
     -- Check Mounts
-    elseif Verbose:CheckAndAddMountToOptions(spellID, event) then
+    elseif self:CheckAndAddMountToOptions(spellID, event) then
         return
 
     else
@@ -118,7 +118,7 @@ function Verbose:SetSpellEventCooldown(info, value)
     self:SpellEventData(info).cooldown = value
 end
 function Verbose:GetSpellEventMessages(info)
-    return Verbose:TableToText(self:SpellEventData(info).messages)
+    return self:TableToText(self:SpellEventData(info).messages)
 end
 function Verbose:SetSpellEventMessages(info, value)
     self:TextToTable(value, self:SpellEventData(info).messages)

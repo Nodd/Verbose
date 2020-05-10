@@ -40,7 +40,7 @@ end
 function Verbose:OnEnable()
     -- Called when the addon is enabled
     self.db.profile.enabled = true
-    Verbose:UpdateOptionsGUI()
+    self:UpdateOptionsGUI()
     self:RegisterEvents()
     self.LDB.iconR = 0
     self.LDB.iconG = 1
@@ -49,7 +49,7 @@ end
 function Verbose:OnDisable()
     -- Called when the addon is disabled
     self.db.profile.enabled = false
-    Verbose:UpdateOptionsGUI()
+    self:UpdateOptionsGUI()
     --self:UnregisterEvents()
     self:UnregisterAllEvents()
     self.LDB.iconR = 1
@@ -70,9 +70,9 @@ end
 function Verbose:OnLDBClick(_, button)
     if button == "LeftButton" then
         if self.db.profile.enabled then
-            Verbose:OnDisable()
+            self:OnDisable()
         else
-            Verbose:OnEnable()
+            self:OnEnable()
         end
     elseif button == "MiddleButton" then
         self:ToggleOptions()

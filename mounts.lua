@@ -56,7 +56,7 @@ function Verbose:InitMounts()
                 order=(not isFavorite) and 1 or 0,
                 categoryID=tostring(mountTypeID),
             }
-            Verbose:AddMountToOptions(spellID)
+            self:AddMountToOptions(spellID)
         end
     end
 end
