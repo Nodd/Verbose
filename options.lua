@@ -388,7 +388,7 @@ function Verbose:populateEvent(event, eventData)
                 type = "range",
                 name = "Message cooldown (s)",
                 order = 30,
-                min = 1,
+                min = 0,
                 max = 3600,
                 softMax = 60,
                 bigStep = 1,
