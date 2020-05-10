@@ -20,6 +20,7 @@ function Verbose:OnInitialize()
 
     self:RegisterChatCommand("verbose", "ChatCommand")
     self:RegisterChatCommand("verb", "ChatCommand")
+    self:RegisterChatCommand("vw", "OpenWorldWorkaround")
     self:SetupMinimapButton()
 
     -- Create invisible button for keybind callback
