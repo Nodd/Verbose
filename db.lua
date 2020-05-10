@@ -1,6 +1,8 @@
 local addonName, Verbose = ...
 
-Verbose.defaults = {
+local AceDB = LibStub("AceDB-3.0")
+
+local defaultDB = {
     profile = {
         enabled = true,
         eventDebug = false,
@@ -52,9 +54,6 @@ Verbose.defaults = {
             --     },
             -- },
         },
-        mounts = {
-            -- Same as spells
-        },
         lists = {
             -- Populated dynamically
             -- listID = {
@@ -67,10 +66,15 @@ Verbose.defaults = {
 
 -- Populate events
 for event, eventData in pairs(Verbose.usedEvents) do
-    Verbose.defaults.profile.events[event] = {
+    defaultDB.profile.events[event] = {
         enabled = false,
         proba = 1,
         cooldown = 1,
         messages = {},
     }
+end
+
+function Verbose:SetupDB()
+    -- Load saved config
+    self.db = AceDB:New("VerboseDB", defaultDB)
 end

@@ -3,6 +3,7 @@
     <Script file="Verbose.lua"/>  <!-- No dependency -->
     <Script file="speak.lua"/>  <!-- No dependency -->
     <Script file="spelloptions.lua"/>  <!-- No dependency -->
+    <Script file="spellbook.lua"/>  <!-- No dependency -->
     <Script file="mounts.lua"/>  <!-- No dependency -->
     <Script file="lists.lua"/>  <!-- No dependency -->
     <Script file="events.lua"/>  <!-- No dependency -->

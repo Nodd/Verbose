@@ -1,5 +1,6 @@
 local addonName, Verbose = ...
 
+local AceDBOptions = LibStub("AceDBOptions-3.0")
 local AceConsole = LibStub("AceConsole-3.0")
 local AceGUI = LibStub("AceGUI-3.0")
 local AceConfig = LibStub("AceConfig-3.0")
@@ -11,6 +12,8 @@ local spellsIconID = 134414  -- inv_misc_rune_01 (Hearthstone)
 local combatIconID = 132349  -- ability_warrior_offensivestance
 local npcIconID = 2056011  -- ability_warrior_offensivestance
 local achievementsIconID = 236670  -- ui_chat
+local spellbookIcon = 133741  -- inv_misc_book_09
+local mountsIconID = "Interface\\Icons\\MountJournalPortrait"
 
 local displayedData = ""
 
@@ -133,11 +136,33 @@ Verbose.options = {
             order = 20,
             childGroups = "tree",
             args = {
+                spellbook = {
+                    type = "group",
+                    name = "Spellbook",
+                    order = 1,
+                    icon = spellbookIcon,
+                    iconCoords = Verbose.iconCropBorders,
+                    childGroups = "tree",
+                    args = {
+                        title = {
+                            type = "description",
+                            name = Verbose:IconTextureBorderlessFromID(spellbookIcon) .. " Spell book",
+                            fontSize = "large",
+                            order = 0,
+                        },
+                        info = {
+                            type = "description",
+                            name = "All spellbook spells.",
+                            fontSize = "medium",
+                            order = 1,
+                        },
+                    },
+                },
                 mounts = {
                     type = "group",
                     name = "Mounts",
-                    order = 1,
-                    -- icon = spellsIconID,
+                    order = 3,
+                    icon = mountsIconID,
                     iconCoords = Verbose.iconCropBorders,
                     childGroups = "tree",
                     args = {
@@ -404,17 +429,15 @@ function Verbose:SelectOption(...)
 end
 
 function Verbose:ManageOptions()
-    -- Load saved config
-    self.db = LibStub("AceDB-3.0"):New("VerboseDB", self.defaults)
-
     -- Add dynamic data to options
+    self:InitSpellbook()
     self:InitMounts()
-    self:CombatLogSpellDBToOptions()
     self:SpellDBToOptions()
+    self:CombatLogSpellDBToOptions()
     self:ListDBToOptions()
 
     -- Add profile config tab to options
-    self.options.args.profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db)
+    self.options.args.profiles = AceDBOptions:GetOptionsTable(self.db)
     self.options.args.profiles.order = 40
 
     -- Register options
@@ -422,14 +445,6 @@ function Verbose:ManageOptions()
         addonName,
         self.options
     )
-    self:RegisterChatCommand("verbose", "ChatCommand")
-    self:RegisterChatCommand("verb", "ChatCommand")
-
-    -- Create invisible button for keybind callback
-    self.BindingButton = CreateFrame("BUTTON", "VerboseOpenWorldWorkaroundBindingButton")
-    self.BindingButton:SetScript("OnClick", function(btn, button, down)
-        self:OpenWorldWorkaround()
-    end)
 end
 
 function Verbose:ShowOptions()

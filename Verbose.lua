@@ -8,7 +8,7 @@ Verbose.VerboseIconID = 2056011  -- ui_chat
 
 function Verbose:OnInitialize()
   -- Code that you want to run when the addon is first loaded goes here.
-
+    self:SetupDB()
     self:ManageOptions()
 
     self:SetupMinimapButton()
@@ -18,6 +18,22 @@ function Verbose:OnInitialize()
     if not self.db.profile.enabled then
         Verbose:OnDisable()
     end
+
+    Verbose:RegisterEvent("SPELLS_CHANGED", "OnPostInitialize")
+end
+
+function Verbose:OnPostInitialize()
+    self:UnregisterEvent("SPELLS_CHANGED")
+
+    self:ManageOptions()
+    self:RegisterChatCommand("verbose", "ChatCommand")
+    self:RegisterChatCommand("verb", "ChatCommand")
+
+    -- Create invisible button for keybind callback
+    self.BindingButton = CreateFrame("BUTTON", "VerboseOpenWorldWorkaroundBindingButton")
+    self.BindingButton:SetScript("OnClick", function(btn, button, down)
+        self:OpenWorldWorkaround()
+    end)
 end
 
 function Verbose:OnEnable()

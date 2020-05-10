@@ -73,22 +73,14 @@ function Verbose:OnSpellcastEvent(event, caster, target, spellID)
     if caster ~= "player" and caster ~= "pet" then return end
 
     spellName, iconTexture = self:SpellNameAndIconTexture(spellID)
+    spellID = tostring(spellID)
 
     -- Debug
     self:EventDbgPrint(event, caster, target, spellID, spellName)
 
-    spellID = tostring(spellID)
-    local msgData
-    if Verbose.mountSpells[spellID] then
-        if not Verbose.mountEvents[event] then
-            return
-        end
-        msgData = self.db.profile.mounts[spellID][event]
-    else
-        -- Record Spell/event
-        self:RecordSpellcastEvent(spellID, event)
-        msgData = self.db.profile.spells[spellID][event]
-    end
+    -- Record Spell/event
+    self:RecordSpellcastEvent(spellID, event)
+    local msgData = self.db.profile.spells[spellID][event]
 
     -- Talk
     self:Speak(msgData, {

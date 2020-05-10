@@ -28,9 +28,10 @@ Verbose.mountEvents = {
 
 -- Match numbers returned by C_MountJournal.GetMountInfoByID
 local playerOppositeFaction = UnitFactionGroup("player") == "Horde" and 1 or 0
+
 Verbose.mountSpells = {}
 function Verbose:InitMounts()
-    local mountsDB = self.db.profile.mounts
+    local spellsDB = self.db.profile.spells
     mountIDs = C_MountJournal.GetMountIDs()
     wipe(Verbose.mountSpells)
     for _, mountID in ipairs(mountIDs) do
@@ -40,8 +41,8 @@ function Verbose:InitMounts()
             mountTypeID = tostring(mountTypeID)
             local category = Verbose.mountTypeString[mountTypeID]
             spellID = tostring(spellID)
-            if not mountsDB[spellID] then
-                mountsDB[spellID] = {
+            if not spellsDB[spellID] then
+                spellsDB[spellID] = {
                     UNIT_SPELLCAST_START = {
                         enabled = false,
                         cooldown = 10,
@@ -85,91 +86,23 @@ function Verbose:AddMountToOptions(spellID)
             args = {},
         }
     end
-    local categoryOptions = mountsOptions.args[categoryTag]
 
     -- Insert mount options
-    if not categoryOptions.args[spellID] then
-        categoryOptions.args[spellID] = {
-            type = "group",
-            name = function(info) return self:SpellName(info[#info]) end,
-            icon = function(info) return self:SpellIconID(info[#info]) end,
-            iconCoords = Verbose.iconCropBorders,
-            desc = function(info)
-                return (
-                    self:SpellIconTexture(info[#info])
-                    .. "\n".. self:SpellDescription(info[#info]))
-                    .. "\n\nSpell ID: " .. info[#info]
-                end,
-            childGroups = "tab",
-            args = {
-            },
-        }
-
-        for event, eventData in pairs(Verbose.mountEvents) do
-            -- Insert event options for this mount
-            categoryOptions.args[spellID].args[event] = {
-                type = "group",
-                name = eventData.name,
-                order = eventData.order,
-                args = {
-                    enable = {
-                        type = "toggle",
-                        name = "Enable",
-                        order = 10,
-                        width = "full",
-                        get = function(info) return self:MountEventData(info).enabled end,
-                        set = function(info, value) self:MountEventData(info).enabled = value end,
-                    },
-                    proba = {
-                        type = "range",
-                        name = "Message probability",
-                        order = 20,
-                        isPercent = true,
-                        min = 0,
-                        max = 1,
-                        bigStep = 0.05,
-                        get = function(info) return self:MountEventData(info).proba end,
-                        set = function(info, value) self:MountEventData(info).proba = value end,
-                    },
-                    cooldown = {
-                        type = "range",
-                        name = "Message cooldown (s)",
-                        order = 30,
-                        min = 1,
-                        max = 3600,
-                        softMax = 60,
-                        bigStep = 1,
-                        get = function(info) return self:MountEventData(info).cooldown end,
-                        set = function(info, value) self:MountEventData(info).cooldown = value end,
-                    },
-                    list = {
-                        type = "input",
-                        name = "Messages, one per line",
-                        order = 40,
-                        multiline = Verbose.multilineHeightTab,
-                        width = "full",
-                        get = function(info)
-                            return Verbose:TableToText(self:MountEventData(info).messages)
-                        end,
-                        set = function(info, value) self:TextToTable(value, self:MountEventData(info).messages) end,
-                    },
-                },
-            }
-        end
+    local spellOptionsGroup = self:AddSpellOptionsGroup(
+        mountsOptions.args[categoryTag], spellID)
+    for event, eventData in pairs(Verbose.mountEvents) do
+        self:AddSpellEventOptions(spellOptionsGroup, event)
     end
 end
 
--- Return spell and event data for callbacks from info arg
-function Verbose:MountEventData(info)
-    -- spellID, event
-    return self.db.profile.mounts[info[#info - 2]][info[#info - 1]]
-end
-
 -- Load saved events to options table
-function Verbose:MountDBToOptions()
-    for spellID, spellData in pairs(self.db.profile.mounts) do
-        for event in pairs(spellData) do
-            self:AddMountToOptions(spellID, event)
+function Verbose:CheckAndAddMountToOptions(spellID, event)
+    if Verbose.mountSpells[spellID] then
+        for event in pairs(Verbose.mountEvents) do
+            self:AddMountToOptions(spellID)
         end
+        return true
+    else
+        return false
     end
 end

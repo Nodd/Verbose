@@ -1,11 +1,26 @@
 local addonName, Verbose = ...
 
 function Verbose:AddSpellToOptions(spellID, event)
-    local spellOptions = self.options.args.events.args.spells.args[spellID]
+    -- Check spell book
+    if Verbose:CheckAndAddSpellbookToOptions(spellID, event) then
+        return
 
-    -- Insert spell options
-    if not spellOptions then
-        spellOptions = {
+    -- Check Mounts
+    elseif Verbose:CheckAndAddMountToOptions(spellID, event) then
+        return
+
+    else
+        -- Insert spell options
+        spellOptionsGroup = self:AddSpellOptionsGroup(
+            self.options.args.events.args.spells, spellID)
+        -- Insert event options for this spell
+        self:AddSpellEventOptions(spellOptionsGroup, event)
+    end
+end
+
+function Verbose:AddSpellOptionsGroup(parentGroup, spellID)
+    if not parentGroup.args[spellID] then
+        parentGroup.args[spellID] = {
             type = "group",
             name = function(info) return self:SpellName(info[#info]) end,
             icon = function(info) return self:SpellIconID(info[#info]) end,
@@ -20,12 +35,15 @@ function Verbose:AddSpellToOptions(spellID, event)
             args = {
             },
         }
-        self.options.args.events.args.spells.args[spellID] = spellOptions
     end
+    return parentGroup.args[spellID]
+end
 
-    -- Insert event options for this spell
-    if not spellOptions.args[event] then
-        spellOptions.args[event] = {
+
+-- Add spell event configuration to a spell option's group if it doesn't exist
+function Verbose:AddSpellEventOptions(spellOptionsGroup, event)
+    if not spellOptionsGroup.args[event] then
+        spellOptionsGroup.args[event] = {
             type = "group",
             name = self.usedSpellEvents[event].title,
             order = self.usedSpellEvents[event].order,
