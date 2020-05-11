@@ -1,12 +1,12 @@
-## Interface: 11302
-## Version: 0.0
-## Author: Nodd Tisse-Airain
+## Interface: 80300
+
 ## Title: Verbose
 ## Notes: RP addon to say messages on events, such as spellcasts. Bring more life to your actions !
-## DefaultState: enabled
+## Author: Nodd
+## Version: @project-version@
 ## SavedVariables: VerboseDB
-## OptionalDeps: Ace3
-## X-Embeds: Ace3
+## X-Date: @project-date-iso@
+## X-License: GPL v3
 
 embeds.xml
 
