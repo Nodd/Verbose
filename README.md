@@ -5,7 +5,7 @@ With Verbose your character will feel more alive and integrated to Azeroth !
 You can define sentences to say or emotes to do in reaction to game events :
 casting a spell, receiving damage, speaking to a NPC...
 
-Install it with the Twitch App or from [CurseForge](https://www.curseforge.com/wow/addons/verbose) or on the Twitch App.
+Install it with the Twitch App or from [CurseForge](https://www.curseforge.com/wow/addons/verbose).
 
 **Note**: Since patch 8.2.5 (2019-09-24), there are limitations on messages automation in open world.
 This means that Verbose will work flawlessly in instances,
