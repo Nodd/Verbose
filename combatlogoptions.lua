@@ -1,4 +1,5 @@
 local addonName, Verbose = ...
+local L = LibStub("AceLocale-3.0"):GetLocale(addonName)
 
 -- Lua functions
 local pairs = pairs
@@ -19,21 +20,21 @@ function Verbose:AddCombatLogEventToOptions(optionGroupArgs, category)
             args = {
                 enable = {
                     type = "toggle",
-                    name = "Enable",
+                    name = L["Enable"],
                     order = 10,
                     get = "GetCombatLogEnabled",
                     set = "SetCombatLogEnabled",
                 },
                 merge = {
                     type = "toggle",
-                    name = "Merge parent's messages",
+                    name = L["Merge parent's messages"],
                     order = 15,
                     get = "GetCombatLogMerge",
                     set = "SetCombatLogMerge",
                 },
                 proba = {
                     type = "range",
-                    name = "Message probability",
+                    name = L["Message probability"],
                     order = 20,
                     isPercent = true,
                     min = 0,
@@ -44,7 +45,7 @@ function Verbose:AddCombatLogEventToOptions(optionGroupArgs, category)
                 },
                 cooldown = {
                     type = "range",
-                    name = "Message cooldown (s)",
+                    name = L["Message cooldown (s)"],
                     order = 30,
                     min = 0,
                     max = 3600,
@@ -55,7 +56,7 @@ function Verbose:AddCombatLogEventToOptions(optionGroupArgs, category)
                 },
                 messages = {
                     type = "input",
-                    name = "Messages, one per line",
+                    name = L["Messages, one per line"],
                     order = 40,
                     multiline = Verbose.multilineHeightNoTab,
                     width = "full",

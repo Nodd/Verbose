@@ -1,4 +1,5 @@
 local addonName, Verbose = ...
+local L = LibStub("AceLocale-3.0"):GetLocale(addonName)
 
 -- Lua functions
 local assert = assert
@@ -68,57 +69,57 @@ end
 local txt_anim, txt_speech, txt_nothing = GenerateEmoteCommandsHelp()
 
 local helpData = {
-    "Help",
+    L["Help"],
     {
-        "Welcome",
-        "Welcome to " .. addonName .. " !" ..
-        "\n\nThis addon is heavily inspired by SpeakinSpell which doesn't seem to be maintained anymore."..
-        " This one aims to be simpler to configure and simpler to maintain, but it was primarily done because coding is fun ! :)"..
-        "\n\nYou'll find some informations in th entries on the side. Happy speaking !"
+        L["Welcome"],
+        L["Welcome to "] .. addonName .. L[" !"] ..
+        L["\n\nThis addon is heavily inspired by SpeakinSpell which doesn't seem to be maintained anymore."]..
+        L[" This one aims to be simpler to configure and simpler to maintain, but it was primarily done because coding is fun ! :)"]..
+        L["\n\nYou'll find some informations in th entries on the side. Happy speaking !"]
     },
     {
-        "Substitutions",
-        "To make messages more dynamic and feel alive, it is possible to modify the messages on the fly by using substitutions."..
-        "\n\nThere are different kinds of substitutions:"..
-        "\n  - unit data such as the name or type of the selected target"..
-        "\n  - event data such as the caster or the target of a spell tar"..
-        "\n  - user-defined list substitutions"..
-        "\n\nSubstitution tokens are indicated between angle brackets like this: <token>."..
-        "\n\nTo avoid ugly outputs, a message where there are tokens that can not be replaced  will be avoided."..
-        " This can happen for example if <targetname> is used ant there is no target selected.",
+        L["Substitutions"],
+        L["To make messages more dynamic and feel alive, it is possible to modify the messages on the fly by using substitutions."]..
+        L["\n\nThere are different kinds of substitutions:"]..
+        L["\n  - unit data such as the name or type of the selected target"]..
+        L["\n  - event data such as the caster or the target of a spell tar"]..
+        L["\n  - user-defined list substitutions"]..
+        L["\n\nSubstitution tokens are indicated between angle brackets like this: <token>."]..
+        L["\n\nTo avoid ugly outputs, a message where there are tokens that can not be replaced  will be avoided."]..
+        L[" This can happen for example if <targetname> is used ant there is no target selected."],
         {
-            "Unit data",
-            "Documentation here",
+            L["Unit data"],
+            L["Documentation here"],
         },
         {
-            "Event data",
-            "The available tokens varie among events. They are documented on each event page."..
-            "\n\nYeah, taht wasn't terribely useful, sorry."
+            L["Event data"],
+            L["The available tokens varie among events. They are documented on each event page."]..
+            L["\n\nYeah, taht wasn't terribely useful, sorry."]
         },
         {
-            "User-defined lists",
-            "These lists are configured in the 'List' tab. To create a new list, simply click on the 'New list' button."..
-            "\n\n"..NORMAL_FONT_COLOR_CODE.."List name"..FONT_COLOR_CODE_CLOSE..""..
-            "\nThe substitution token corresponds to the list name."..
-            " In your messages, simply put the list name between angle brackets and it will replaced by arandom list value."..
-            "\nAs the name is used for the toke, it's restricted to alphanumeric characters exclusively."..
-            "\nIn case of name conflict with another substitution, the other substitution will occur and the list is ignored."..
-            "\n\n"..NORMAL_FONT_COLOR_CODE.."List values"..FONT_COLOR_CODE_CLOSE..
-            "\nThe values are entered in the multiline edit box, one entry per line."..
-            " The caracters < and > are not allowed in the values, to avoid conflicts with tokens."..
-            "\n|cFFFF0000Don't forget to validate the modifications with the 'Accept' button !|r"
+            L["User-defined lists"],
+            L["These lists are configured in the 'List' tab. To create a new list, simply click on the 'New list' button."]..
+            "\n\n"..NORMAL_FONT_COLOR_CODE..L["List name"]..FONT_COLOR_CODE_CLOSE..
+            L["\nThe substitution token corresponds to the list name."]..
+            L[" In your messages, simply put the list name between angle brackets and it will replaced by arandom list value."]..
+            L["\nAs the name is used for the token, it's restricted to alphanumeric characters exclusively."]..
+            L["\nIn case of name conflict with another substitution, the other substitution will occur and the list is ignored."]..
+            "\n\n"..NORMAL_FONT_COLOR_CODE..L["List values"]..FONT_COLOR_CODE_CLOSE..
+            L["\nThe values are entered in the multiline edit box, one entry per line."]..
+            L[" The caracters < and > are not allowed in the values, to avoid conflicts with tokens."]..
+            "\n|cFFFF0000"..L["Don't forget to validate the modifications with the 'Accept' button !"].."|r"
         },
     },
     {
-        "Messages",
+        L["Messages"],
         {
-            "Emotes",
-            "Emotes can be used instead of text. Here is a list of existing emotes:",
-            "Known emotes with animation:",
+            L["Emotes"],
+            L["Emotes can be used instead of text. Here is a list of existing emotes:"],
+            L["Known emotes with animation:"],
             txt_anim,
-            "Known emotes with sound:",
+            L["Known emotes with sound:"],
             txt_speech,
-            "Other emotes (wich may have animation or sound):",
+            L["Other emotes (wich may have animation or sound):"],
             txt_nothing,
         }
     },
@@ -164,7 +165,7 @@ end
 function Verbose:GenerateHelpOptionTable()
     local helpConfig = {
         type = "group",
-        name = "Help",
+        name = L["Help"],
         order = 50,
         childGroups = "tree",
         desc = "Need help ?",

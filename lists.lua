@@ -1,4 +1,5 @@
 local addonName, Verbose = ...
+local L = LibStub("AceLocale-3.0"):GetLocale(addonName)
 
 -- Lua functions
 local pairs = pairs
@@ -43,7 +44,7 @@ function Verbose:AddListToOptions(listID)
         args = {
             name = {
                 type = "input",
-                name = "List name",
+                name = L["List name"],
                 order = 10,
                 pattern = "^%w+$",
                 usage = "Only alphanumeric characters allowed",
@@ -58,7 +59,7 @@ function Verbose:AddListToOptions(listID)
             },
             delete = {
                 type = "execute",
-                name = "Delete this list",
+                name = L["Delete this list"],
                 order = 20,
                 func = function(info)
                     self.db.profile.lists[info[#info - 1]] = nil
@@ -68,7 +69,7 @@ function Verbose:AddListToOptions(listID)
             },
             list = {
                 type = "input",
-                name = "List elements, one per line",
+                name = L["List elements, one per line"],
                 order = 30,
                 multiline = Verbose.multilineHeightNoTab,  -- Shows the "Accept" button in the bottom with default windows height
                 width = "full",

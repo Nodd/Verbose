@@ -1,4 +1,5 @@
 local addonName, Verbose = ...
+local L = LibStub("AceLocale-3.0"):GetLocale(addonName)
 
 -- GLOBALS: CreateFrame
 
@@ -105,9 +106,9 @@ end
 
 function Verbose:OnLDBTooltip(tooltip)
     tooltip:SetText(self:IconTextureBorderlessFromID(Verbose.VerboseIconID) .. " " .. addonName)
-    tooltip:AddLine("Left clic: Enable/Disable", 1, 1, 1)
-    tooltip:AddLine("Right clic: Toggle options window", 1, 1, 1)
-    tooltip:AddLine("Middle clic: Go to events configuration", 1, 1, 1)
+    tooltip:AddLine(L["Left clic: Enable/Disable"], 1, 1, 1)
+    tooltip:AddLine(L["Right clic: Toggle options window"], 1, 1, 1)
+    tooltip:AddLine(L["Middle clic: Go to events configuration"], 1, 1, 1)
     tooltip:Show()
 end
 

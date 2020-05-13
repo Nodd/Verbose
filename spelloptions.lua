@@ -1,4 +1,5 @@
 local addonName, Verbose = ...
+local L = LibStub("AceLocale-3.0"):GetLocale(addonName)
 
 -- Lua functions
 local pairs = pairs
@@ -53,7 +54,7 @@ function Verbose:AddSpellEventOptions(spellOptionsGroup, event)
             args = {
                 enable = {
                     type = "toggle",
-                    name = "Enable",
+                    name = L["Enable"],
                     order = 10,
                     width = "full",
                     get = "GetSpellEventEnabled",
@@ -61,7 +62,7 @@ function Verbose:AddSpellEventOptions(spellOptionsGroup, event)
                 },
                 proba = {
                     type = "range",
-                    name = "Message probability",
+                    name = L["Message probability"],
                     order = 20,
                     isPercent = true,
                     min = 0,
@@ -72,7 +73,7 @@ function Verbose:AddSpellEventOptions(spellOptionsGroup, event)
                 },
                 cooldown = {
                     type = "range",
-                    name = "Message cooldown (s)",
+                    name = L["Message cooldown (s)"],
                     order = 30,
                     min = 0,
                     max = 3600,
@@ -83,7 +84,7 @@ function Verbose:AddSpellEventOptions(spellOptionsGroup, event)
                 },
                 list = {
                     type = "input",
-                    name = "Messages, one per line",
+                    name = L["Messages, one per line"],
                     order = 40,
                     multiline = Verbose.multilineHeightTab,
                     width = "full",

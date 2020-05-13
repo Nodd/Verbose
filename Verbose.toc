@@ -9,5 +9,5 @@
 ## X-License: GPL v3
 
 embeds.xml
-
+Locales\Locales.xml
 Verbose.xml

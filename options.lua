@@ -1,4 +1,5 @@
 local addonName, Verbose = ...
+local L = LibStub("AceLocale-3.0"):GetLocale(addonName)
 
 -- GLOBALS: VerboseOptionsTableForDebug
 
@@ -41,12 +42,12 @@ Verbose.options = {
         general = {
             -- General options
             type = "group",
-            name = "Options",
+            name = L["Options"],
             order = 10,
             args = {
                 enable = {
                     type = "toggle",
-                    name = "Enable speeches",
+                    name = L["Enable speeches"],
                     order = 10,
                     width = "full",
                     get = function(info) return Verbose.db.profile.enabled end,
@@ -54,7 +55,7 @@ Verbose.options = {
                 },
                 cooldown = {
                     type = "range",
-                    name = "Global message cooldown (s)",
+                    name = L["Global message cooldown (s)"],
                     order = 20,
                     width = "full",
                     min = 0,
@@ -66,7 +67,7 @@ Verbose.options = {
                 },
                 showMinimapIcon = {
                     type = "toggle",
-                    name = "Show minimap icon",
+                    name = L["Show minimap icon"],
                     order = 22,
                     width = "double",
                     get = function(info) return not Verbose.db.profile.minimap.hide end,
@@ -77,7 +78,7 @@ Verbose.options = {
                 },
                 keybindOpenWorld = {
                     type = "keybinding",
-                    name = "Keybind for open world workaround",
+                    name = L["Keybind for open world workaround"],
                     order = 24,
                     width = "double",
                     get = function(info) return Verbose.db.profile.keybindOpenWorld end,
@@ -91,12 +92,12 @@ Verbose.options = {
                 },
                 debugHeader = {
                     type = "header",
-                    name = "DEBUG",
+                    name = L["DEBUG"],
                     order = 28,
                 },
                 eventDebug = {
                     type = "toggle",
-                    name = "Print events",
+                    name = L["Print events"],
                     desc = "Print to console when events fire",
                     order = 40,
                     width = "double",
@@ -105,7 +106,7 @@ Verbose.options = {
                 },
                 eventDetailDebug = {
                     type = "toggle",
-                    name = "Print all event info",
+                    name = L["Print all event info"],
                     desc = "Print all event details to console",
                     order = 41,
                     width = "double",
@@ -114,7 +115,7 @@ Verbose.options = {
                 },
                 speakDebug = {
                     type = "toggle",
-                    name = "Print all speaking info",
+                    name = L["Print all speaking info"],
                     desc = "Print to console why speaks don't trigger",
                     order = 42,
                     width = "double",
@@ -123,7 +124,7 @@ Verbose.options = {
                 },
                 mute = {
                     type = "toggle",
-                    name = "Don't speak but print to console only",
+                    name = L["Don't speak but print to console only"],
                     desc = "Don't spam the world when testing and tuning messages",
                     order = 50,
                     width = "double",
@@ -132,7 +133,7 @@ Verbose.options = {
                 },
                 reloadui = {
                     type = "execute",
-                    name = "Save data by reloading UI",
+                    name = L["Save data by reloading UI"],
                     desc = "Addon data is only saved to disk on few occasion, one of them being reloading the UI.",
                     order = 60,
                     width = "double",
@@ -143,14 +144,14 @@ Verbose.options = {
         events = {
             -- Tree of known events, and associated configuration
             type = "group",
-            name = "Events",
+            name = L["Events"],
             desc = "Per event messages configuration",
             order = 20,
             childGroups = "tree",
             args = {
                 spellbook = {
                     type = "group",
-                    name = "Spellbook",
+                    name = L["Spellbook"],
                     order = 3,
                     icon = spellbookIcon,
                     iconCoords = Verbose.iconCropBorders,
@@ -164,7 +165,7 @@ Verbose.options = {
                         },
                         info = {
                             type = "description",
-                            name = "All spellbook spells.",
+                            name = L["All spellbook spells."],
                             fontSize = "medium",
                             order = 1,
                         },
@@ -172,7 +173,7 @@ Verbose.options = {
                 },
                 mounts = {
                     type = "group",
-                    name = "Mounts",
+                    name = L["Mounts"],
                     order = 1,
                     icon = mountsIconID,
                     iconCoords = Verbose.iconCropBorders,
@@ -186,7 +187,7 @@ Verbose.options = {
                         },
                         info = {
                             type = "description",
-                            name = "Documentation here.",
+                            name = L["Documentation here."],
                             fontSize = "medium",
                             order = 1,
                         },
@@ -194,7 +195,7 @@ Verbose.options = {
                 },
                 combatLog = {
                     type = "group",
-                    name = "Combat log",
+                    name = L["Combat log"],
                     order = 5,
                     icon = combatIconID,
                     iconCoords = Verbose.iconCropBorders,
@@ -208,7 +209,7 @@ Verbose.options = {
                         },
                         info = {
                             type = "description",
-                            name = "Documentation here.",
+                            name = L["Documentation here."],
                             fontSize = "medium",
                             order = 1,
                         },
@@ -216,7 +217,7 @@ Verbose.options = {
                 },
                 spells = {
                     type = "group",
-                    name = "Spells, Items...",
+                    name = L["Spells, Items..."],
                     order = 20,
                     icon = spellsIconID,
                     iconCoords = Verbose.iconCropBorders,
@@ -230,7 +231,7 @@ Verbose.options = {
                         },
                         info = {
                             type = "description",
-                            name = "Documentation here.",
+                            name = L["Documentation here."],
                             fontSize = "medium",
                             order = 1,
                         },
@@ -238,7 +239,7 @@ Verbose.options = {
                 },
                 combat = {
                     type = "group",
-                    name = "Combat",
+                    name = L["Combat"],
                     order = 10,
                     icon = combatIconID,
                     iconCoords = Verbose.iconCropBorders,
@@ -252,7 +253,7 @@ Verbose.options = {
                         },
                         info = {
                             type = "description",
-                            name = "Documentation here.",
+                            name = L["Documentation here."],
                             fontSize = "medium",
                             order = 1,
                         },
@@ -260,7 +261,7 @@ Verbose.options = {
                 },
                 npc = {
                     type = "group",
-                    name = "NPC interaction",
+                    name = L["NPC interaction"],
                     order = 30,
                     icon = npcIconID,
                     iconCoords = Verbose.iconCropBorders,
@@ -274,7 +275,7 @@ Verbose.options = {
                         },
                         info = {
                             type = "description",
-                            name = "Documentation here.",
+                            name = L["Documentation here."],
                             fontSize = "medium",
                             order = 1,
                         },
@@ -282,7 +283,7 @@ Verbose.options = {
                 },
                 achievements = {
                     type = "group",
-                    name = "Achievements",
+                    name = L["Achievements"],
                     order = 40,
                     icon = achievementsIconID,
                     iconCoords = Verbose.iconCropBorders,
@@ -296,7 +297,7 @@ Verbose.options = {
                         },
                         info = {
                             type = "description",
-                            name = "Documentation here.",
+                            name = L["Documentation here."],
                             fontSize = "medium",
                             order = 1,
                         },
@@ -307,14 +308,14 @@ Verbose.options = {
         lists = {
             -- Replacement lists
             type = "group",
-            name = "Lists",
+            name = L["Lists"],
             desc = "Substitution lists",
             order = 30,
             childGroups = "tree",
             args = {
                 newList = {
                     type = "execute",
-                    name = "New list",
+                    name = L["New list"],
                     func = "CreateList",
                 },
             },
@@ -322,28 +323,28 @@ Verbose.options = {
         save = {
             -- Replacement lists
             type = "group",
-            name = "Save",
+            name = L["Save"],
             desc = "Save or Load configuration",
             order = 35,
             childGroups = "tree",
             args = {
                 save = {
                     type = "execute",
-                    name = "Update current data",
+                    name = L["Update current data"],
                     func = "PrepareSaveData",
                     desc = "Dump addon configuration to the input box. You can then copy the text to save or share it.",
                     order = 10,
                 },
                 load = {
                     type = "execute",
-                    name = "Load data",
+                    name = L["Load data"],
                     func = "LoadData",
                     desc = "Loads the addon configuration in the input box. |cFFFF0000Warning: This will permanentely destroy all your current configuration !|r",
                     order = 20,
                 },
                 data = {
                     type = "input",
-                    name = "Addon data",
+                    name = L["Addon data"],
                     order = 30,
                     multiline = Verbose.multilineHeightNoTab,
                     width = "full",
@@ -365,7 +366,7 @@ function Verbose:populateEvent(event, eventData)
         args = {
             enable = {
                 type = "toggle",
-                name = "Enable",
+                name = L["Enable"],
                 order = 10,
                 width = "full",
                 get = function(info) return self:EventData(info).enabled end,
@@ -373,7 +374,7 @@ function Verbose:populateEvent(event, eventData)
             },
             proba = {
                 type = "range",
-                name = "Message probability",
+                name = L["Message probability"],
                 order = 20,
                 isPercent = true,
                 min = 0,
@@ -384,7 +385,7 @@ function Verbose:populateEvent(event, eventData)
             },
             cooldown = {
                 type = "range",
-                name = "Message cooldown (s)",
+                name = L["Message cooldown (s)"],
                 order = 30,
                 min = 0,
                 max = 3600,
@@ -395,7 +396,7 @@ function Verbose:populateEvent(event, eventData)
             },
             list = {
                 type = "input",
-                name = "Messages, one per line",
+                name = L["Messages, one per line"],
                 order = 40,
                 multiline = Verbose.multilineHeightNoTab,
                 width = "full",
