@@ -34,7 +34,7 @@ Verbose.usedEvents = {
     -- },
 
     -- Death events
-    PLAYER_DEAD = { callback="ManageNoArgEvent", category="combat", name="Death", order=20, classic=true },
+    PLAYER_DEAD = { callback="ManageNoArgEvent", category="combat", name=DEAD, order=20, classic=true },
     PLAYER_ALIVE = { callback="ManageNoArgEvent", category="combat", name="Resurrection", order=30, classic=true },
     -- PLAYER_UNGHOST: cf Verbose.usedEventsAlias
     RESURRECT_REQUEST = { callback="DUMMYEvent", category="combat", name="Resurrection request", order=25, classic=true },
@@ -59,7 +59,7 @@ Verbose.usedEvents = {
 
     -- Achievement events
     PLAYER_LEVEL_UP = { callback="DUMMYEvent", category="achievements", name="Level up", classic=true },
-    ACHIEVEMENT_EARNED = { callback="DUMMYEvent", category="achievements", name="Achievement", classic=false }, --not in Classic
+    ACHIEVEMENT_EARNED = { callback="DUMMYEvent", category="achievements", name=ACHIEVEMENT_UNLOCKED, classic=false }, --not in Classic
     -- CHAT_MSG_ACHIEVEMENT = { callback="DUMMYEvent", category="achievements", name=title, classic=false }, --not in Classic
     -- CHAT_MSG_GUILD_ACHIEVEMENT = { callback="DUMMYEvent", category="achievements", name=title, classic=false }, --not in Classic
 
@@ -69,10 +69,10 @@ Verbose.usedEvents = {
     -- It would need some heavy filtering :/
     GOSSIP_SHOW = { callback="ManageNoArgEvent", category="npc", name="Gossip", classic=true },
     GOSSIP_CLOSED = { callback="ManageNoArgEvent", category="npc", name="Gossip close", classic=true },
-    BARBER_SHOP_OPEN = { callback="ManageNoArgEvent", category="npc", name="Barber shop", classic=false },
+    BARBER_SHOP_OPEN = { callback="ManageNoArgEvent", category="npc", name=BARBERSHOP, classic=false },
     BARBER_SHOP_CLOSE = { callback="ManageNoArgEvent", category="npc", name="Barber shop close", classic=false },
-    MAIL_SHOW = { callback="ManageNoArgEvent", category="npc", name="Mail", classic=true },
-    MERCHANT_SHOW = { callback="ManageNoArgEvent", category="npc", name="Merchant", classic=true },
+    MAIL_SHOW = { callback="ManageNoArgEvent", category="npc", name=MAIL_LABEL, classic=true },
+    MERCHANT_SHOW = { callback="ManageNoArgEvent", category="npc", name=MERCHANT, classic=true },
     QUEST_GREETING = { callback="ManageNoArgEvent", category="npc", name="Quest greeting", classic=true },
     QUEST_FINISHED = { callback="ManageNoArgEvent", category="npc", name="Quest finished", classic=true },
     TAXIMAP_OPENED = { callback="DUMMYEvent", category="npc", name="Taxi map", classic=true },

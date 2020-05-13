@@ -297,14 +297,15 @@ function Verbose:FlagToReaction(UnitFlag)
 end
 
 Verbose.combatLogOptionsCategories = {
-    swing = { name="Swing", order=10 },
-    spells = { name="Spells", order=20 },
-    damage = { name="Damage", order=30 },
-    heal = { name="Heal", order=40 },
+    swing = { name=MELEE, order=10 },
+    range = { name=RANGED, order=15 },
+    spells = { name=SPELLS, order=20 },
+    damage = { name=DAMAGE, order=30 },
+    heal = { name=HEALS, order=40 },
     buffs = { name="Buffs", order=50 },
     debuffs = { name="Debuffs", order=60 },
     other = { name="Other", order=80 },
-    environmental = { name="Environmental", order=999 }
+    environmental = { name=ENVIRONMENT_SUBHEADER, order=999 }
 }
 
 Verbose.auraEvent = {

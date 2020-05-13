@@ -54,7 +54,7 @@ function Verbose:AddSpellEventOptions(spellOptionsGroup, event)
             args = {
                 enable = {
                     type = "toggle",
-                    name = L["Enable"],
+                    name = ENABLE,
                     order = 10,
                     width = "full",
                     get = "GetSpellEventEnabled",

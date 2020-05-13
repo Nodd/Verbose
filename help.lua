@@ -165,7 +165,7 @@ end
 function Verbose:GenerateHelpOptionTable()
     local helpConfig = {
         type = "group",
-        name = L["Help"],
+        name = HELP_LABEL,
         order = 50,
         cmdHidden = true,
         childGroups = "tree",

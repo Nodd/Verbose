@@ -20,7 +20,7 @@ function Verbose:AddCombatLogEventToOptions(optionGroupArgs, category)
             args = {
                 enable = {
                     type = "toggle",
-                    name = L["Enable"],
+                    name = ENABLE,
                     order = 10,
                     get = "GetCombatLogEnabled",
                     set = "SetCombatLogEnabled",
