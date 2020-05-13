@@ -12,7 +12,6 @@ Verbose.VerboseIconID = 2056011  -- ui_chat
 
 function Verbose:OnInitialize()
   -- Code that you want to run when the addon is first loaded goes here.
-    self:RegisterEvent("SPELLS_CHANGED", "OnPostInitialize")
 
     -- Initialize dB
     self:UpdateDefaultDB()
@@ -29,11 +28,11 @@ function Verbose:OnInitialize()
         self:OpenWorldWorkaround()
     end)
 
-    -- Manage enabled state
-    self:SetEnabledState(self.db.profile.enabled)
-    if not self.db.profile.enabled then
-        self:OnDisable()
-    end
+    -- Delay OnEnable call
+    self:SetEnabledState(false)
+
+    -- The next part of the initialization process needs spell infos
+    self:RegisterEvent("SPELLS_CHANGED", "OnPostInitialize")
 end
 
 function Verbose:OnPostInitialize()
@@ -49,6 +48,14 @@ function Verbose:OnPostInitialize()
 
     -- Populate self.options
     self:RegisterOptions()
+
+    -- Manage enabled state
+    self:SetEnabledState(self.db.profile.enabled)
+    if self.db.profile.enabled then
+        self:OnEnable()
+    else
+        self:OnDisable()
+    end
 end
 
 function Verbose:OnEnable()
