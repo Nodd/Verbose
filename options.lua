@@ -323,11 +323,12 @@ Verbose.options = {
             },
         },
         save = {
-            -- Replacement lists
+            -- This is broken, it should use LibDeflate to avoid special chars in the textbox which are not rendered correctly
             type = "group",
             name = L["Save"],
             desc = "Save or Load configuration",
             order = 35,
+            hidden = true,
             childGroups = "tree",
             args = {
                 save = {
