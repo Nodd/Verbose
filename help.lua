@@ -167,6 +167,7 @@ function Verbose:GenerateHelpOptionTable()
         type = "group",
         name = L["Help"],
         order = 50,
+        cmdHidden = true,
         childGroups = "tree",
         desc = L["Need help ?"],
         args = {},
