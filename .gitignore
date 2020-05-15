@@ -3,3 +3,6 @@
 
 # Directory exists on development station
 Libs/*
+
+# Translations
+phrases*.txt

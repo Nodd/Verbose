@@ -72,10 +72,10 @@ local helpData = {
     L["Help"],
     {
         L["Welcome"],
-        L["Welcome to "] .. addonName .. L[" !"] ..
+        L["Welcome to %s !"]:format(addonName)..
         L["\n\nThis addon is heavily inspired by SpeakinSpell which doesn't seem to be maintained anymore."]..
         L[" This one aims to be simpler to configure and simpler to maintain, but it was primarily done because coding is fun ! :)"]..
-        L["\n\nYou'll find some informations in th entries on the side. Happy speaking !"]
+        L["\n\nYou'll find some informations in the entries on the side. Happy speaking !"]
     },
     {
         L["Substitutions"],
@@ -89,12 +89,12 @@ local helpData = {
         L[" This can happen for example if <targetname> is used ant there is no target selected."],
         {
             L["Unit data"],
-            L["Documentation here"],
+            L["Documentation here."],
         },
         {
             L["Event data"],
             L["The available tokens varie among events. They are documented on each event page."]..
-            L["\n\nYeah, taht wasn't terribely useful, sorry."]
+            L["\n\nYeah, that wasn't terribly useful, sorry."]
         },
         {
             L["User-defined lists"],
@@ -119,7 +119,7 @@ local helpData = {
             txt_anim,
             L["Known emotes with sound:"],
             txt_speech,
-            L["Other emotes (wich may have animation or sound):"],
+            L["Other emotes (which may have animation or sound):"],
             txt_nothing,
         }
     },

@@ -106,9 +106,9 @@ end
 
 function Verbose:OnLDBTooltip(tooltip)
     tooltip:SetText(self:IconTextureBorderlessFromID(Verbose.VerboseIconID) .. " " .. addonName)
-    tooltip:AddLine(L["Left clic: Enable/Disable"], 1, 1, 1)
-    tooltip:AddLine(L["Right clic: Toggle options window"], 1, 1, 1)
-    tooltip:AddLine(L["Middle clic: Go to events configuration"], 1, 1, 1)
+    tooltip:AddLine(L["Left click: Enable/Disable"], 1, 1, 1)
+    tooltip:AddLine(L["Right click: Toggle options window"], 1, 1, 1)
+    tooltip:AddLine(L["Middle click: Go to events configuration"], 1, 1, 1)
     tooltip:Show()
 end
 
