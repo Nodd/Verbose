@@ -5,8 +5,11 @@ local pairs = pairs
 
 local AceDB = LibStub("AceDB-3.0")
 
+Verbose.lastDBVersion = 1
+
 local defaultDB = {
     profile = {
+        dbVersion = Verbose.lastDBVersion,
         enabled = true,
         eventDebug = false,
         eventDetailDebug = false,
