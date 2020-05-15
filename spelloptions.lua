@@ -49,7 +49,7 @@ function Verbose:AddSpellEventOptions(spellOptionsGroup, event)
     if not spellOptionsGroup.args[event] then
         spellOptionsGroup.args[event] = {
             type = "group",
-            name = self.usedSpellEvents[event].title,
+            name = self.usedSpellEvents[event].name,
             order = self.usedSpellEvents[event].order,
             args = {
                 enable = {

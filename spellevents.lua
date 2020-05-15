@@ -14,14 +14,14 @@ Verbose.usedSpellEvents = {
     --     inClassic,  -- Exists in WoW Classic
     -- },
 
-    UNIT_SPELLCAST_SENT = { callback="OnUnitSpellcastSent", title="Sent", icon=icon, order=-100, classic=true },
-    UNIT_SPELLCAST_START = { callback="OnUnitSpellcastCommon", title="Start", icon=icon, order=0, classic=true },
-    UNIT_SPELLCAST_CHANNEL_START = { callback="OnUnitSpellcastCommon", title="Channel stasrt", icon=icon, order=10, classic=true },
-    UNIT_SPELLCAST_SUCCEEDED = { callback="OnUnitSpellcastEnd", title="Succeeded", icon=icon, order=20, classic=true },
-    UNIT_SPELLCAST_FAILED = { callback="OnUnitSpellcastEnd", title="Failed", icon=icon, order=30, classic=true },
-    UNIT_SPELLCAST_INTERRUPTED = { callback="OnUnitSpellcastEnd", title="Interrupted", icon=icon, order=40, classic=true },
-    UNIT_SPELLCAST_STOP = { callback="OnUnitSpellcastEnd", title="Stop", icon=icon, order=50, classic=true },
-    UNIT_SPELLCAST_CHANNEL_STOP = { callback="OnUnitSpellcastEnd", title="Channel stop", icon=icon, order=60, classic=true },
+    UNIT_SPELLCAST_SENT = { callback="OnUnitSpellcastSent", name="Sent", icon=icon, order=-100, classic=true },
+    UNIT_SPELLCAST_START = { callback="OnUnitSpellcastCommon", name="Start", icon=icon, order=0, classic=true },
+    UNIT_SPELLCAST_CHANNEL_START = { callback="OnUnitSpellcastCommon", name="Channel start", icon=icon, order=10, classic=true },
+    UNIT_SPELLCAST_SUCCEEDED = { callback="OnUnitSpellcastEnd", name="Succeeded", icon=icon, order=20, classic=true },
+    UNIT_SPELLCAST_FAILED = { callback="OnUnitSpellcastEnd", name="Failed", icon=icon, order=30, classic=true },
+    UNIT_SPELLCAST_INTERRUPTED = { callback="OnUnitSpellcastEnd", name="Interrupted", icon=icon, order=40, classic=true },
+    UNIT_SPELLCAST_STOP = { callback="OnUnitSpellcastEnd", name="Stop", icon=icon, order=50, classic=true },
+    UNIT_SPELLCAST_CHANNEL_STOP = { callback="OnUnitSpellcastEnd", name="Channel stop", icon=icon, order=60, classic=true },
 }
 
 -- Table to store spell targets, which are not provided for all events
