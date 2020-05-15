@@ -56,20 +56,10 @@ function Verbose:RecordSpellcastEvent(spellID, event)
     end
     local spellData = spells[spellID]
 
-    -- If event not known for this spell, register it
-    if not spellData[event] then
-        -- Store
-        spellData[event] = {
-            enabled = false,
-            cooldown = 10,
-            proba = 1,
-            messages = {},
-        }
+    -- Update options
+    self:AddSpellToOptions(spellID, event)
+    self:UpdateOptionsGUI()  -- TODO: only for brand new spells
 
-        -- Update options
-        self:AddSpellToOptions(spellID, event)
-        self:UpdateOptionsGUI()
-    end
     -- Update timestamp
     spellData[event].lastRecord = GetServerTime()
 end

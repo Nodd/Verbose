@@ -23,9 +23,6 @@ end
 function Verbose:CreateList()
     local listID = self:NextUnusedListID()
 
-    -- Create list in db
-    self.db.profile.lists[listID] = { name = "", values = {} }
-
     -- Insert in options table
     self:AddListToOptions(listID)
 

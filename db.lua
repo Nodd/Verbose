@@ -7,6 +7,8 @@ local AceDB = LibStub("AceDB-3.0")
 
 Verbose.lastDBVersion = 1
 
+-- ["**"] are dynamic defaults, see https://www.wowace.com/projects/ace3/pages/ace-db-3-0-tutorial#title-3-1
+
 local defaultDB = {
     profile = {
         dbVersion = Verbose.lastDBVersion,
@@ -25,13 +27,13 @@ local defaultDB = {
         },
 
         events = {
-            -- Populated below
-            -- EVENT = {
-            --     enabled = false,
-            --     proba = 1,
-            --     cooldown = 1,
-            --     messages = { "Foo", "Bar", "Baz" },
-            -- },
+            --- Defaults for all events.
+            ["**"] = {
+                enabled = false,
+                proba = 1,
+                cooldown = 1,
+                messages = {},
+            },
         },
         combatLog = {
             children = {
@@ -51,36 +53,24 @@ local defaultDB = {
         },
         spells = {
             -- Populated dynamically
-            -- spellID = {
-            --     EVENT = {
-            --         enabled = false,
-            --         proba = 1,
-            --         cooldown = 10,
-            --         messages = { "Foo", "Bar", "Baz" },
-            --     },
-            -- },
+            ["**"] = {  -- SpellID
+                ["**"] = {  -- event
+                    enabled = false,
+                    proba = 1,
+                    cooldown = 10,
+                    messages = {},
+                },
+            },
         },
         lists = {
             -- Populated dynamically
-            -- listID = {
-            --     name = "Foo",
-            --     values = { "Bar", "Baz" }
-            -- },
+            ["**"] = {  -- List name
+                name = "",
+                values = {}
+            },
         },
     }
 }
-
--- Populate events
-function Verbose:UpdateDefaultDB()
-    for event, eventData in pairs(self.usedEvents) do
-        defaultDB.profile.events[event] = {
-            enabled = false,
-            proba = 1,
-            cooldown = 1,
-            messages = {},
-        }
-    end
-end
 
 function Verbose:SetupDB()
     -- Load saved config

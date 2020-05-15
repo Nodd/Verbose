@@ -15,7 +15,6 @@ function Verbose:OnInitialize()
   -- Code that you want to run when the addon is first loaded goes here.
 
     -- Initialize dB
-    self:UpdateDefaultDB()
     self:SetupDB()
 
     self:RegisterChatCommand("verbose", "ChatCommand")
