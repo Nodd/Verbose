@@ -62,6 +62,20 @@ local defaultDB = {
                 },
             },
         },
+        damage = {
+            -- enabled = false,
+            -- proba = 1,
+            -- cooldown = 10,
+            -- messages = {},
+            ["**"] = {  -- ID
+                enabled = false,
+                proba = 1,
+                cooldown = 10,
+                count = 0,
+                lastTime = 0,
+                messages = {},
+            },
+        },
         lists = {
             -- Populated dynamically
             ["**"] = {  -- List name

@@ -313,46 +313,6 @@ Verbose.auraEvent = {
     REMOVED = { name="Removed", order=20 },
 }
 
--- https://github.com/ketho-wow/KethoCombatLog/blob/master/KethoCombatLog.lua for the table
--- https://www.townlong-yak.com/framexml/8.1.5/GlobalStrings.lua#12934 for the strings
--- https://wow.gamepedia.com/COMBAT_LOG_EVENT for the truth
-Verbose.SpellSchoolString = {
-	[0x1] = STRING_SCHOOL_PHYSICAL:sub(2, -2),
-	[0x2] = STRING_SCHOOL_HOLY:sub(2, -2),
-	[0x4] = STRING_SCHOOL_FIRE:sub(2, -2),
-	[0x8] = STRING_SCHOOL_NATURE:sub(2, -2),
-	[0x10] = STRING_SCHOOL_FROST:sub(2, -2),
-	[0x20] = STRING_SCHOOL_SHADOW:sub(2, -2),
-	[0x40] = STRING_SCHOOL_ARCANE:sub(2, -2),
-    -- double
-	[0x3] = STRING_SCHOOL_HOLYSTRIKE:sub(2, -2),
-	[0x5] = STRING_SCHOOL_FLAMESTRIKE:sub(2, -2),
-	[0x6] = STRING_SCHOOL_HOLYFIRE:sub(2, -2),
-	[0x9] = STRING_SCHOOL_STORMSTRIKE:sub(2, -2),
-	[0xA] = STRING_SCHOOL_HOLYSTORM:sub(2, -2),
-	[0xC] = STRING_SCHOOL_FIRESTORM:sub(2, -2),
-	[0x11] = STRING_SCHOOL_FROSTSTRIKE:sub(2, -2),
-	[0x12] = STRING_SCHOOL_HOLYFROST:sub(2, -2),
-	[0x14] = STRING_SCHOOL_FROSTFIRE:sub(2, -2),
-	[0x18] = STRING_SCHOOL_FROSTSTORM:sub(2, -2),
-	[0x21] = STRING_SCHOOL_SHADOWSTRIKE:sub(2, -2),
-	[0x22] = STRING_SCHOOL_SHADOWLIGHT:sub(2, -2), -- Twilight
-	[0x24] = STRING_SCHOOL_SHADOWFLAME:sub(2, -2),
-	[0x28] = STRING_SCHOOL_SHADOWSTORM:sub(2, -2), -- Plague
-	[0x30] = STRING_SCHOOL_SHADOWFROST:sub(2, -2),
-	[0x41] = STRING_SCHOOL_SPELLSTRIKE:sub(2, -2),
-	[0x42] = STRING_SCHOOL_DIVINE:sub(2, -2),
-	[0x44] = STRING_SCHOOL_SPELLFIRE:sub(2, -2),
-	[0x48] = STRING_SCHOOL_SPELLSTORM:sub(2, -2),
-	[0x50] = STRING_SCHOOL_SPELLFROST:sub(2, -2),
-	[0x60] = STRING_SCHOOL_SPELLSHADOW:sub(2, -2),
-    -- triple and more
-	[0x1C] = STRING_SCHOOL_ELEMENTAL:sub(2, -2),
-	[0x7C] = STRING_SCHOOL_CHROMATIC:sub(2, -2),
-	[0x7E] = STRING_SCHOOL_MAGIC:sub(2, -2),
-	[0x7F] = STRING_SCHOOL_CHAOS:sub(2, -2),
-}
-
 Verbose.spellIDTreeFuncs = {
     -- Skip "spellID#" to get the ID
     name = function(spellID) return Verbose:SpellName(spellID) end,
@@ -397,6 +357,11 @@ function Verbose:spellsRecordCombatLogEvent(eventInfo)
 end
 
 function Verbose:OnCombatLogEvent(eventInfo)
+    if Verbose.ends_with(eventInfo.event, "_DAMAGE") then
+        Verbose:OnDamageEvent(eventInfo)
+        return
+    end
+
     local dbTable = self.db.profile.combatLog
     local enabled = true
     local categoryPath = "Combat log"

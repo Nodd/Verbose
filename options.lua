@@ -27,6 +27,7 @@ local npcIconID = 2056011  -- ability_warrior_offensivestance
 local achievementsIconID = 236670  -- ui_chat
 local spellbookIcon = 133741  -- inv_misc_book_09
 local mountsIconID = "Interface\\Icons\\MountJournalPortrait"
+local damageIcon = 1394889
 
 local displayedData = ""
 
@@ -235,6 +236,64 @@ Verbose.options = {
                             name = L["Documentation here."],
                             fontSize = "medium",
                             order = 1,
+                        },
+                    },
+                },
+                damage = {
+                    type = "group",
+                    name = L["Damage received"],
+                    order = 25,
+                    icon = damageIcon,
+                    iconCoords = Verbose.iconCropBorders,
+                    childGroups = "tree",
+                    args = {
+                        title = {
+                            type = "description",
+                            name = Verbose:IconTextureBorderlessFromID(spellsIconID) .. " Spellcasts",
+                            fontSize = "large",
+                            order = 0,
+                        },
+                        info = {
+                            type = "description",
+                            name = L["Documentation here."],
+                            fontSize = "medium",
+                            order = 1,
+                        },
+                        environmental = {
+                            type = "group",
+                            name = ENVIRONMENTAL_DAMAGE,
+                            order = 0,
+                            -- icon = spellsIconID,
+                            iconCoords = Verbose.iconCropBorders,
+                            childGroups = "tree",
+                            args = {},
+                        },
+                        monoSchool = {
+                            type = "group",
+                            name = L["Mono school"],
+                            order = 1,
+                            -- icon = spellsIconID,
+                            iconCoords = Verbose.iconCropBorders,
+                            childGroups = "tree",
+                            args = {},
+                        },
+                        dualSchools = {
+                            type = "group",
+                            name = L["Dual schools"],
+                            order = 2,
+                            -- icon = spellsIconID,
+                            iconCoords = Verbose.iconCropBorders,
+                            childGroups = "tree",
+                            args = {},
+                        },
+                        moreSchools = {
+                            type = "group",
+                            name = L["Triple or more schools"],
+                            order = 3,
+                            -- icon = spellsIconID,
+                            iconCoords = Verbose.iconCropBorders,
+                            childGroups = "tree",
+                            args = {},
                         },
                     },
                 },
