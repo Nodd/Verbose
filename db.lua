@@ -72,7 +72,7 @@ local defaultDB = {
                 proba = 1,
                 cooldown = 10,
                 count = 0,
-                lastTime = 0,
+                lastRecord = 0,
                 messages = {},
             },
         },

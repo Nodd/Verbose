@@ -60,7 +60,7 @@ local function getDamageDesc(info)
 		desc = ""
 	end
 
-	local dbTable = Verbose.db.profile.damage[damageID]
+	local dbTable = Verbose.db.profile.damage[tonumber(damageID)]
 	desc = desc..L["Count: "]..dbTable.count
 	if dbTable.count > 0 then
 		local elapsed = Verbose:secondsToString(GetServerTime() - dbTable.lastRecord)
@@ -221,11 +221,13 @@ function Verbose:InitDamageReceived()
 end
 
 function Verbose:OnDamageEvent(eventInfo)
+	if not self:NameIsPlayer(eventInfo.destName) then
+		return
+	end
 	local dbTable
 	if eventInfo.event == "ENVIRONMENTAL_DAMAGE" then
-		print(eventInfo.environmentalType)
 		dbTable = self.db.profile.damage[eventInfo.environmentalType]
-	elseif eventInfo.event == "SWING_DAMAGE" then
+	else
 		dbTable = self.db.profile.damage[eventInfo.school]
 	end
 
