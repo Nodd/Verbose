@@ -55,22 +55,14 @@ function Verbose:InitMounts()
                 order=(not isFavorite) and 1 or 0,
                 categoryID=tostring(mountTypeID),
             }
-            if not self.db.profile.spells[spellID] then
-                self.db.profile.spells[spellID] = {
-                    UNIT_SPELLCAST_START = {
-                        enabled = false,
-                        cooldown = 10,
-                        proba = 1,
-                        messages = {},
-                    },
-                    UNIT_SPELLCAST_SUCCEEDED = {
-                        enabled = false,
-                        cooldown = 10,
-                        proba = 1,
-                        messages = { "/mountspecial" },
-                    },
-                }
+
+            -- Add a default message
+            messages = self.db.profile.spells[spellID].UNIT_SPELLCAST_SUCCEEDED.messages
+            if #messages == 0 then
+                tinsert(messages, "/mountspecial")
             end
+
+            -- Fill options table
             self:AddMountToOptions(spellID)
         end
     end
