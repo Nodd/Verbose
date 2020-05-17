@@ -67,8 +67,9 @@ Verbose.usedEvents = {
     -- *_CLOSED events are unreliable and can fire anytime,
     -- when speaking to another NPC for example.
     -- It would need some heavy filtering :/
+    -- I guess they are usefull for UI only
     GOSSIP_SHOW = { callback="ManageNoArgEvent", category="npc", name="Gossip", classic=true },
-    GOSSIP_CLOSED = { callback="ManageNoArgEvent", category="npc", name="Gossip close", classic=true },
+    -- GOSSIP_CLOSED = { callback="ManageNoArgEvent", category="npc", name="Gossip close", classic=true },
     BARBER_SHOP_OPEN = { callback="ManageNoArgEvent", category="npc", name=BARBERSHOP, classic=false },
     BARBER_SHOP_CLOSE = { callback="ManageNoArgEvent", category="npc", name="Barber shop close", classic=false },
     MAIL_SHOW = { callback="ManageNoArgEvent", category="npc", name=MAIL_LABEL, classic=true },
