@@ -211,7 +211,7 @@ function Verbose:Speak(msgData, substitutions, messagesTable)
         SendChatMessage(sendText, chatType);
     elseif Verbose.db.profile.selectWorkaround == "bubble" then
         -- Bubble+Keybind workaround
-        tinsert(self.queue, { time=currentTime, message=message })
+        tinsert(self.queue, { time=currentTime, message=message, sendText=sendText, chatType=chatType })
         self:SpeakDbgPrint("Not in instance, bubbling")
         self:UseBubbleFrame("|cFF"..chatColors[chatType]..bubbleText.."|r")
     else
@@ -231,14 +231,6 @@ end
 -- Keybind workaround for open world
 -------------------------------------------------------------------------------
 
-function Verbose:DisplayTempMessage(message)
-    UIErrorsFrame:AddMessage(
-        self:IconTextureBorderlessFromID(self.VerboseIconID).." ".. message,
-        1.0, 0.8, 0.0,  -- R, G, B
-        GetChatTypeIndex("CHANNEL_NOTICE"),
-        5)  -- Display duration (ignored ?)
-end
-
 Verbose.queue = {}
 
 function Verbose:OpenWorldWorkaround()
@@ -257,12 +249,11 @@ function Verbose:OpenWorldWorkaround()
         -- Check obsolete
         local elapsed = currentTime - messageData.time
         if elapsed < elapsedTimeForObsoleteMessage then
-            self:SpeakDbgPrint("Talk", elapsed, "seconds later")
-            SendChatMessage(messageData.message, "SAY")
+            self:SpeakDbgPrint("Talk", elapsed, "seconds later:", messageData.message)
+            SendChatMessage(messageData.sendText, messageData.chatType)
             break
         else
-            self:SpeakDbgPrint("Obsolete message since", elapsed, "seconds:")
-            self:SpeakDbgPrint(messageData.message)
+            self:SpeakDbgPrint("Obsolete message since", elapsed, "seconds:", messageData.message)
         end
     end
 end
