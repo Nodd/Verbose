@@ -60,7 +60,7 @@ local function getDamageDesc(info)
 		desc = ""
 	end
 
-	local dbTable = Verbose.db.profile.damage[tonumber(damageID)]
+	local dbTable = Verbose.db.profile.damage[damageID]
 	desc = desc..L["Count: "]..dbTable.count
 	if dbTable.count > 0 then
 		local elapsed = Verbose:secondsToString(GetServerTime() - dbTable.lastRecord)
