@@ -267,7 +267,7 @@ function Verbose:InitBubbleFrame()
 end
 
 local bubblePositionData = {
-    belowleft = {
+    bottomleft = {
         parentAnchor = "BOTTOM",
         bubbleAnchor = "TOPRIGHT",
         xOffset = -10,
@@ -275,7 +275,7 @@ local bubblePositionData = {
         xTailDirection = 1,
         yTailDirection = -1,
     },
-    belowright = {
+    bottomright = {
         parentAnchor = "BOTTOM",
         bubbleAnchor = "TOPLEFT",
         xOffset = -72,
@@ -283,7 +283,7 @@ local bubblePositionData = {
         xTailDirection = -1,
         yTailDirection = -1,
     },
-    aboveleft = {
+    topleft = {
         parentAnchor = "TOP",
         bubbleAnchor = "BOTTOMRIGHT",
         xOffset = -10,
@@ -291,7 +291,7 @@ local bubblePositionData = {
         xTailDirection = 1,
         yTailDirection = 1,
     },
-    aboveright = {
+    topright = {
         parentAnchor = "TOP",
         bubbleAnchor = "BOTTOMLEFT",
         xOffset = -72,
@@ -302,7 +302,7 @@ local bubblePositionData = {
 }
 
 function Verbose:UpdateBubbleFrame()
-    local posID = self.db.profile.bubbleVertical..self.db.profile.bubbleHorizontal
+    local posID = self.db.profile.bubblePosition
     local posData = bubblePositionData[posID]
     Verbose.bubbleFrame:ClearAllPoints()
     Verbose.bubbleFrame:SetPoint(

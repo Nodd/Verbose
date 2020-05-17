@@ -104,28 +104,19 @@ Verbose.options = {
                     end,
                 },
                 newline22 = { type="description", name="", order=22.75 },
-                positionTopBelow = {
+                bubblePosition = {
                     type = "select",
-                    name = L["Vertical position"],
+                    name = L["Position"],
                     desc = L["Position is relative to the player frame"],
                     order = 23,
-                    values = { above = L["Above"], below = L["Below"] },
-                    get = function(info) return Verbose.db.profile.bubbleVertical end,
+                    values = {
+                        topleft = L["Above on the left"],
+                        topright = L["Above on the right"],
+                        bottomleft = L["Below on the left"],
+                        bottomright = L["Below on the right"] },
+                    get = function(info) return Verbose.db.profile.bubblePosition end,
                     set = function(info, value)
-                        Verbose.db.profile.bubbleVertical = value
-                        Verbose:UpdateBubbleFrame(loremIpsum)
-                        Verbose:UseBubbleFrame(loremIpsum)
-                    end,
-                },
-                positionLeftRight = {
-                    type = "select",
-                    name = L["Horizontal position"],
-                    desc = L["Position is relative to the player frame"],
-                    order = 24,
-                    values = { left = L["Left"], right = L["Right"] },
-                    get = function(info) return Verbose.db.profile.bubbleHorizontal end,
-                    set = function(info, value)
-                        Verbose.db.profile.bubbleHorizontal = value
+                        Verbose.db.profile.bubblePosition = value
                         Verbose:UpdateBubbleFrame(loremIpsum)
                         Verbose:UseBubbleFrame(loremIpsum)
                     end,

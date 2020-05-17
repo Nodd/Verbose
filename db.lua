@@ -20,8 +20,8 @@ local defaultDB = {
         cooldown = 10,
         lastTime = 0,
 
-        bubbleVertical = "below",
-        bubbleHorizontal = "right",
+        selectWorkaround = "bubble",  -- "bubble" or "emote"
+        bubblePosition = "bottomright",  -- "bottom" or "top" .. "right" or "left"
         bubbleVerticalOffset = 0,
         bubbleHorizontalOffset = 0,
 
