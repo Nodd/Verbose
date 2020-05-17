@@ -68,7 +68,7 @@ function Verbose:OnSpellcastEvent(event, caster, target, spellID)
     -- Ignore events from others
     if caster ~= "player" and caster ~= "pet" then return end
 
-    local spellName, iconTexture = self:SpellNameAndIconTexture(spellID)
+    local spellName = self:SpellName(spellID)
     spellID = tostring(spellID)
 
     -- Debug
