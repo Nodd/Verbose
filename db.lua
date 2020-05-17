@@ -20,6 +20,11 @@ local defaultDB = {
         cooldown = 10,
         lastTime = 0,
 
+        bubbleVertical = "below",
+        bubbleHorizontal = "right",
+        bubbleVerticalOffset = 0,
+        bubbleHorizontalOffset = 0,
+
         -- For LibDBIcon
         minimap = {
             hide = false,

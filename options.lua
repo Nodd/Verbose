@@ -31,6 +31,8 @@ local damageIcon = 1394889
 
 local displayedData = ""
 
+local loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+
 Verbose.multilineHeightNoTab = 17
 Verbose.multilineHeightTab = 14
 
@@ -53,17 +55,6 @@ Verbose.options = {
                     get = function(info) return Verbose.db.profile.enabled end,
                     set = function(info, value) if value then Verbose:OnEnable() else Verbose:OnDisable() end end,
                 },
-                cooldown = {
-                    type = "range",
-                    name = L["Global message cooldown (s)"],
-                    order = 20,
-                    min = 0,
-                    max = 3600,
-                    softMax = 600,
-                    bigStep = 1,
-                    get = function(info) return Verbose.db.profile.cooldown end,
-                    set = function(info, value) Verbose.db.profile.cooldown = value end,
-                },
                 showMinimapIcon = {
                     type = "toggle",
                     name = L["Show minimap icon"],
@@ -75,10 +66,93 @@ Verbose.options = {
                         if value then LibDBIcon:Show(addonName) else LibDBIcon:Hide(addonName) end
                     end,
                 },
+                newline19 = { type="description", name="", order=19.5 },
+                cooldown = {
+                    type = "range",
+                    name = L["Global message cooldown (s)"],
+                    order = 20,
+                    min = 0,
+                    max = 3600,
+                    softMax = 600,
+                    bigStep = 1,
+                    width = "double",
+                    get = function(info) return Verbose.db.profile.cooldown end,
+                    set = function(info, value) Verbose.db.profile.cooldown = value end,
+                },
+                bubbleHeader = {
+                    type = "header",
+                    name = L["Thought bubble"],
+                    order = 21,
+                },
+                bubbleDesc = {
+                    type = "description",
+                    name = L["The thought bubble serves as a workaround for addon API limitations outside of instances."],
+                    order = 22,
+                },
+                positionTopBelow = {
+                    type = "select",
+                    name = L["Vertical position"],
+                    desc = L["Position is relative to the player frame"],
+                    order = 23,
+                    values = { above = L["Above"], below = L["Below"] },
+                    get = function(info) return Verbose.db.profile.bubbleVertical end,
+                    set = function(info, value)
+                        Verbose.db.profile.bubbleVertical = value
+                        Verbose:UpdateBubbleFrame(loremIpsum)
+                        Verbose:UseBubbleFrame(loremIpsum)
+                    end,
+                },
+                positionLeftRight = {
+                    type = "select",
+                    name = L["Horizontal position"],
+                    desc = L["Position is relative to the player frame"],
+                    order = 24,
+                    values = { left = L["Left"], right = L["Right"] },
+                    get = function(info) return Verbose.db.profile.bubbleHorizontal end,
+                    set = function(info, value)
+                        Verbose.db.profile.bubbleHorizontal = value
+                        Verbose:UpdateBubbleFrame(loremIpsum)
+                        Verbose:UseBubbleFrame(loremIpsum)
+                    end,
+                },
+                newline24 = { type="description", name="", order=24.5 },
+                positionVerticalOffset = {
+                    type = "range",
+                    name = L["Vertical offset"],
+                    order = 25,
+                    min = -1000,
+                    max = 1000,
+                    softMin = -100,
+                    softMax = 100,
+                    step = 1,
+                    get = function(info) return Verbose.db.profile.bubbleVerticalOffset end,
+                    set = function(info, value)
+                        Verbose.db.profile.bubbleVerticalOffset = value
+                        Verbose:UpdateBubbleFrame(loremIpsum)
+                        Verbose:UseBubbleFrame(loremIpsum)
+                    end,
+                },
+                positionHorizontalOffset = {
+                    type = "range",
+                    name = L["Horizontal offset"],
+                    order = 26,
+                    min = -1000,
+                    max = 1000,
+                    softMin = -100,
+                    softMax = 100,
+                    step = 1,
+                    get = function(info) return Verbose.db.profile.bubbleHorizontalOffset end,
+                    set = function(info, value)
+                        Verbose.db.profile.bubbleHorizontalOffset = value
+                        Verbose:UpdateBubbleFrame(loremIpsum)
+                        Verbose:UseBubbleFrame(loremIpsum)
+                    end,
+                },
+                newline26 = { type="description", name="", order=26.5 },
                 keybindOpenWorld = {
                     type = "keybinding",
-                    name = L["Keybind for open world workaround"],
-                    order = 24,
+                    name = L["Keybind to speak aloud"],
+                    order = 27,
                     width = "double",
                     get = function(info) return Verbose.db.profile.keybindOpenWorld end,
                     set = function(info, value)
@@ -99,7 +173,6 @@ Verbose.options = {
                     name = L["Print events"],
                     desc = "Print to console when events fire",
                     order = 40,
-                    width = "double",
                     get = function(info) return Verbose.db.profile.eventDebug end,
                     set = function(info, value) Verbose.db.profile.eventDebug = value end,
                 },
@@ -108,7 +181,6 @@ Verbose.options = {
                     name = L["Print all event info"],
                     desc = "Print all event details to console",
                     order = 41,
-                    width = "double",
                     get = function(info) return Verbose.db.profile.eventDetailDebug end,
                     set = function(info, value) Verbose.db.profile.eventDetailDebug = value end,
                 },
@@ -130,6 +202,7 @@ Verbose.options = {
                     get = function(info) return Verbose.db.profile.mute end,
                     set = function(info, value) Verbose.db.profile.mute = value end,
                 },
+                newline59 = { type="description", name="", order=59.5 },
                 reloadui = {
                     type = "execute",
                     name = L["Save data by reloading UI"],

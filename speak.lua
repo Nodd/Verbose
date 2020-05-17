@@ -223,6 +223,7 @@ end
 
 function Verbose:InitBubbleFrame()
     local bubbleFrame = CreateFrame("Frame", "VerboseBubbleFrame", UIParent)
+    self.bubbleFrame = bubbleFrame
 
     -- Bubble frame
     bubbleFrame.borders = 24
@@ -245,9 +246,9 @@ function Verbose:InitBubbleFrame()
     -- bubbleFrame.tail:SetPoint("TOPRIGHT", bubbleFrame, "BOTTOMRIGHT", -45, 5)
     -- bubbleFrame.tail:SetTexture("Interface\\Tooltips\\ChatBubble-Tail.blp")
 
-    self:BubbleCircle(bubbleFrame, "BOTTOMRIGHT", -64, -2, 30, 20)
-    self:BubbleCircle(bubbleFrame, "BOTTOMRIGHT", -57, -10, 18, 12)
-    self:BubbleCircle(bubbleFrame, "BOTTOMRIGHT", -49, -15, 12, 9)
+    bubbleFrame.tail1 = self:BubbleCircle(30, 20)
+    bubbleFrame.tail2 = self:BubbleCircle(18, 12)
+    bubbleFrame.tail3 = self:BubbleCircle(12, 9)
 
     -- Bubble message string
     bubbleFrame.fontstring = bubbleFrame:CreateFontString("VerboseBubbleFrameText")
@@ -265,38 +266,107 @@ function Verbose:InitBubbleFrame()
     bubbleFrame.fontstringinfo:SetJustifyV("BOTTOM")
 
     bubbleFrame:Hide()
-    self.bubbleFrame = bubbleFrame
 end
 
-function Verbose:BubbleCircle(parent, ref, x, y, w, h)
-    local topleft, topright, bottomleft, bottomright
-    local topleft = parent:CreateTexture()
-    topleft:SetWidth(w / 2)
-    topleft:SetHeight(h / 2)
-    topleft:SetPoint("BOTTOMRIGHT", parent, ref, x, y)
-    topleft:SetTexture("Interface\\Tooltips\\ChatBubble-Backdrop.blp")
-    topleft:SetTexCoord(4/8, 5/8-1/16, 0, 0.5)
+local bubblePositionData = {
+    belowleft = {
+        parentAnchor = "BOTTOM",
+        bubbleAnchor = "TOPRIGHT",
+        xOffset = -10,
+        yOffset = 10,
+        xTailDirection = 1,
+        yTailDirection = -1,
+    },
+    belowright = {
+        parentAnchor = "BOTTOM",
+        bubbleAnchor = "TOPLEFT",
+        xOffset = -72,
+        yOffset = 10,
+        xTailDirection = -1,
+        yTailDirection = -1,
+    },
+    aboveleft = {
+        parentAnchor = "TOP",
+        bubbleAnchor = "BOTTOMRIGHT",
+        xOffset = -10,
+        yOffset = 0,
+        xTailDirection = 1,
+        yTailDirection = 1,
+    },
+    aboveright = {
+        parentAnchor = "TOP",
+        bubbleAnchor = "BOTTOMLEFT",
+        xOffset = -72,
+        yOffset = 0,
+        xTailDirection = -1,
+        yTailDirection = 1,
+    },
+}
 
-    local topright = parent:CreateTexture()
-    topright:SetWidth(w / 2)
-    topright:SetHeight(h / 2)
-    topright:SetPoint("BOTTOMLEFT", parent, ref, x, y)
-    topright:SetTexture("Interface\\Tooltips\\ChatBubble-Backdrop.blp")
-    topright:SetTexCoord(5/8+1/16, 6/8, 0, 0.5)
+function Verbose:UpdateBubbleFrame()
+    local posID = self.db.profile.bubbleVertical..self.db.profile.bubbleHorizontal
+    local posData = bubblePositionData[posID]
+    Verbose.bubbleFrame:ClearAllPoints()
+    Verbose.bubbleFrame:SetPoint(
+        posData.bubbleAnchor,
+        "PlayerFrame",
+        posData.parentAnchor,
+        posData.xOffset + self.db.profile.bubbleHorizontalOffset,
+        posData.yOffset + self.db.profile.bubbleVerticalOffset)
+    self:SetBubbleTailPosition(posData.bubbleAnchor, posData.xTailDirection, posData.yTailDirection)
+end
 
-    local bottomleft = parent:CreateTexture()
-    bottomleft:SetWidth(w / 2)
-    bottomleft:SetHeight(h / 2)
-    bottomleft:SetPoint("TOPRIGHT", parent, ref, x, y)
-    bottomleft:SetTexture("Interface\\Tooltips\\ChatBubble-Backdrop.blp")
-    bottomleft:SetTexCoord(6/8, 7/8-1/16, 0.5, 1)
+function Verbose:BubbleCircle(w, h)
+    local t = {}
 
-    local bottomright = parent:CreateTexture()
-    bottomright:SetWidth(w / 2)
-    bottomright:SetHeight(h / 2)
-    bottomright:SetPoint("TOPLEFT", parent, ref, x, y)
-    bottomright:SetTexture("Interface\\Tooltips\\ChatBubble-Backdrop.blp")
-    bottomright:SetTexCoord(7/8+1/16, 8/8, 0.5, 1)
+    t.topleft = self.bubbleFrame:CreateTexture()
+    t.topleft:SetWidth(w / 2)
+    t.topleft:SetHeight(h / 2)
+    t.topleft:SetTexture("Interface\\Tooltips\\ChatBubble-Backdrop.blp")
+    t.topleft:SetTexCoord(4/8, 5/8-1/16, 0, 0.5)
+
+    t.topright = self.bubbleFrame:CreateTexture()
+    t.topright:SetWidth(w / 2)
+    t.topright:SetHeight(h / 2)
+    t.topright:SetTexture("Interface\\Tooltips\\ChatBubble-Backdrop.blp")
+    t.topright:SetTexCoord(5/8+1/16, 6/8, 0, 0.5)
+
+    t.bottomleft = self.bubbleFrame:CreateTexture()
+    t.bottomleft:SetWidth(w / 2)
+    t.bottomleft:SetHeight(h / 2)
+    t.bottomleft:SetTexture("Interface\\Tooltips\\ChatBubble-Backdrop.blp")
+    t.bottomleft:SetTexCoord(6/8, 7/8-1/16, 0.5, 1)
+
+    t.bottomright = self.bubbleFrame:CreateTexture()
+    t.bottomright:SetWidth(w / 2)
+    t.bottomright:SetHeight(h / 2)
+    t.bottomright:SetTexture("Interface\\Tooltips\\ChatBubble-Backdrop.blp")
+    t.bottomright:SetTexCoord(7/8+1/16, 8/8, 0.5, 1)
+
+    return t
+end
+
+function Verbose:SetBubbleTailPosition(ref, xDirection, yDirection)
+    local x = -64 * xDirection
+    local y = -2 * yDirection
+    self.bubbleFrame.tail1.topleft:SetPoint("BOTTOMRIGHT", self.bubbleFrame, ref, x, y)
+    self.bubbleFrame.tail1.topright:SetPoint("BOTTOMLEFT", self.bubbleFrame, ref, x, y)
+    self.bubbleFrame.tail1.bottomleft:SetPoint("TOPRIGHT", self.bubbleFrame, ref, x, y)
+    self.bubbleFrame.tail1.bottomright:SetPoint("TOPLEFT", self.bubbleFrame, ref, x, y)
+
+    x = -57 * xDirection
+    y = -10 * yDirection
+    self.bubbleFrame.tail2.topleft:SetPoint("BOTTOMRIGHT", self.bubbleFrame, ref, x, y)
+    self.bubbleFrame.tail2.topright:SetPoint("BOTTOMLEFT", self.bubbleFrame, ref, x, y)
+    self.bubbleFrame.tail2.bottomleft:SetPoint("TOPRIGHT", self.bubbleFrame, ref, x, y)
+    self.bubbleFrame.tail2.bottomright:SetPoint("TOPLEFT", self.bubbleFrame, ref, x, y)
+
+    x = -49 * xDirection
+    y = -15 * yDirection
+    self.bubbleFrame.tail3.topleft:SetPoint("BOTTOMRIGHT", self.bubbleFrame, ref, x, y)
+    self.bubbleFrame.tail3.topright:SetPoint("BOTTOMLEFT", self.bubbleFrame, ref, x, y)
+    self.bubbleFrame.tail3.bottomleft:SetPoint("TOPRIGHT", self.bubbleFrame, ref, x, y)
+    self.bubbleFrame.tail3.bottomright:SetPoint("TOPLEFT", self.bubbleFrame, ref, x, y)
 end
 
 function Verbose:UseBubbleFrame(text)
