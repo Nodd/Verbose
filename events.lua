@@ -43,7 +43,7 @@ Verbose.usedEvents = {
     -- UNIT_THREAT_LIST_UPDATE = { callback="DUMMYEvent", category=category, name=title, classic=false }, --not in Classic
     -- COMPANION_UPDATE = { callback="DUMMYEvent", category=category, name=title, classic=false }, --not in Classic
     PLAYER_REGEN_DISABLED = { callback="ManageNoArgEvent", category="combat", name="Entering combat", order=10, classic=true },  -- Entering combat
-    PLAYER_REGEN_ENABLED = { callback="ManageNoArgEvent", category="combat", name="Leaving combat", order=11, classic=true },  -- Leaving combat
+    PLAYER_REGEN_ENABLED = { callback="ManageNoArgEvent", category="combat", name="Leaving combat", order=15, classic=true },  -- Leaving combat
 
     -- Chat events
     -- CHAT_MSG_WHISPER = { callback="DUMMYEvent", category=category, name=title, classic=true },

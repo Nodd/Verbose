@@ -198,22 +198,21 @@ local function descBits(id)
 end
 
 function Verbose:InitDamageReceived()
-	local optionGroupArgs = self.options.args.events.args.damage.args.environmental.args
+	local optionGroupArgs = self.options.args.events.args.combat.args.damage.args.environmental.args
 	for damageID, str in pairs(environmentalDamage) do
 		self:AddDamageToOptions(optionGroupArgs, damageID, str)
 	end
 
-	optionGroupArgs = self.options.args.events.args.damage.args
 	for damageID, str in pairs(Verbose.SpellSchoolString) do
 		local n = nbBits1(damageID)
 		local detail
 		if n == 1 then
-			optionGroupArgs = self.options.args.events.args.damage.args.monoSchool.args
+			optionGroupArgs = self.options.args.events.args.combat.args.damage.args.monoSchool.args
 		elseif n == 2 then
-			optionGroupArgs = self.options.args.events.args.damage.args.dualSchools.args
+			optionGroupArgs = self.options.args.events.args.combat.args.damage.args.dualSchools.args
 			schoolDesc[damageID] = descBits(damageID)
 		else
-			optionGroupArgs = self.options.args.events.args.damage.args.moreSchools.args
+			optionGroupArgs = self.options.args.events.args.combat.args.damage.args.moreSchools.args
 			schoolDesc[damageID] = descBits(damageID)
 		end
 		self:AddDamageToOptions(optionGroupArgs, damageID, str, detail)
@@ -228,7 +227,7 @@ function Verbose:OnDamageEvent(eventInfo)
 	if eventInfo.event == "ENVIRONMENTAL_DAMAGE" then
 		dbTable = self.db.profile.damage[eventInfo.environmentalType]
 	else
-		dbTable = self.db.profile.damage[eventInfo.school]
+		dbTable = self.db.profile.damage[tostring(eventInfo.school)]
 	end
 
 	dbTable.count = dbTable.count + 1
