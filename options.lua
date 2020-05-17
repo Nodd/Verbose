@@ -266,32 +266,10 @@ Verbose.options = {
                         },
                     },
                 },
-                combatLog = {
-                    type = "group",
-                    name = L["Combat log"],
-                    order = 5,
-                    icon = combatIconID,
-                    iconCoords = Verbose.iconCropBorders,
-                    childGroups = "tree",
-                    args = {
-                        title = {
-                            type = "description",
-                            name = Verbose:IconTextureBorderlessFromID(combatIconID) .. " Combat log",
-                            fontSize = "large",
-                            order = 0,
-                        },
-                        info = {
-                            type = "description",
-                            name = L["Documentation here."],
-                            fontSize = "medium",
-                            order = 1,
-                        },
-                    },
-                },
                 spells = {
                     type = "group",
                     name = L["Spells, Items..."],
-                    order = 20,
+                    order = 5,
                     icon = spellsIconID,
                     iconCoords = Verbose.iconCropBorders,
                     childGroups = "tree",

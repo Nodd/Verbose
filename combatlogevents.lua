@@ -80,7 +80,6 @@ function Verbose:CombatLog(event)
     -- The rest of the parameters depends on the event and will be managed in subfunctions
     self:SetCombatLogArgs(eventInfo, rawEventInfo)
 
-
     -- Debug
     self:EventDbgPrint(event, eventInfo.event)
     for k, v in pairs(eventInfo) do
@@ -102,15 +101,16 @@ function Verbose:SetCombatLogArgs(eventInfo, rawEventInfo)
     elseif Verbose.starts_with(eventInfo.event, "ENVIRONMENTAL_") then
         eventInfo.environmentalType = unpack(rawEventInfo, suffixIndex)
         suffixIndex = suffixIndex + 1
-    elseif Verbose.starts_with(eventInfo.event, "SWING_") then
-        eventInfo.spellID = "6603"  -- Autoattack spell, useless ?
+    -- elseif Verbose.starts_with(eventInfo.event, "SWING_") then
+    --     eventInfo.spellID = "6603"  -- Autoattack spell, useless ?
     elseif Verbose.starts_with(eventInfo.event, "UNIT_") then
         eventInfo.recapID, eventInfo.unconsciousOnDeath = unpack(rawEventInfo, suffixIndex)
         suffixIndex = suffixIndex + 2
-    else
-        eventInfo.spellID = "-2"  -- Fake spell ID
+    -- else
+    --     eventInfo.spellID = "-2"  -- Fake spell ID
     end
 
+    -- Specific
     if eventInfo.event == "PARTY_KILL" then
         eventInfo.arg1, eventInfo.arg2 = unpack(rawEventInfo, suffixIndex)
         suffixIndex = suffixIndex + 2
@@ -331,32 +331,29 @@ Verbose.spellIDTreeFuncs = {
 }
 
 function Verbose:spellsRecordCombatLogEvent(eventInfo)
-    local dbTable = self.db.profile.combatLog.children
-    local optionGroupArgs = self.options.args.events.args.combatLog.args
-
-    -- Fill tree
-    for _, category in ipairs(self:CategoryTree(eventInfo)) do
-        if not dbTable[category] then
-            dbTable[category] = {
-                enabled = false,
-                merge = false,
-                cooldown = 10,
-                proba = 1,
-                messages = {},
-                children = {},
-                count = 0,
-            }
-
-            -- Update options
-            self:AddCombatLogEventToOptions(optionGroupArgs, category)
-        end
-        dbTable[category].lastRecord = GetServerTime()  -- eventInfo.timestamp is unreliable :/
-        dbTable[category].count = dbTable[category].count + 1
-
-        -- Prepare next iteration
-        dbTable = dbTable[category].children
-        optionGroupArgs = optionGroupArgs[category].args
+    if Verbose.ends_with(eventInfo.event, "_DAMAGE") then
+        return
     end
+
+    -- Fill db
+    local dbTable = self.db.profile.spells[eventInfo.spellID][eventInfo.event]
+    dbTable.lastRecord = GetServerTime()  -- eventInfo.timestamp is unreliable :/
+    dbTable.count = dbTable.count + 1
+    dbTable.categories = self:CategoryTree(eventInfo)
+
+    -- Fill options table
+    local optionGroupArgs
+    if self.mountSpells[eventInfo.spellID] then
+        return
+        -- optionGroupArgs = self.options.args.events.args.mounts.args
+    elseif self.spellbookSpells[eventInfo.spellID] then
+        optionGroupArgs = self.options.args.events.args.spellbook.args[self.spellbookSpells[eventInfo.spellID]]
+    else
+        optionGroupArgs = self.options.args.events.args.spells.args
+    end
+
+    self:AddSpellToOptions(eventInfo.spellID, eventInfo.event)
+    --self:AddCombatLogEventToOptions(optionGroupArgs, eventInfo.spellID)
     self:UpdateOptionsGUI()
 end
 
@@ -366,29 +363,28 @@ function Verbose:OnCombatLogEvent(eventInfo)
         return
     end
 
-    local dbTable = self.db.profile.combatLog
-    local enabled = true
-    local categoryPath = "Combat log"
-    local messagesTable = {}
-    for i, category in ipairs(self:CategoryTree(eventInfo)) do
-        dbTable = dbTable.children[category]
+    local dbTable = self.db.profile.spells[eventInfo.spellID][eventInfo.event]
+    local messagesTable
 
-        -- Check that the category is enabled
-        categoryPath = categoryPath.."/"..self:CategoryName(category)
-        enabled = enabled and dbTable.enabled
-        if not enabled then
-            self:SpeakDbgPrint("Disabled combat log category:", categoryPath)
-            return
-        end
+    if dbTable.merge then
+        messagesTable = dbTable.messages
+        -- TODO: Loop on categories to add their messages
+        -- messagesTable = {}
+        -- for i, category in ipairs(self:CategoryTree(eventInfo)) do
+        --     dbTable = dbTable.children[category]
 
-        -- Merge or wipe parent's messages
-        if not dbTable.merge then
-            wipe(messagesTable)
-        end
-        for _, m in ipairs(dbTable.messages) do
-            tinsert(messagesTable, m)
-        end
+        --     -- Merge or wipe parent's messages
+        --     if not dbTable.merge then
+        --         wipe(messagesTable)
+        --     end
+        --     for _, m in ipairs(dbTable.messages) do
+        --         tinsert(messagesTable, m)
+        --     end
+        -- end
+    else
+        messagesTable = dbTable.messages
     end
+
     if #messagesTable == 0 then
         self:SpeakDbgPrint("Empty message table")
         return

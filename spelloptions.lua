@@ -35,7 +35,7 @@ function Verbose:AddSpellOptionsGroup(parentGroup, spellID)
                     .. "\n".. self:SpellDescription(info[#info]))
                     .. "\n\nSpell ID: " .. info[#info]
                 end,
-            childGroups = "tab",
+            childGroups = "select",
             args = {
             },
         }
@@ -49,8 +49,8 @@ function Verbose:AddSpellEventOptions(spellOptionsGroup, event)
     if not spellOptionsGroup.args[event] then
         spellOptionsGroup.args[event] = {
             type = "group",
-            name = self.usedSpellEvents[event].name,
-            order = self.usedSpellEvents[event].order,
+            name = event, -- self.usedSpellEvents[event].name,
+            --order = self.usedSpellEvents[event].order,
             args = {
                 enable = {
                     type = "toggle",

@@ -40,29 +40,16 @@ local defaultDB = {
                 messages = {},
             },
         },
-        combatLog = {
-            children = {
-                -- category = {
-                --     enabled = false,
-                --     proba = 1,
-                --     cooldown = 1,
-                --     lastRecord = 0.0,
-                --     messages = { "Foo", "Bar", "Baz" },
-                --     children = {
-                --         category = {
-                --             ...
-                --         },
-                --     },
-                -- },
-            },
-        },
         spells = {
-            -- Populated dynamically
             ["**"] = {  -- SpellID
-                ["**"] = {  -- event
+                ["**"] = {  -- event, either a true event or a subevent from COMBAT_LOG_EVENT_UNFILTERED
                     enabled = false,
                     proba = 1,
                     cooldown = 10,
+                    count = 0,
+                    lastRecord = 0,
+                    merge = true,
+                    categories = {},
                     messages = {},
                 },
             },

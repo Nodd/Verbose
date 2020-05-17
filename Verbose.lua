@@ -47,7 +47,6 @@ function Verbose:OnPostInitialize()
 
     -- Load DB to options
     self:SpellDBToOptions()
-    self:CombatLogSpellDBToOptions()
     self:ListDBToOptions()
 
     -- Populate self.options
