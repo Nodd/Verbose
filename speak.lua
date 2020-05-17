@@ -18,10 +18,35 @@ local GetServerTime = GetServerTime
 local IsInInstance = IsInInstance
 local SendChatMessage = SendChatMessage
 local UIErrorsFrame = UIErrorsFrame
+local _G = _G
 
 -- Local variables
 local globalLastTime = 0
 local elapsedTimeForObsoleteMessage = 3
+
+local sayCommands = {}
+i = 1
+while _G["SLASH_SAY"..i] do
+    sayCommands[_G["SLASH_SAY"..i]] = true
+    i = i + 1
+end
+local yellCommands = {}
+i = 1
+while _G["SLASH_YELL"..i] do
+    yellCommands[_G["SLASH_YELL"..i]] = true
+    i = i + 1
+end
+local emoteCommands = {}
+i = 1
+while _G["SLASH_EMOTE"..i] do
+    emoteCommands[_G["SLASH_EMOTE"..i]] = true
+    i = i + 1
+end
+local chatColors = {
+    SAY = "FFFFFF",
+    YELL = "FF3F40",
+    EMOTE = "FF7E40",
+}
 
 function Verbose:SpeakDbgPrint(...)
     if self.db.profile.speakDebug then
@@ -137,40 +162,67 @@ function Verbose:Speak(msgData, substitutions, messagesTable)
         return
     end
 
+    -- Manage commands
+    local chatType = "SAY"
+    local emoteToken = nil
+    local sendText = message
+    local bubbleText = message
+    if message:sub(1, 1) == "/" then
+        local command = message:match("^(/[^%s]+)") or "";
+        local args = message:match("^/[^%s]+%s+(.*)$") or "";
+        if sayCommands[command] then  -- /say (default)
+            sendText = args
+            bubbleText = args
+        elseif yellCommands[command] then  -- /yell
+            chatType = "YELL"
+            sendText = args
+            bubbleText = args
+        elseif emoteCommands[command] then  -- /me
+            chatType = "EMOTE"
+            sendText = args
+        else
+            emoteToken = hash_EmoteTokenList[command:upper()]
+            if emoteToken then
+                chatType = "EMOTE"
+                sendText = args
+            else
+                self:SpeakDbgPrint("Unknown command: ", message)
+                return
+            end
+        end
+    end
+
     -- Update times
     msgData.lastTime = currentTime  -- Event CD
     globalLastTime = currentTime  -- Global CD
 
-    if message:sub(1, 1) == "/" then
-        local command = message:match("^(/[^%s]+)") or "";
-        local emote = hash_EmoteTokenList[command:upper()]
-        if emote then
-            if not self.db.profile.mute then
-                local args = message:match("^/[^%s]+%s*(.*)$") or "";
-                DoEmote(emote, args)
-            else
-                self:UseBubbleFrame(message)
-            end
-            self:SpeakDbgPrint("EMOTE:", message)
-            return
-        else
-            self:SpeakDbgPrint("EMOTE skipped, not an emote:", emote)
-        end
-    elseif self.db.profile.mute then
-        self:SpeakDbgPrint("MUTED, bubbling")
-        self:UseBubbleFrame(message)
+    self:CloseBubbleFrame()
+    if self.db.profile.mute then
+        self:SpeakDbgPrint("MUTED, bubbling:", message)
+        self:UseBubbleFrame("|cFF"..chatColors[chatType]..bubbleText.."|r")
+    elseif emoteToken then
+        self:SpeakDbgPrint("EMOTE:", message)
+        DoEmote(emoteToken, args)
+    elseif chatType == "EMOTE" then
+        self:SpeakDbgPrint("Emoting:", message)
+        SendChatMessage(sendText, "EMOTE");
     elseif IsInInstance() then
         self:SpeakDbgPrint("In instance, speaking:", message)
-        SendChatMessage(message, "SAY");
+        SendChatMessage(sendText, chatType);
     elseif Verbose.db.profile.selectWorkaround == "bubble" then
         -- Bubble+Keybind workaround
-        tinsert(self.queue, { time = currentTime, message = message })
+        tinsert(self.queue, { time=currentTime, message=message })
         self:SpeakDbgPrint("Not in instance, bubbling")
-        self:UseBubbleFrame(message)
+        self:UseBubbleFrame("|cFF"..chatColors[chatType]..bubbleText.."|r")
     else
         -- Emote workaround
         self:SpeakDbgPrint("Not in instance, emoting")
-        SendChatMessage(L["says : "] .. message, "EMOTE")
+        local intro = CHAT_SAY_GET
+        if chatType == "YELL" then
+            intro = CHAT_YELL_GET
+        end
+        intro = intro:format("")
+        SendChatMessage(intro..sendText, "EMOTE")
     end
 end
 
