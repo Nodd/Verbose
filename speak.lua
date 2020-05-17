@@ -226,6 +226,7 @@ function Verbose:InitBubbleFrame()
 
     -- Bubble frame
     bubbleFrame.borders = 24
+    bubbleFrame.infoMargin = 10
     bubbleFrame.defaultWidth = 484
     bubbleFrame:SetWidth(484)
     bubbleFrame:SetHeight(125)
@@ -257,8 +258,7 @@ function Verbose:InitBubbleFrame()
 
     -- Bubble info string
     bubbleFrame.fontstringinfo = bubbleFrame:CreateFontString("VerboseBubbleFrameInfo")
-    bubbleFrame.fontstringinfo:SetWidth(bubbleFrame:GetWidth() - 2 * bubbleFrame.borders)
-    bubbleFrame.fontstringinfo:SetPoint("BOTTOMRIGHT", bubbleFrame, "BOTTOMRIGHT", -10, 5)
+    bubbleFrame.fontstringinfo:SetPoint("BOTTOMRIGHT", bubbleFrame, "BOTTOMRIGHT", -bubbleFrame.infoMargin, 5)
     bubbleFrame.fontstringinfo:SetFont("Fonts\\FRIZQT__.TTF", 8)
     bubbleFrame.fontstringinfo:SetTextColor(1, 0.81, 0)
     bubbleFrame.fontstringinfo:SetJustifyH("RIGHT")
@@ -301,24 +301,30 @@ end
 
 function Verbose:UseBubbleFrame(text)
     local bubbleFrame = self.bubbleFrame
+    local infoWidth
 
     -- Fill message text
     bubbleFrame.fontstring:SetWidth(bubbleFrame.defaultWidth - 2 * bubbleFrame.borders)
     bubbleFrame.fontstring:SetText(text)
-    if bubbleFrame.fontstring:GetStringWidth() < bubbleFrame.defaultWidth - 2 * bubbleFrame.borders then
-        bubbleFrame:SetWidth(bubbleFrame.fontstring:GetStringWidth() + 2 * bubbleFrame.borders)
+
+    -- Update info message (the keybind can change)
+    if self.db.profile.keybindOpenWorld then
+        bubbleFrame.fontstringinfo:SetText(L["Press %s to speak aloud"]:format(self.db.profile.keybindOpenWorld))
+        bubbleFrame.fontstringinfo:Show()
+        infoWidth = bubbleFrame.fontstringinfo:GetStringWidth() + 2 * bubbleFrame.infoMargin
+    else
+        bubbleFrame.fontstringinfo:Hide()
+        infoWidth = 0
+    end
+
+    -- Resize frame to fit text
+    local textWidth = bubbleFrame.fontstring:GetStringWidth() + 2 * bubbleFrame.borders
+    if textWidth < bubbleFrame.defaultWidth then
+        bubbleFrame:SetWidth(max(textWidth, infoWidth))
     else
         bubbleFrame:SetWidth(bubbleFrame.defaultWidth)
     end
     bubbleFrame:SetHeight(bubbleFrame.fontstring:GetHeight() + 2 * bubbleFrame.borders)
-
-    -- Update info message (ke keybind can change)
-    if self.db.profile.keybindOpenWorld then
-        bubbleFrame.fontstringinfo:SetText(L["Press %s to speak aloud"]:format(self.db.profile.keybindOpenWorld))
-        bubbleFrame.fontstringinfo:Show()
-    else
-        bubbleFrame.fontstringinfo:Hide()
-    end
 
     -- Hide bubble after a delay
     delay = text:len() / 20
