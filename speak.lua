@@ -162,14 +162,15 @@ function Verbose:Speak(msgData, substitutions, messagesTable)
     elseif IsInInstance() then
         self:SpeakDbgPrint("In instance, speaking:", message)
         SendChatMessage(message, "SAY");
-    else
-        -- Keybind workaround
+    elseif Verbose.db.profile.selectWorkaround == "bubble" then
+        -- Bubble+Keybind workaround
         tinsert(self.queue, { time = currentTime, message = message })
-
-        -- Emote workaround
         self:SpeakDbgPrint("Not in instance, bubbling")
         self:UseBubbleFrame(message)
-        --SendChatMessage("dit : " .. message, "EMOTE")
+    else
+        -- Emote workaround
+        self:SpeakDbgPrint("Not in instance, emoting")
+        SendChatMessage(L["says : "] .. message, "EMOTE")
     end
 end
 

@@ -89,6 +89,15 @@ Verbose.options = {
                     name = L["The thought bubble serves as a workaround for addon API limitations outside of instances."],
                     order = 22,
                 },
+                selectWorkaround = {
+                    type = "select",
+                    name = L["Select workaround"],
+                    desc = L["Two workarounds are possible:\n- a |cFF00FF00thought bubble|r is displayed for you only, and the message can be said aloud in the next few seconds by pressing the keybind or using the command |cFF00FF00/vw|r (typically in a macro)\n- an |cFF00FF00emote|r is directly displayed in chat for everyone to see, but no bubble will be displayed so it might go unnoticed"],
+                    order = 22.25,
+                    values = { bubble = L["Thought bubble"], emote = L["Emote"] },
+                    get = function(info) return Verbose.db.profile.selectWorkaround end,
+                    set = function(info, value) Verbose.db.profile.selectWorkaround = value end,
+                },
                 keybindOpenWorld = {
                     type = "keybinding",
                     name = NORMAL_FONT_COLOR_CODE..L["Speak aloud"]..FONT_COLOR_CODE_CLOSE,
