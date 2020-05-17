@@ -28,7 +28,8 @@ function Verbose:OnInitialize()
         self:OpenWorldWorkaround()
     end)
 
-    Verbose:InitBubbleFrame()
+    self:InitBubbleFrame()
+    self:UpdateBubbleFrame()
 
     -- Delay OnEnable call
     self:SetEnabledState(false)

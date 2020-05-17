@@ -141,37 +141,35 @@ function Verbose:Speak(msgData, substitutions, messagesTable)
     msgData.lastTime = currentTime  -- Event CD
     globalLastTime = currentTime  -- Global CD
 
-    if self.db.profile.mute then
-        self:DisplayTempMessage(message)
-        self:Print("MUTED:", message)
-    else
-        if message:sub(1, 1) == "/" then
-            local command = message:match("^(/[^%s]+)") or "";
-            local args = message:match("^/[^%s]+%s*(.*)$") or "";
-            local emote = hash_EmoteTokenList[command:upper()]
-            if emote then
+    if message:sub(1, 1) == "/" then
+        local command = message:match("^(/[^%s]+)") or "";
+        local emote = hash_EmoteTokenList[command:upper()]
+        if emote then
+            if not self.db.profile.mute then
+                local args = message:match("^/[^%s]+%s*(.*)$") or "";
                 DoEmote(emote, args)
-                self:SpeakDbgPrint("EMOTE:", command, args)
-                return
             else
-                self:SpeakDbgPrint("EMOTE skipped, not an emote:", emote)
+                self:UseBubbleFrame(message)
             end
-        end
-        local inInstance = IsInInstance()
-        if inInstance then
-            self:SpeakDbgPrint("In instance, speaking:", message)
-            -- SendChatMessage("msg", "chatType", "language", "channel");
-            SendChatMessage(message, "SAY");
+            self:SpeakDbgPrint("EMOTE:", message)
+            return
         else
-            -- Keybind workaround
-            tinsert(self.queue, { time = currentTime, message = message })
-            --self:DisplayTempMessage(message)
-
-            -- Emote workaround
-            self:UseBubbleFrame(message)
-            --self:SpeakDbgPrint("Not in instance, emoting:", message)
-            --SendChatMessage("dit : " .. message, "EMOTE")
+            self:SpeakDbgPrint("EMOTE skipped, not an emote:", emote)
         end
+    elseif self.db.profile.mute then
+        self:SpeakDbgPrint("MUTED, bubbling")
+        self:UseBubbleFrame(message)
+    elseif IsInInstance() then
+        self:SpeakDbgPrint("In instance, speaking:", message)
+        SendChatMessage(message, "SAY");
+    else
+        -- Keybind workaround
+        tinsert(self.queue, { time = currentTime, message = message })
+
+        -- Emote workaround
+        self:SpeakDbgPrint("Not in instance, bubbling")
+        self:UseBubbleFrame(message)
+        --SendChatMessage("dit : " .. message, "EMOTE")
     end
 end
 
@@ -377,8 +375,8 @@ function Verbose:UseBubbleFrame(text)
     bubbleFrame.fontstring:SetWidth(bubbleFrame.defaultWidth - 2 * bubbleFrame.borders)
     bubbleFrame.fontstring:SetText(text)
 
-    -- Update info message (the keybind can change)
-    if self.db.profile.keybindOpenWorld then
+    -- Update info message (keybind and mute can change)
+    if self.db.profile.keybindOpenWorld and not self.db.profile.mute then
         bubbleFrame.fontstringinfo:SetText(L["Press %s to speak aloud"]:format(self.db.profile.keybindOpenWorld))
         bubbleFrame.fontstringinfo:Show()
         infoWidth = bubbleFrame.fontstringinfo:GetStringWidth() + 2 * bubbleFrame.infoMargin

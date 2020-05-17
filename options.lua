@@ -89,6 +89,21 @@ Verbose.options = {
                     name = L["The thought bubble serves as a workaround for addon API limitations outside of instances."],
                     order = 22,
                 },
+                keybindOpenWorld = {
+                    type = "keybinding",
+                    name = NORMAL_FONT_COLOR_CODE..L["Speak aloud"]..FONT_COLOR_CODE_CLOSE,
+                    desc = L["Keybind to speak aloud the bubble message."],
+                    order = 22.5,
+                    get = function(info) return Verbose.db.profile.keybindOpenWorld end,
+                    set = function(info, value)
+                        Verbose.db.profile.keybindOpenWorld = value
+                        -- Add Binding
+                        SetBindingClick(value, Verbose.BindingButton:GetName())
+                        SaveBindings(GetCurrentBindingSet())  -- Retail
+                        -- AttemptToSaveBindings(GetCurrentBindingSet())  -- Classic
+                    end,
+                },
+                newline22 = { type="description", name="", order=22.75 },
                 positionTopBelow = {
                     type = "select",
                     name = L["Vertical position"],
@@ -148,21 +163,6 @@ Verbose.options = {
                         Verbose:UseBubbleFrame(loremIpsum)
                     end,
                 },
-                newline26 = { type="description", name="", order=26.5 },
-                keybindOpenWorld = {
-                    type = "keybinding",
-                    name = L["Keybind to speak aloud"],
-                    order = 27,
-                    width = "double",
-                    get = function(info) return Verbose.db.profile.keybindOpenWorld end,
-                    set = function(info, value)
-                        Verbose.db.profile.keybindOpenWorld = value
-                        -- Add Binding
-                        SetBindingClick(value, Verbose.BindingButton:GetName())
-                        SaveBindings(GetCurrentBindingSet())  -- Retail
-                        -- AttemptToSaveBindings(GetCurrentBindingSet())  -- Classic
-                    end,
-                },
                 debugHeader = {
                     type = "header",
                     name = L["DEBUG"],
@@ -171,7 +171,7 @@ Verbose.options = {
                 eventDebug = {
                     type = "toggle",
                     name = L["Print events"],
-                    desc = "Print to console when events fire",
+                    desc = L["Print to console when events fire"],
                     order = 40,
                     get = function(info) return Verbose.db.profile.eventDebug end,
                     set = function(info, value) Verbose.db.profile.eventDebug = value end,
@@ -179,7 +179,7 @@ Verbose.options = {
                 eventDetailDebug = {
                     type = "toggle",
                     name = L["Print all event info"],
-                    desc = "Print all event details to console",
+                    desc = L["Print all event details to console"],
                     order = 41,
                     get = function(info) return Verbose.db.profile.eventDetailDebug end,
                     set = function(info, value) Verbose.db.profile.eventDetailDebug = value end,
@@ -187,7 +187,7 @@ Verbose.options = {
                 speakDebug = {
                     type = "toggle",
                     name = L["Print all speaking info"],
-                    desc = "Print to console why speaks don't trigger",
+                    desc = L["Print to console why messages don't trigger"],
                     order = 42,
                     width = "double",
                     get = function(info) return Verbose.db.profile.speakDebug end,
@@ -195,8 +195,8 @@ Verbose.options = {
                 },
                 mute = {
                     type = "toggle",
-                    name = L["Don't speak but print to console only"],
-                    desc = "Don't spam the world when testing and tuning messages",
+                    name = L["Mute: Only show bubble"],
+                    desc = L["Don't spam the world when testing and tuning messages"],
                     order = 50,
                     width = "double",
                     get = function(info) return Verbose.db.profile.mute end,
