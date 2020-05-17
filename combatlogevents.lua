@@ -35,12 +35,15 @@ local blacklist = {
     SPELL_PERIODIC_ENERGIZE = true,
     SPELL_PERIODIC_MISSED = true,
     SPELL_PERIODIC_HEAL = true,
+    SPELL_AURA_REMOVED_DOSE = true,
+    SPELL_AURA_BROKEN = true,
 
     -- TODO
     DAMAGE_SHIELD = true,
     SPELL_MISSED = true,
     SPELL_DISPEL = true,
     SPELL_SUMMON = true,
+    SPELL_INTERRUPT= true,
 }
 
 function Verbose:CombatLog(event)
@@ -115,6 +118,7 @@ function Verbose:SetCombatLogArgs(eventInfo, rawEventInfo)
 
     -- Suffixes
     if Verbose.ends_with(eventInfo.event, "_DAMAGE") then
+        -- This overrides eventInfo.school from above
         eventInfo.amount, eventInfo.overkill, eventInfo.school, eventInfo.resisted, eventInfo.blocked, eventInfo.absorbed, eventInfo.critical, eventInfo.glancing, eventInfo.crushing, eventInfo.isOffHand = unpack(rawEventInfo, suffixIndex)
     elseif Verbose.ends_with(eventInfo.event, "_MISSED") then
         eventInfo.missType, eventInfo.isOffHand, eventInfo.amountMissed, eventInfo.critical = unpack(rawEventInfo, suffixIndex)
