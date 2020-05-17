@@ -229,7 +229,7 @@ function Verbose:InitBubbleFrame()
     bubbleFrame.defaultWidth = 484
     bubbleFrame:SetWidth(484)
     bubbleFrame:SetHeight(125)
-    bubbleFrame:SetPoint("BOTTOMRIGHT", "PlayerFrame", "TOP")
+    bubbleFrame:SetPoint("BOTTOMRIGHT", "PlayerFrame", "TOP", -10, 0)
     bubbleFrame:SetBackdrop({
         bgFile = "Interface\\Tooltips\\ChatBubble-Background.blp",
         edgeFile = "Interface\\Tooltips\\ChatBubble-Backdrop.blp",
@@ -238,11 +238,15 @@ function Verbose:InitBubbleFrame()
     });
 
     -- Bubble tail
-    bubbleFrame.tail = bubbleFrame:CreateTexture("VerboseBubbleFrameTailTexture")
-    bubbleFrame.tail:SetWidth(bubbleFrame.borders)
-    bubbleFrame.tail:SetHeight(bubbleFrame.borders)
-    bubbleFrame.tail:SetPoint("TOPRIGHT", bubbleFrame, "BOTTOMRIGHT", -45, 5)
-    bubbleFrame.tail:SetTexture("Interface\\Tooltips\\ChatBubble-Tail.blp")
+    -- bubbleFrame.tail = bubbleFrame:CreateTexture("VerboseBubbleFrameTailTexture")
+    -- bubbleFrame.tail:SetWidth(bubbleFrame.borders)
+    -- bubbleFrame.tail:SetHeight(bubbleFrame.borders)
+    -- bubbleFrame.tail:SetPoint("TOPRIGHT", bubbleFrame, "BOTTOMRIGHT", -45, 5)
+    -- bubbleFrame.tail:SetTexture("Interface\\Tooltips\\ChatBubble-Tail.blp")
+
+    self:BubbleCircle(bubbleFrame, "BOTTOMRIGHT", -64, -2, 30, 20)
+    self:BubbleCircle(bubbleFrame, "BOTTOMRIGHT", -57, -10, 18, 12)
+    self:BubbleCircle(bubbleFrame, "BOTTOMRIGHT", -49, -15, 12, 9)
 
     -- Bubble message string
     bubbleFrame.fontstring = bubbleFrame:CreateFontString("VerboseBubbleFrameText")
@@ -262,6 +266,37 @@ function Verbose:InitBubbleFrame()
 
     bubbleFrame:Hide()
     self.bubbleFrame = bubbleFrame
+end
+
+function Verbose:BubbleCircle(parent, ref, x, y, w, h)
+    local topleft, topright, bottomleft, bottomright
+    local topleft = parent:CreateTexture()
+    topleft:SetWidth(w / 2)
+    topleft:SetHeight(h / 2)
+    topleft:SetPoint("BOTTOMRIGHT", parent, ref, x, y)
+    topleft:SetTexture("Interface\\Tooltips\\ChatBubble-Backdrop.blp")
+    topleft:SetTexCoord(4/8, 5/8-1/16, 0, 0.5)
+
+    local topright = parent:CreateTexture()
+    topright:SetWidth(w / 2)
+    topright:SetHeight(h / 2)
+    topright:SetPoint("BOTTOMLEFT", parent, ref, x, y)
+    topright:SetTexture("Interface\\Tooltips\\ChatBubble-Backdrop.blp")
+    topright:SetTexCoord(5/8+1/16, 6/8, 0, 0.5)
+
+    local bottomleft = parent:CreateTexture()
+    bottomleft:SetWidth(w / 2)
+    bottomleft:SetHeight(h / 2)
+    bottomleft:SetPoint("TOPRIGHT", parent, ref, x, y)
+    bottomleft:SetTexture("Interface\\Tooltips\\ChatBubble-Backdrop.blp")
+    bottomleft:SetTexCoord(6/8, 7/8-1/16, 0.5, 1)
+
+    local bottomright = parent:CreateTexture()
+    bottomright:SetWidth(w / 2)
+    bottomright:SetHeight(h / 2)
+    bottomright:SetPoint("TOPLEFT", parent, ref, x, y)
+    bottomright:SetTexture("Interface\\Tooltips\\ChatBubble-Backdrop.blp")
+    bottomright:SetTexCoord(7/8+1/16, 8/8, 0.5, 1)
 end
 
 function Verbose:UseBubbleFrame(text)
