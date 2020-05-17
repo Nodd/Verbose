@@ -1,4 +1,5 @@
 local addonName, Verbose = ...
+local L = LibStub("AceLocale-3.0"):GetLocale(addonName)
 
 -- GLOBALS: hash_EmoteTokenList,
 
@@ -164,11 +165,12 @@ function Verbose:Speak(msgData, substitutions, messagesTable)
         else
             -- Keybind workaround
             tinsert(self.queue, { time = currentTime, message = message })
-            self:DisplayTempMessage(message)
+            --self:DisplayTempMessage(message)
 
             -- Emote workaround
-            self:SpeakDbgPrint("Not in instance, emoting:", message)
-            SendChatMessage("dit : " .. message, "EMOTE")
+            self:UseBubbleFrame(message)
+            --self:SpeakDbgPrint("Not in instance, emoting:", message)
+            --SendChatMessage("dit : " .. message, "EMOTE")
         end
     end
 end
@@ -190,6 +192,7 @@ Verbose.queue = {}
 
 function Verbose:OpenWorldWorkaround()
     self:SpeakDbgPrint("Keybind workaround")
+    self:CloseBubbleFrame()
     if #Verbose.queue == 0 then
         self:SpeakDbgPrint("Empty queue")
         return
@@ -211,4 +214,88 @@ function Verbose:OpenWorldWorkaround()
             self:SpeakDbgPrint(messageData.message)
         end
     end
+end
+
+
+-------------------------------------------------------------------------------
+-- Bubble frame
+-------------------------------------------------------------------------------
+
+function Verbose:InitBubbleFrame()
+    local bubbleFrame = CreateFrame("Frame", "VerboseBubbleFrame", UIParent)
+
+    -- Bubble frame
+    bubbleFrame.borders = 24
+    bubbleFrame.defaultWidth = 484
+    bubbleFrame:SetWidth(484)
+    bubbleFrame:SetHeight(125)
+    bubbleFrame:SetPoint("BOTTOMRIGHT", "PlayerFrame", "TOP")
+    bubbleFrame:SetBackdrop({
+        bgFile = "Interface\\Tooltips\\ChatBubble-Background.blp",
+        edgeFile = "Interface\\Tooltips\\ChatBubble-Backdrop.blp",
+        tile = false, edgeSize = bubbleFrame.borders,
+        insets = { left = bubbleFrame.borders, right = bubbleFrame.borders, top = bubbleFrame.borders, bottom = bubbleFrame.borders }
+    });
+
+    -- Bubble tail
+    bubbleFrame.tail = bubbleFrame:CreateTexture("VerboseBubbleFrameTailTexture")
+    bubbleFrame.tail:SetWidth(bubbleFrame.borders)
+    bubbleFrame.tail:SetHeight(bubbleFrame.borders)
+    bubbleFrame.tail:SetPoint("TOPRIGHT", bubbleFrame, "BOTTOMRIGHT", -45, 5)
+    bubbleFrame.tail:SetTexture("Interface\\Tooltips\\ChatBubble-Tail.blp")
+
+    -- Bubble message string
+    bubbleFrame.fontstring = bubbleFrame:CreateFontString("VerboseBubbleFrameText")
+    bubbleFrame.fontstring:SetWidth(bubbleFrame:GetWidth() - 2 * bubbleFrame.borders)
+    bubbleFrame.fontstring:SetPoint("CENTER", bubbleFrame, "CENTER")
+    bubbleFrame.fontstring:SetFont("Fonts\\FRIZQT__.TTF", 16)
+    bubbleFrame:SetHeight(bubbleFrame.fontstring:GetHeight() + 2 * bubbleFrame.borders)
+
+    -- Bubble info string
+    bubbleFrame.fontstringinfo = bubbleFrame:CreateFontString("VerboseBubbleFrameInfo")
+    bubbleFrame.fontstringinfo:SetWidth(bubbleFrame:GetWidth() - 2 * bubbleFrame.borders)
+    bubbleFrame.fontstringinfo:SetPoint("BOTTOMRIGHT", bubbleFrame, "BOTTOMRIGHT", -10, 5)
+    bubbleFrame.fontstringinfo:SetFont("Fonts\\FRIZQT__.TTF", 8)
+    bubbleFrame.fontstringinfo:SetTextColor(1, 0.81, 0)
+    bubbleFrame.fontstringinfo:SetJustifyH("RIGHT")
+    bubbleFrame.fontstringinfo:SetJustifyV("BOTTOM")
+
+    bubbleFrame:Hide()
+    self.bubbleFrame = bubbleFrame
+end
+
+function Verbose:UseBubbleFrame(text)
+    local bubbleFrame = self.bubbleFrame
+
+    -- Fill message text
+    bubbleFrame.fontstring:SetWidth(bubbleFrame.defaultWidth - 2 * bubbleFrame.borders)
+    bubbleFrame.fontstring:SetText(text)
+    if bubbleFrame.fontstring:GetStringWidth() < bubbleFrame.defaultWidth - 2 * bubbleFrame.borders then
+        bubbleFrame:SetWidth(bubbleFrame.fontstring:GetStringWidth() + 2 * bubbleFrame.borders)
+    else
+        bubbleFrame:SetWidth(bubbleFrame.defaultWidth)
+    end
+    bubbleFrame:SetHeight(bubbleFrame.fontstring:GetHeight() + 2 * bubbleFrame.borders)
+
+    -- Update info message (ke keybind can change)
+    if self.db.profile.keybindOpenWorld then
+        bubbleFrame.fontstringinfo:SetText(L["Press %s to speak aloud"]:format(self.db.profile.keybindOpenWorld))
+        bubbleFrame.fontstringinfo:Show()
+    else
+        bubbleFrame.fontstringinfo:Hide()
+    end
+
+    -- Hide bubble after a delay
+    delay = text:len() / 20
+    if delay < 3 then delay = 3 end
+    self:CancelTimer(self.SpeakTimerID)
+    bubbleFrame:Show()
+    self.SpeakTimerID = self:ScheduleTimer(
+        "CloseBubbleFrame",
+        delay)
+end
+
+function Verbose:CloseBubbleFrame()
+    self.SpeakTimerID = nil
+    self.bubbleFrame:Hide()
 end
