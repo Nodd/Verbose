@@ -43,7 +43,8 @@ local blacklist = {
     SPELL_MISSED = true,
     SPELL_DISPEL = true,
     SPELL_SUMMON = true,
-    SPELL_INTERRUPT= true,
+    SPELL_INTERRUPT = true,
+    PARTY_KILL = true,
 }
 
 function Verbose:CombatLog(event)
@@ -101,8 +102,8 @@ function Verbose:SetCombatLogArgs(eventInfo, rawEventInfo)
     elseif Verbose.starts_with(eventInfo.event, "ENVIRONMENTAL_") then
         eventInfo.environmentalType = unpack(rawEventInfo, suffixIndex)
         suffixIndex = suffixIndex + 1
-    -- elseif Verbose.starts_with(eventInfo.event, "SWING_") then
-    --     eventInfo.spellID = "6603"  -- Autoattack spell, useless ?
+    elseif Verbose.starts_with(eventInfo.event, "SWING_") then
+        eventInfo.spellID = "6603"  -- Autoattack spell
     elseif Verbose.starts_with(eventInfo.event, "UNIT_") then
         eventInfo.recapID, eventInfo.unconsciousOnDeath = unpack(rawEventInfo, suffixIndex)
         suffixIndex = suffixIndex + 2
@@ -336,6 +337,10 @@ function Verbose:spellsRecordCombatLogEvent(eventInfo)
     end
 
     -- Fill db
+    if not eventInfo.spellID then
+        print("No spell ID for", eventInfo.event)
+        return
+    end
     local dbTable = self.db.profile.spells[eventInfo.spellID][eventInfo.event]
     dbTable.lastRecord = GetServerTime()  -- eventInfo.timestamp is unreliable :/
     dbTable.count = dbTable.count + 1
