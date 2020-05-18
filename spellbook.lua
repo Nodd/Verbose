@@ -22,10 +22,23 @@ function Verbose:InitSpellbook(event)
 
     wipe(Verbose.spellbookSpells)
 
-    local allTabs = {}
-    for tabIndex = 1, GetNumSpellTabs() do
+    local currSpec = GetSpecialization()
+
+    -- Map talent spec order (fixed) and spellbook spell order (depends on active spec)
+    local allTabs = { 1 }
+    for specIndex = 1, GetNumSpecializations() do
+        local tabIndex
+        if specIndex < currSpec then
+            tabIndex = specIndex + 2
+        elseif specIndex == currSpec then
+            tabIndex = 2
+        else
+            tabIndex = specIndex + 1
+        end
         tinsert(allTabs, tabIndex)
     end
+
+    -- Add professions
     local prof1, prof2, archaeology, fishing, cooking = GetProfessions()
     if prof1 then tinsert(allTabs, prof1) end
     if prof2 then tinsert(allTabs, prof2) end
@@ -34,6 +47,7 @@ function Verbose:InitSpellbook(event)
     if cooking then tinsert(allTabs, cooking) end
 
     -- Scan spellbook and add spell structures
+    order = 1
     for _, tabIndex in ipairs(allTabs) do
         local tabName, tabTexture, tabOffset, tabNumEntries, tabIsGuild, tabOffspecID = GetSpellTabInfo(tabIndex)
 
@@ -42,7 +56,7 @@ function Verbose:InitSpellbook(event)
             name = tabName,
             icon = tabTexture,
             iconCoords = Verbose.iconCropBorders,
-            order = tabIndex,
+            order = order,
             args = {},
         }
         tabIndex = tostring(tabIndex)
@@ -65,6 +79,7 @@ function Verbose:InitSpellbook(event)
                 local spellOptionsGroup = self:AddSpellOptionsGroup(spellbookTabOptions, spellID)
             end
         end
+        order = order + 1
     end
     self:UpdateOptionsGUI()
 end
