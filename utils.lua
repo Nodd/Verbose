@@ -128,7 +128,7 @@ end
 local playerName = UnitName("player") -- realm result from UnitName("player") is always nil
 local realmName = GetRealmName()
 function Verbose:NameIsPlayer(name)
-    return name == playerName or name == playerName.."-"..realmName
+    return name == "player" or name == playerName or name == playerName.."-"..realmName
 end
 
 -------------------------------------------------------------------------------

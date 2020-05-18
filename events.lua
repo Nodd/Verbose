@@ -15,12 +15,27 @@ local UnitSex = UnitSex
 
 function Verbose:EventDbgPrint(...)
     if self.db.profile.eventDebug then
-        self:Print("EVENT:", ...)
+        self:Print("|cFFFFFF00EVENT:|r", ...)
+    end
+end
+local EventDbgPrintFormatString = "|cFFFFFF00EVENT:|r %s |cFF00FAF6%s|r (%s) |cFFFF3F40:|r %s |cFFFF3F40->|r %s"
+function Verbose:EventDbgPrintFormat(event, spellName, spellID, caster, target)
+    if self.db.profile.eventDebug then
+        if spellID then
+            spellName = GetSpellLink(spellID)
+        end
+        if self:NameIsPlayer(caster) then
+            caster = "|cFF3CE13F"..caster.."|r"
+        end
+        if self:NameIsPlayer(target) then
+            target = "|cFF3CE13F"..target.."|r"
+        end
+        self:Print(EventDbgPrintFormatString:format(event or "|cFFAAABFEnil|r", spellName or "|cFFAAABFEnil|r", spellID or "|cFFAAABFEnil|r", caster or "|cFFAAABFEnil|r", target or "|cFFAAABFEnil|r"))
     end
 end
 function Verbose:EventDetailsDbgPrint(...)
     if self.db.profile.eventDetailDebug then
-        self:Print("   EVENT:", ...)
+        self:Print("   |cFFFFFF00EVENT:|r", ...)
     end
 end
 

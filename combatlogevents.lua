@@ -82,7 +82,7 @@ function Verbose:CombatLog(event)
     self:SetCombatLogArgs(eventInfo, rawEventInfo)
 
     -- Debug
-    self:EventDbgPrint("CLEU/"..eventInfo.event, eventInfo.spellName, ":", eventInfo.sourceName, "->", eventInfo.destName)
+    self:EventDbgPrintFormat("CLEU/"..eventInfo.event, eventInfo.spellName, eventInfo.spellID, eventInfo.sourceName, eventInfo.destName)
     for k, v in pairs(eventInfo) do
         self:EventDetailsDbgPrint("  ", k, "=", v)
     end
