@@ -34,6 +34,25 @@ function Verbose:TextToTable(s, t)
     end
 end
 
+-------------------------------------------------------------------------------
+-- Table operations
+-------------------------------------------------------------------------------
+
+-- from https://wow.gamepedia.com/Orderedpairs
+local function _orderednext(t, n)
+    local key = t[t.__next]
+    if not key then return end
+    t.__next = t.__next + 1
+    return key, t.__source[key]
+end
+function Verbose.orderedpairs(t, f)
+    local keys, kn = {__source = t, __next = 1}, 1
+    for k in pairs(t) do
+        keys[kn], kn = k, kn + 1
+    end
+    table.sort(keys, f)
+    return _orderednext, keys
+end
 
 -------------------------------------------------------------------------------
 -- String operations

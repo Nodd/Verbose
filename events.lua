@@ -33,9 +33,19 @@ function Verbose:EventDbgPrintFormat(event, spellName, spellID, caster, target)
         self:Print(EventDbgPrintFormatString:format(event or "|cFFAAABFEnil|r", spellName or "|cFFAAABFEnil|r", spellID or "|cFFAAABFEnil|r", caster or "|cFFAAABFEnil|r", target or "|cFFAAABFEnil|r"))
     end
 end
-function Verbose:EventDetailsDbgPrint(...)
+local EventDetailDbgPrintFormatString = "|cFFFFFF00EVENT:|r    %s |cFFFF3F40=|r %s"
+function Verbose:EventDetailsDbgPrint(eventInfo)
     if self.db.profile.eventDetailDebug then
-        self:Print("   |cFFFFFF00EVENT:|r", ...)
+        for k, v in Verbose.orderedpairs(eventInfo) do
+            if self:NameIsPlayer(v) then
+                v = "|cFF3CE13F"..v.."|r"
+            elseif v == true then
+                v = "|cFF40BC40true|r"
+            elseif v == false then
+                v = "|cFFFF4700false|r"
+            end
+            self:Print(EventDetailDbgPrintFormatString:format(k, v))
+        end
     end
 end
 
