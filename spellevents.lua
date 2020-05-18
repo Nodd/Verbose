@@ -71,7 +71,7 @@ function Verbose:OnSpellcastEvent(event, caster, target, spellID)
     spellID = tostring(spellID)
 
     -- Debug
-    self:EventDbgPrint(event, caster, target, spellID, spellName)
+    self:EventDbgPrint(event, spellName, ":", caster, "->", target)
 
     -- Record Spell/event
     self:RecordSpellcastEvent(spellID, event)
