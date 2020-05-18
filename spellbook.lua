@@ -94,7 +94,7 @@ function Verbose:InitSpellbook(event)
 end
 
 function Verbose:AddSpellbookSpellEventToOptions(spellID, event)
-    for _, groupID in ipairs(Verbose.spellbookSpells[spellID]) do
+    for _, groupID in ipairs(self.spellbookSpells[spellID]) do
         local spellOptionsGroup = self.options.args.events.args.spellbook.args[groupID].args[spellID]
         self:AddSpellEventOptions(spellOptionsGroup, event)
     end
@@ -102,7 +102,7 @@ end
 
 -- Load saved events to options table
 function Verbose:CheckAndAddSpellbookToOptions(spellID, event)
-    if Verbose.spellbookSpells[spellID] then
+    if self.spellbookSpells[spellID] then
         self:AddSpellbookSpellEventToOptions(spellID, event)
         return true
     else
