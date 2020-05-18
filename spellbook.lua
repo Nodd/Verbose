@@ -17,6 +17,20 @@ local IsPassiveSpell = IsPassiveSpell
 local BOOKTYPE_SPELL = BOOKTYPE_SPELL
 
 Verbose.spellbookSpells = {}
+local function RegisterSpellbookSpell(spellID, order)
+    spellID = tostring(spellID)
+    order = tostring(order)
+
+    -- Remember spell for future checks
+    if not Verbose.spellbookSpells[spellID] then
+        Verbose.spellbookSpells[spellID] = {}
+    end
+    tinsert(Verbose.spellbookSpells[spellID], order)
+
+    -- Add optionsGroup
+    local spellOptionsGroup = Verbose:AddSpellOptionsGroup(
+        Verbose.options.args.events.args.spellbook.args[order], spellID)
+end
 function Verbose:InitSpellbook(event)
     local spellbookOptions = self.options.args.events.args.spellbook
 
@@ -58,23 +72,13 @@ function Verbose:InitSpellbook(event)
             order = order,
             args = {},
         }
-        order = tostring(order)
-        local spellbookTabOptions = spellbookOptions.args[order]
 
         for index = tabOffset + 1, tabOffset + tabNumEntries do
             local spellName, spellSubName = GetSpellBookItemName(index, BOOKTYPE_SPELL)
             local skillType, spellID = GetSpellBookItemInfo(index, BOOKTYPE_SPELL)
             local isSpell = skillType == "SPELL" or skillType == "FUTURESPELL"
             if isSpell and not IsPassiveSpell(spellID) then
-                spellID = tostring(spellID)
-                -- Remember spell for future checks
-                if not Verbose.spellbookSpells[spellID] then
-                    Verbose.spellbookSpells[spellID] = {}
-                end
-                tinsert(Verbose.spellbookSpells[spellID], tabIndex)
-
-                -- Add optionsGroup
-                local spellOptionsGroup = self:AddSpellOptionsGroup(spellbookTabOptions, spellID)
+                RegisterSpellbookSpell(spellID, order)
             end
         end
     end
@@ -84,8 +88,8 @@ function Verbose:InitSpellbook(event)
             for column = 1, NUM_TALENT_COLUMNS do
                 local talentID, _, _, _, _, spellID = GetTalentInfoBySpecialization(spec, tier, column)
                 if not IsPassiveSpell(spellID) then
-                    spellID = tostring(spellID)
-                    self:AddSpellOptionsGroup(spellbookOptions.args[tostring(spec + 1)], spellID)
+                    local order = tostring(spec + 1)
+                    RegisterSpellbookSpell(spellID, order)
                 end
             end
         end
