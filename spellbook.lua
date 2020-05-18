@@ -50,7 +50,7 @@ function Verbose:InitSpellbook(event)
     for order, tabIndex in ipairs(allTabs) do
         local tabName, tabTexture, tabOffset, tabNumEntries, tabIsGuild, tabOffspecID = GetSpellTabInfo(tabIndex)
 
-        spellbookOptions.args[tostring(tabIndex)] = {
+        spellbookOptions.args[tostring(order)] = {
             type = "group",
             name = tabName,
             icon = tabTexture,
@@ -58,15 +58,14 @@ function Verbose:InitSpellbook(event)
             order = order,
             args = {},
         }
-        tabIndex = tostring(tabIndex)
-        local spellbookTabOptions = spellbookOptions.args[tostring(tabIndex)]
+        order = tostring(order)
+        local spellbookTabOptions = spellbookOptions.args[order]
 
         for index = tabOffset + 1, tabOffset + tabNumEntries do
             local spellName, spellSubName = GetSpellBookItemName(index, BOOKTYPE_SPELL)
             local skillType, spellID = GetSpellBookItemInfo(index, BOOKTYPE_SPELL)
-            local isPassive = IsPassiveSpell(spellID)
             local isSpell = skillType == "SPELL" or skillType == "FUTURESPELL"
-            if isSpell and not isPassive then
+            if isSpell and not IsPassiveSpell(spellID) then
                 spellID = tostring(spellID)
                 -- Remember spell for future checks
                 if not Verbose.spellbookSpells[spellID] then
@@ -76,6 +75,18 @@ function Verbose:InitSpellbook(event)
 
                 -- Add optionsGroup
                 local spellOptionsGroup = self:AddSpellOptionsGroup(spellbookTabOptions, spellID)
+            end
+        end
+    end
+    -- Add all talent spells
+    for spec = 1, GetNumSpecializations() do
+        for tier = 1, MAX_TALENT_TIERS do
+            for column = 1, NUM_TALENT_COLUMNS do
+                local talentID, _, _, _, _, spellID = GetTalentInfoBySpecialization(spec, tier, column)
+                if not IsPassiveSpell(spellID) then
+                    spellID = tostring(spellID)
+                    self:AddSpellOptionsGroup(spellbookOptions.args[tostring(spec + 1)], spellID)
+                end
             end
         end
     end
