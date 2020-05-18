@@ -65,6 +65,7 @@ function Verbose:AddCombatLogEventToOptions(optionGroupArgs, category)
                 },
             },
         }
+        self:UpdateOptionsGUI()
     end
 end
 

@@ -39,6 +39,7 @@ function Verbose:AddSpellOptionsGroup(parentGroup, spellID)
             args = {
             },
         }
+        self:UpdateOptionsGUI()
     end
     return parentGroup.args[spellID]
 end
@@ -93,6 +94,7 @@ function Verbose:AddSpellEventOptions(spellOptionsGroup, event)
                 },
             },
         }
+        self:UpdateOptionsGUI()
     end
 end
 

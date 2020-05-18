@@ -124,6 +124,7 @@ function Verbose:AddDamageToOptions(optionGroupArgs, damageID, name, desc)
                 },
             },
         }
+        self:UpdateOptionsGUI()
     end
 end
 

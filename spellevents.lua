@@ -58,7 +58,6 @@ function Verbose:RecordSpellcastEvent(spellID, event)
 
     -- Update options
     self:AddSpellToOptions(spellID, event)
-    self:UpdateOptionsGUI()  -- TODO: only for brand new spells
 
     -- Update timestamp
     spellData[event].lastRecord = GetServerTime()

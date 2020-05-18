@@ -83,6 +83,7 @@ function Verbose:AddMountToOptions(spellID)
             iconCoords = Verbose.iconCropBorders,
             args = {},
         }
+        self:UpdateOptionsGUI()
     end
 
     -- Insert mount options

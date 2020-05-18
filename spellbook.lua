@@ -66,6 +66,7 @@ function Verbose:InitSpellbook(event)
             end
         end
     end
+    self:UpdateOptionsGUI()
 end
 
 function Verbose:AddSpellbookSpellEventToOptions(spellID, event)

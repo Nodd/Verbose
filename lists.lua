@@ -26,8 +26,7 @@ function Verbose:CreateList()
     -- Insert in options table
     self:AddListToOptions(listID)
 
-    -- Update GUI and select new list
-    self:UpdateOptionsGUI()
+    -- Select new list
     self:SelectOption("lists", listID)
 end
 
@@ -82,6 +81,7 @@ function Verbose:AddListToOptions(listID)
             },
         },
     }
+    self:UpdateOptionsGUI()
 end
 
 -- Load saved lists to options table

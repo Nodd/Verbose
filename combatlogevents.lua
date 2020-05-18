@@ -354,7 +354,6 @@ function Verbose:spellsRecordCombatLogEvent(eventInfo)
 
     self:AddSpellToOptions(eventInfo.spellID, eventInfo.event)
     --self:AddCombatLogEventToOptions(optionGroupArgs, eventInfo.spellID)
-    self:UpdateOptionsGUI()
 end
 
 function Verbose:OnCombatLogEvent(eventInfo)
