@@ -330,7 +330,8 @@ Verbose.spellIDTreeFuncs = {
 }
 
 function Verbose:spellsRecordCombatLogEvent(eventInfo)
-    if Verbose.ends_with(eventInfo.event, "_DAMAGE") then
+    if Verbose.ends_with(eventInfo.event, "_DAMAGE") and self:NameIsPlayer(eventInfo.destName) then
+        -- Managed in damagereceived.lua
         return
     end
 
@@ -360,7 +361,7 @@ function Verbose:spellsRecordCombatLogEvent(eventInfo)
 end
 
 function Verbose:OnCombatLogEvent(eventInfo)
-    if Verbose.ends_with(eventInfo.event, "_DAMAGE") then
+    if Verbose.ends_with(eventInfo.event, "_DAMAGE") and self:NameIsPlayer(eventInfo.destName) then
         Verbose:OnDamageEvent(eventInfo)
         return
     end
