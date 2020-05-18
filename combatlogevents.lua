@@ -338,7 +338,7 @@ function Verbose:spellsRecordCombatLogEvent(eventInfo)
 
     -- Fill db
     if not eventInfo.spellID then
-        print("No spell ID for", eventInfo.event)
+        self:EventDbgPrint("No spell ID for", eventInfo.event)
         return
     end
     local dbTable = self.db.profile.spells[eventInfo.spellID][eventInfo.event]
