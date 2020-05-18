@@ -47,8 +47,7 @@ function Verbose:InitSpellbook(event)
     if cooking then tinsert(allTabs, cooking) end
 
     -- Scan spellbook and add spell structures
-    order = 1
-    for _, tabIndex in ipairs(allTabs) do
+    for order, tabIndex in ipairs(allTabs) do
         local tabName, tabTexture, tabOffset, tabNumEntries, tabIsGuild, tabOffspecID = GetSpellTabInfo(tabIndex)
 
         spellbookOptions.args[tostring(tabIndex)] = {
@@ -79,7 +78,6 @@ function Verbose:InitSpellbook(event)
                 local spellOptionsGroup = self:AddSpellOptionsGroup(spellbookTabOptions, spellID)
             end
         end
-        order = order + 1
     end
     self:UpdateOptionsGUI()
 end
