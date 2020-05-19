@@ -14,9 +14,7 @@ local SaveBindings = SaveBindings
 local GetCurrentBindingSet = GetCurrentBindingSet
 local ReloadUI = ReloadUI
 
-local AceDBOptions = LibStub("AceDBOptions-3.0")
 local AceGUI = LibStub("AceGUI-3.0")
-local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local LibDBIcon = LibStub("LibDBIcon-1.0")
@@ -541,18 +539,6 @@ function Verbose:SelectOption(...)
     AceConfigDialog:SelectGroup(addonName, ...)
 end
 
-function Verbose:RegisterOptions()
-    -- Add profile config tab to options
-    self.options.args.profiles = AceDBOptions:GetOptionsTable(self.db)
-    self.options.args.profiles.order = 40
-
-    -- Register options
-    AceConfig:RegisterOptionsTable(
-        addonName,
-        self.options
-    )
-end
-
 function Verbose:ShowOptions()
     AceConfigDialog:Open(addonName)
 end
@@ -584,4 +570,40 @@ function Verbose:LoadData(info)
         profile[k] = v
     end
     ReloadUI() -- TODO: more subtle behavior...
+end
+
+
+function Verbose:ResetOptionsGroup(optionArgs)
+    for k, v in pairs(optionArgs) do
+        if v.type == "group" then
+            optionArgs[k] = nil
+        end
+    end
+end
+
+
+function Verbose:RefreshOptions()
+    -- Load DB to options
+    self:ResetOptionsGroup(self.options.args.lists.args)
+    self:ResetOptionsGroup(self.options.args.events.args.spells.args)
+    self:ResetOptionsGroup(self.options.args.events.args.combat.args.damage.args.environmental.args)
+    self:ResetOptionsGroup(self.options.args.events.args.combat.args.damage.args.monoSchool.args)
+    self:ResetOptionsGroup(self.options.args.events.args.combat.args.damage.args.dualSchools.args)
+    self:ResetOptionsGroup(self.options.args.events.args.combat.args.damage.args.moreSchools.args)
+    for groupID, groupdata in pairs(self.options.args.events.args.spellbook.args) do
+        if groupdata.args then
+            for spellID, spellData in pairs(groupdata.args) do
+                self:ResetOptionsGroup(spellData.args)
+            end
+        end
+    end
+
+    self:DBToOptions()
+    self:UpdateOptionsGUI()
+end
+
+function Verbose:DBToOptions()
+    -- Load DB to options
+    self:SpellDBToOptions()
+    self:ListDBToOptions()
 end

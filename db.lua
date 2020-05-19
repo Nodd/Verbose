@@ -4,6 +4,7 @@ local addonName, Verbose = ...
 local pairs = pairs
 
 local AceDB = LibStub("AceDB-3.0")
+local AceDBOptions = LibStub("AceDBOptions-3.0")
 
 Verbose.lastDBVersion = 1
 
@@ -80,4 +81,12 @@ local defaultDB = {
 function Verbose:SetupDB()
     -- Load saved config
     self.db = AceDB:New("VerboseDB", defaultDB)
+
+    -- Add profile config tab to options
+    self.options.args.profiles = AceDBOptions:GetOptionsTable(self.db)
+    self.options.args.profiles.order = 40
+
+    self.db.RegisterCallback(self, "OnProfileChanged", "RefreshOptions")
+    self.db.RegisterCallback(self, "OnProfileCopied", "RefreshOptions")
+    self.db.RegisterCallback(self, "OnProfileReset", "RefreshOptions")
 end
