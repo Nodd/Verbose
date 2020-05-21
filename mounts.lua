@@ -56,14 +56,18 @@ function Verbose:InitMounts()
                 categoryID=tostring(mountTypeID),
             }
 
-            -- Add a default message
-            messages = self.db.profile.spells[spellID].UNIT_SPELLCAST_SUCCEEDED.messages
-            if #messages == 0 then
-                tinsert(messages, "/mountspecial")
-            end
-
             -- Fill options table
             self:AddMountToOptions(spellID)
+        end
+    end
+end
+
+function Verbose:InitMountsDB()
+    for spellID in pairs(Verbose.mountSpells) do
+        -- Add a default message
+        messages = self.db.profile.spells[spellID].UNIT_SPELLCAST_SUCCEEDED.messages
+        if #messages == 0 then
+            tinsert(messages, "/mountspecial")
         end
     end
 end
