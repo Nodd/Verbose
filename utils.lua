@@ -164,12 +164,12 @@ function Verbose:secondsToString(value)
     value = (value - days) / 24
 
     if days > 0 then
-        return format("%u |4day:days;", days)
+        return INT_SPELL_DURATION_DAYS:format(days)
     elseif hours > 0 then
-        return format("%u |4hour:hours;", hours)
+        return INT_SPELL_DURATION_HOURS:format(hours)
     elseif minutes > 0 then
-        return format("%u |4minute:minutes;", minutes)
+        return INT_SPELL_DURATION_MIN:format(minutes)
     else
-        return format("%u |4second:seconds;", seconds)
+        return INT_SPELL_DURATION_SEC :format(seconds)
     end
 end
