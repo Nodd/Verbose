@@ -50,7 +50,7 @@ function Verbose.orderedpairs(t, f)
     for k in pairs(t) do
         keys[kn], kn = k, kn + 1
     end
-    table.sort(keys, f)
+    sort(keys, f)
     return _orderednext, keys
 end
 

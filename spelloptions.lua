@@ -40,6 +40,9 @@ function Verbose:AddSpellOptionsGroup(parentGroup, spellID)
 end
 
 local eventDescFmt = L["\n%%s\n   %s%%d (%%s ago)|r"]:format(NORMAL_FONT_COLOR_CODE)
+local function sortByOrder(a, b)
+    return Verbose.EventOrder(a) < Verbose.EventOrder(b)
+end
 function Verbose.SpellOptionsDesc(info)
     local spellID = info[#info]
 
@@ -53,7 +56,7 @@ function Verbose.SpellOptionsDesc(info)
     local dbTable = Verbose.db.profile.spells[spellID]
     local now = GetServerTime()
     local hasEvents = false
-    for event, eventData in pairs(dbTable) do
+    for event, eventData in Verbose.orderedpairs(dbTable, sortByOrder) do
         hasEvents = true
         local elapsed = Verbose:secondsToString(now - eventData.lastRecord)
         txt = txt..eventDescFmt:format(
@@ -72,7 +75,7 @@ function Verbose:AddSpellEventOptions(spellOptionsGroup, event)
         spellOptionsGroup.args[event] = {
             type = "group",
             name = Verbose.EventNameFromInfo,
-            order = Verbose.EventOrder,
+            order = Verbose.EventOrderFromInfo,
             args = {
                 enable = {
                     type = "toggle",
@@ -160,14 +163,16 @@ function Verbose.EventName(event)
         return event
     end
 end
-function Verbose.EventOrder(info)
-    event = info[#info]
+function Verbose.EventOrderFromInfo(info)
+    return Verbose.EventOrder(info[#info])
+end
+function Verbose.EventOrder(event)
     if Verbose.usedSpellEvents[event] then
         return Verbose.usedSpellEvents[event].order
     elseif Verbose.playerCombatLogSubEvents[event] then
         return Verbose.playerCombatLogSubEvents[event].order
     else
-        return nil
+        return 100
     end
 end
 
