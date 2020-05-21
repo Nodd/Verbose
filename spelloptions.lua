@@ -131,6 +131,8 @@ function Verbose.EventName(info)
     event = info[#info]
     if Verbose.usedSpellEvents[event] then
         return Verbose.usedSpellEvents[event].name
+    elseif Verbose.playerCombatLogSubEvents[event] then
+        return Verbose.playerCombatLogSubEvents[event].name
     else
         return event
     end
@@ -139,6 +141,8 @@ function Verbose.EventOrder(info)
     event = info[#info]
     if Verbose.usedSpellEvents[event] then
         return Verbose.usedSpellEvents[event].order
+    elseif Verbose.playerCombatLogSubEvents[event] then
+        return Verbose.playerCombatLogSubEvents[event].order
     else
         return nil
     end

@@ -16,13 +16,14 @@ Verbose.usedSpellEvents = {
     -- },
 
     UNIT_SPELLCAST_SENT = { callback="OnUnitSpellcastSent", name=nil, order=-100, classic=true },
-    UNIT_SPELLCAST_START = { callback="OnUnitSpellcastCommon", name=L["Cast start"], order=0, classic=true },
-    UNIT_SPELLCAST_CHANNEL_START = { callback="OnUnitSpellcastCommon", name=L["Channel start"], order=10, classic=true },
-    UNIT_SPELLCAST_SUCCEEDED = { callback="OnUnitSpellcastEnd", name=L["Cast succeeded"], order=20, classic=true },
-    UNIT_SPELLCAST_FAILED = { callback="OnUnitSpellcastEnd", name=L["Cast failed"], order=30, classic=true },
-    UNIT_SPELLCAST_INTERRUPTED = { callback="OnUnitSpellcastEnd", name=L["Cast interrupted"], order=40, classic=true },
     UNIT_SPELLCAST_STOP = { callback="OnUnitSpellcastStop", name=L["Stop"], order=-99, classic=true },
-    UNIT_SPELLCAST_CHANNEL_STOP = { callback="OnUnitSpellcastEnd", name=L["Channel stop"], order=60, classic=true },
+
+    UNIT_SPELLCAST_START = { callback="OnUnitSpellcastCommon", name=L["Cast start"], order=5, classic=true },
+    UNIT_SPELLCAST_CHANNEL_START = { callback="OnUnitSpellcastCommon", name=L["Channel start"], order=10, classic=true },
+    UNIT_SPELLCAST_SUCCEEDED = { callback="OnUnitSpellcastEnd", name=L["Cast success"], order=15, classic=true },
+    UNIT_SPELLCAST_CHANNEL_STOP = { callback="OnUnitSpellcastEnd", name=L["Channel stop"], order=20, classic=true },
+    UNIT_SPELLCAST_FAILED = { callback="OnUnitSpellcastEnd", name=L["Cast start failed"], order=25, classic=true },
+    UNIT_SPELLCAST_INTERRUPTED = { callback="OnUnitSpellcastEnd", name=L["Cast stopped"], order=40, classic=true },
 }
 
 -- Table to store spell targets, which are not provided for all events
@@ -53,19 +54,13 @@ function Verbose:OnUnitSpellcastEnd(event, caster, castID, spellID)
 end
 
 function Verbose:RecordSpellcastEvent(spellID, event)
-    local spells = self.db.profile.spells
-
     -- If spell not known at all, register it
-    if not spells[spellID] then
-        spells[spellID] = {}
-    end
-    local spellData = spells[spellID]
+    local dbTable = self.db.profile.spells[spellID][event]
+    dbTable.lastRecord = GetServerTime()
+    dbTable.count = dbTable.count + 1
 
     -- Update options
     self:AddSpellToOptions(spellID, event)
-
-    -- Update timestamp
-    spellData[event].lastRecord = GetServerTime()
 end
 
 function Verbose:OnSpellcastEvent(event, caster, target, spellID)

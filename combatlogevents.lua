@@ -1,4 +1,5 @@
 local addonName, Verbose = ...
+local L = LibStub("AceLocale-3.0"):GetLocale(addonName)
 
 -- Lua functions
 local bit = bit
@@ -16,6 +17,8 @@ local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
 local GetServerTime = GetServerTime
 local COMBATLOG_OBJECT_REACTION_MASK = COMBATLOG_OBJECT_REACTION_MASK
 
+local autoAttackSpellID = "6603"
+
 Verbose.usedCombatLogEvents = {
     -- EVENT = {
     --     callback,  -- Function to call
@@ -26,6 +29,32 @@ Verbose.usedCombatLogEvents = {
     -- },
 
     COMBAT_LOG_EVENT_UNFILTERED = { callback="CombatLog", category="combat", title="Combat log", icon=icon, classic=true },
+}
+
+Verbose.playerCombatLogSubEvents = {
+
+    SWING_DAMAGE = { name=L["Melee hit"], order=1 },
+    SWING_MISSED = { name=L["Melee missed"], order=2 },
+
+    SPELL_CAST_START = { name=L["Cast start (combat log)"], order=5.5 },
+    SPELL_CAST_SUCCESS = { name=L["Cast success (combat log)"], order=15.5 },
+    SPELL_CAST_FAILED = { name=L["Cast fail (combat log)"], order=30.5 },
+
+    SPELL_AURA_APPLIED = { name=L["Aura applied"], order=60 },
+    SPELL_AURA_REMOVED = { name=L["Aura removed"], order=61 },
+
+    SPELL_DAMAGE = { name=L["Spell damage"], order=70 },
+    RANGE_DAMAGE = { name=L["Range damage"], order=71 },
+    -- ENVIRONMENTAL_DAMAGE = { name=L[""], order=1 },
+
+    SPELL_HEAL = { name=L["Heal"], order=80 },
+
+    PARTY_KILL = { name=L["Kill"], order=50 },
+}
+
+local playerCombatLogSubEventsAlias = {
+    SPELL_AURA_APPLIED_DOSE = SPELL_AURA_APPLIED,
+    SPELL_AURA_REFRESH = SPELL_AURA_APPLIED,
 }
 
 local blacklist = {
@@ -80,9 +109,12 @@ function Verbose:CombatLog(event)
 
     -- The rest of the parameters depends on the event and will be managed in subfunctions
     self:SetCombatLogArgs(eventInfo, rawEventInfo)
+    if playerCombatLogSubEventsAlias[eventInfo.event] then
+        eventInfo.event = playerCombatLogSubEventsAlias[eventInfo.event]
+    end
 
     -- Debug
-    self:EventDbgPrintFormat("CLEU/"..eventInfo.event, eventInfo.spellName, eventInfo.spellID, eventInfo.sourceName, eventInfo.destName)
+    self:EventDbgPrintFormat("|cFF0070FFCLEU|r "..eventInfo.event, eventInfo.spellName, eventInfo.spellID, eventInfo.sourceName, eventInfo.destName)
 
     -- Respond to event
     self:spellsRecordCombatLogEvent(eventInfo)
@@ -96,16 +128,14 @@ function Verbose:SetCombatLogArgs(eventInfo, rawEventInfo)
         eventInfo.spellID, eventInfo.spellName, eventInfo.school = unpack(rawEventInfo, suffixIndex)
         eventInfo.spellID = tostring(eventInfo.spellID)
         suffixIndex = suffixIndex + 3
+    elseif Verbose.starts_with(eventInfo.event, "SWING_") then
+        eventInfo.spellID = autoAttackSpellID
     elseif Verbose.starts_with(eventInfo.event, "ENVIRONMENTAL_") then
         eventInfo.environmentalType = unpack(rawEventInfo, suffixIndex)
         suffixIndex = suffixIndex + 1
-    elseif Verbose.starts_with(eventInfo.event, "SWING_") then
-        eventInfo.spellID = "6603"  -- Autoattack spell
     elseif Verbose.starts_with(eventInfo.event, "UNIT_") then
         eventInfo.recapID, eventInfo.unconsciousOnDeath = unpack(rawEventInfo, suffixIndex)
         suffixIndex = suffixIndex + 2
-    -- else
-    --     eventInfo.spellID = "-2"  -- Fake spell ID
     end
 
     -- Specific
@@ -145,128 +175,13 @@ function Verbose:SetCombatLogArgs(eventInfo, rawEventInfo)
     elseif #rawEventInfo ~= suffixIndex - 1 then
         self:Print(eventInfo.event.." has unknown extra arguments:", unpack(rawEventInfo, suffixIndex))
     end
-end
 
-function Verbose:CategoryTree(eventInfo)
-    local categories = {}
-    if eventInfo.event == "SPELL_HEAL" then
-        tinsert(categories, "combatLogCategory#heal")
-        tinsert(categories, "castMode#"..eventInfo.castMode)
-        tinsert(categories, "school#"..eventInfo.school)
-        tinsert(categories, "spellID#"..eventInfo.spellID)
-
-    elseif eventInfo.event == "SPELL_DAMAGE" then
-        tinsert(categories, "combatLogCategory#damage")
-        tinsert(categories, "castMode#"..eventInfo.castMode)
-        tinsert(categories, "school#"..eventInfo.school)
-        tinsert(categories, "spellID#"..eventInfo.spellID)
-
-    elseif eventInfo.event == "ENVIRONMENTAL_DAMAGE" then
-        tinsert(categories, "combatLogCategory#damage")
-        tinsert(categories, "castMode#"..eventInfo.castMode)
-        tinsert(categories, "combatLogCategory#environmental")
-        tinsert(categories, eventInfo.environmentalType)
-
-    elseif eventInfo.event == "SWING_DAMAGE" then
-        tinsert(categories, "combatLogCategory#damage")
-        tinsert(categories, "castMode#"..eventInfo.castMode)
-        tinsert(categories, "Swing")
-
-    elseif eventInfo.event == "SWING_MISSED" then
-        tinsert(categories, "combatLogCategory#damage")
-        tinsert(categories, "castMode#"..eventInfo.castMode)
-        tinsert(categories, "Swing missed")
-
-    elseif eventInfo.event == "RANGE_DAMAGE" then
-        tinsert(categories, "combatLogCategory#damage")
-        tinsert(categories, "castMode#"..eventInfo.castMode)
-        tinsert(categories, "Range")
-
-    elseif eventInfo.event == "SPELL_CAST_START" then
-        tinsert(categories, "castMode#start")
-        tinsert(categories, "school#"..eventInfo.school)
-        tinsert(categories, "spellID#"..eventInfo.spellID)
-
-    elseif eventInfo.event == "SPELL_CAST_FAILED" then
-        tinsert(categories, "castMode#failed")
-        tinsert(categories, eventInfo.failedType)
-        tinsert(categories, "school#"..eventInfo.school)
-        tinsert(categories, "spellID#"..eventInfo.spellID)
-
-    elseif eventInfo.event == "SPELL_CAST_SUCCESS" then
-        tinsert(categories, "castMode#success")
-        tinsert(categories, "school#"..eventInfo.school)
-        tinsert(categories, "spellID#"..eventInfo.spellID)
-
-    elseif eventInfo.event == "SPELL_AURA_APPLIED" or eventInfo.event == "SPELL_AURA_APPLIED_DOSE" or eventInfo.event == "SPELL_AURA_REFRESH" then
-        if eventInfo.auraType == "BUFF" then
-            tinsert(categories, "combatLogCategory#buffs")
-        else
-            tinsert(categories, "combatLogCategory#debuffs")
-        end
-        tinsert(categories, "castMode#"..eventInfo.castMode)
-        tinsert(categories, "school#"..eventInfo.school)
-        tinsert(categories, "spellID#"..eventInfo.spellID)
-        tinsert(categories, "auraEvent#APPLIED")
-
-    elseif eventInfo.event == "SPELL_AURA_REMOVED" then
-        if eventInfo.auraType == "BUFF" then
-            tinsert(categories, "combatLogCategory#buffs")
-        else
-            tinsert(categories, "combatLogCategory#debuffs")
-        end
-        tinsert(categories, "castMode#"..eventInfo.castMode)
-        tinsert(categories, "school#"..eventInfo.school)
-        tinsert(categories, "spellID#"..eventInfo.spellID)
-        tinsert(categories, "auraEvent#REMOVED")
-
-    elseif eventInfo.event == "PARTY_KILL" then -- Has arguments sometimes ?
-    else
-        self:Print("Unknown combat log event:", eventInfo.event)
+    if eventInfo.auraType == "BUFF" then
+        eventInfo.auraIsBuff = true
+    elseif eventInfo.auraType == "DEBUFF" then
+        eventInfo.auraIsDebuff = true
     end
-    return categories
 end
-
-function Verbose.CategoryTypeValue(category)
-    local typ, id = category:match("^(.+)#(.+)$") -- use strsplit ?
-    return typ, id
-end
-
-function Verbose:CategoryName(category)
-    local value
-    local typ, id = self.CategoryTypeValue(category)
-    if not id then
-        value = category
-    else
-        value = self.categoryData[typ](id).name
-        if type(value) == "function" then
-            value = self:SpellName(id)
-        end
-    end
-    return value
-end
-
-Verbose.categoryData = {
-    castMode = function(id) return Verbose.combatLogCastModes[id] end,
-    combatLogCategory = function(id) return Verbose.combatLogOptionsCategories[id] end,
-    spellID = function(id) return Verbose.spellIDTreeFuncs end,
-    school = function(id) return { name=Verbose.SpellSchoolString[tonumber(id)] } end,
-    auraEvent = function(id) return Verbose.auraEvent[id] end,
-    event = function(id) return { name=id } end,
-}
-
-Verbose.combatLogCastModes = {
-    start = { name="Start cast", order=5, desc="Start a non-instant, non-channelled cast.\n" },
-    success = { name="Successfull cast", order=7, desc="Successfully casting any spell.\n" },
-    failed = { name="Failed cast", order=8, desc="Failing to cast any spell. Shit happens.\n" },
-    self = { name="Me@Me", order=10, desc="Me, myself and I.\n" },
-    noTarget = { name="Me@None", order=15, desc="Non-targeted events done by myself.\n" },
-    doneHelp = { name="Me@Help", order=20, desc="Targetting events done by myself to a friend.\n" },
-    doneHarm = { name="Me@Harm", order=25, desc="Targetting events done by myself to an enemy.\n" },
-    receivedHelp = { name="Help@Me", order=30, desc="Targeting events done by a friend to me.\n" },
-    receivedHarm = { name="Harm@Me", order=35, desc="Targeting events done by an enemy to me.\n" },
-    other = { name="Other", order=40, desc="Not my problem.\n" },
-}
 
 function Verbose:CombatLogCastMode(eventInfo)
     if self:NameIsPlayer(eventInfo.destName) then
@@ -298,65 +213,18 @@ function Verbose:FlagToReaction(UnitFlag)
     return reactionID[reaction]
 end
 
-Verbose.combatLogOptionsCategories = {
-    swing = { name=MELEE, order=10 },
-    range = { name=RANGED, order=15 },
-    spells = { name=SPELLS, order=20 },
-    damage = { name=DAMAGE, order=30 },
-    heal = { name=HEALS, order=40 },
-    buffs = { name="Buffs", order=50 },
-    debuffs = { name="Debuffs", order=60 },
-    other = { name="Other", order=80 },
-    environmental = { name=ENVIRONMENT_SUBHEADER, order=999 }
-}
-
-Verbose.auraEvent = {
-    APPLIED = { name="Applied", order=10 },
-    REMOVED = { name="Removed", order=20 },
-}
-
-Verbose.spellIDTreeFuncs = {
-    -- Skip "spellID#" to get the ID
-    name = function(spellID) return Verbose:SpellName(spellID) end,
-    icon = function(spellID) return Verbose:SpellIconID(spellID) end,
-    desc = function(spellID)
-        return (
-            Verbose:SpellIconTexture(spellID)
-            .. "\n".. Verbose:SpellDescription(spellID)
-            .. "\n\nSpell ID: " .. spellID
-        )
-    end,
-}
-
 function Verbose:spellsRecordCombatLogEvent(eventInfo)
-    if Verbose.ends_with(eventInfo.event, "_DAMAGE") and self:NameIsPlayer(eventInfo.destName) then
+    if self.ends_with(eventInfo.event, "_DAMAGE") and self:NameIsPlayer(eventInfo.destName) then
         -- Managed in damagereceived.lua
         return
     end
-
-    -- Fill db
     if not eventInfo.spellID then
         self:EventDbgPrint("No spell ID for", eventInfo.event)
         return
     end
-    local dbTable = self.db.profile.spells[eventInfo.spellID][eventInfo.event]
-    dbTable.lastRecord = GetServerTime()  -- eventInfo.timestamp is unreliable :/
-    dbTable.count = dbTable.count + 1
-    dbTable.categories = self:CategoryTree(eventInfo)
 
-    -- Fill options table
-    local optionGroupArgs
-    if self.mountSpells[eventInfo.spellID] then
-        return
-        -- optionGroupArgs = self.options.args.events.args.mounts.args
-    elseif self.spellbookSpells[eventInfo.spellID] then
-        optionGroupArgs = self.options.args.events.args.spellbook.args[self.spellbookSpells[eventInfo.spellID]]
-    else
-        optionGroupArgs = self.options.args.events.args.spells.args
-    end
-
-    self:AddSpellToOptions(eventInfo.spellID, eventInfo.event)
-    --self:AddCombatLogEventToOptions(optionGroupArgs, eventInfo.spellID)
+    -- Fill db and options
+    self:RecordSpellcastEvent(eventInfo.spellID, eventInfo.event)
 end
 
 function Verbose:OnCombatLogEvent(eventInfo)
@@ -385,11 +253,6 @@ function Verbose:OnCombatLogEvent(eventInfo)
         -- end
     else
         messagesTable = dbTable.messages
-    end
-
-    if #messagesTable == 0 then
-        self:SpeakDbgPrint("Empty message table")
-        return
     end
 
     -- Talk
