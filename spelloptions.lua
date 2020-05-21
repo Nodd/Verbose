@@ -81,10 +81,16 @@ function Verbose:AddSpellEventOptions(spellOptionsGroup, event)
                     type = "toggle",
                     name = ENABLE,
                     order = 10,
-                    width = "full",
                     get = "GetSpellEventEnabled",
                     set = "SetSpellEventEnabled",
                 },
+                forget = {
+                    type = "execute",
+                    name = "Forget this event",
+                    order = 15,
+                    func = "ForgetEvent",
+                },
+                newline19 = { type="description", name="", order=15.5 },
                 proba = {
                     type = "range",
                     name = L["Message probability"],
@@ -174,6 +180,21 @@ function Verbose.EventOrder(event)
     else
         return 100
     end
+end
+
+function Verbose:ForgetEvent(info)
+    local event = info[#info - 1]
+    local spellID = info[#info - 2]
+
+    -- Clear options
+    local optionsArgs = self.options.args
+    for i = 1, #info - 2 do
+        optionsArgs = optionsArgs[info[i]].args
+    end
+    optionsArgs[event] = nil
+
+    -- Clear DB
+    self.db.profile.spells[spellID][event] = nil
 end
 
 -- Load saved events to options table
