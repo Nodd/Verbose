@@ -1,4 +1,5 @@
 local addonName, Verbose = ...
+local L = LibStub("AceLocale-3.0"):GetLocale(addonName)
 
 -- Lua functions
 local pairs = pairs
@@ -101,8 +102,8 @@ Verbose.usedEvents = {
     MERCHANT_SHOW = { callback="ManageNoArgEvent", category="npc", name=MERCHANT, classic=true },
     QUEST_GREETING = { callback="ManageNoArgEvent", category="npc", name="Quest greeting", classic=true },
     QUEST_FINISHED = { callback="ManageNoArgEvent", category="npc", name="Quest finished", classic=true },
-    TAXIMAP_OPENED = { callback="DUMMYEvent", category="npc", name="Taxi map", classic=true },
-    TRAINER_SHOW = { callback="ManageNoArgEvent", category="npc", name="Trainer", classic=true },
+    TAXIMAP_OPENED = { callback="TAXIMAP_OPENED", category="npc", name=L["Taxi map"], classic=true },
+    TAXIMAP_CLOSED = { callback="ManageNoArgEvent", category="npc", name=L["Taxi map closed"], classic=true },
 }
 Verbose.usedEventsAlias = {
     -- Those events should be registered but are processed as another event from Verbose.usedEvents
@@ -178,6 +179,18 @@ function Verbose:RESURRECT_REQUEST(event, caster)
     local msgData = self.db.profile.events[event]
     local substitutions = self:GlobalSubstitutions()
     substitutions.caster = caster
+    self:Speak(msgData, substitutions)
+end
+
+function Verbose:TAXIMAP_OPENED(event, nodeID)
+    -- DEBUG
+    self:EventDbgPrint(event, nodeID)
+
+    local msgData = self.db.profile.events[event]
+    local substitutions = self:GlobalSubstitutions()
+    substitutions.nodeID = nodeID
+    substitutions.taxiNodeName = TaxiNodeName(nodeID)
+    self:EventDetailsDbgPrint(substitutions)
     self:Speak(msgData, substitutions)
 end
 
