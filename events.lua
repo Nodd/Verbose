@@ -85,7 +85,7 @@ Verbose.usedEvents = {
 
     -- Achievement events
     PLAYER_LEVEL_UP = { callback="PLAYER_LEVEL_UP", category="achievements", name=L["Level up"], classic=true },
-    ACHIEVEMENT_EARNED = { callback="TODOEvent", category="achievements", name=ACHIEVEMENT_UNLOCKED, classic=false }, --not in Classic
+    ACHIEVEMENT_EARNED = { callback="ACHIEVEMENT_EARNED", category="achievements", name=ACHIEVEMENT_UNLOCKED, classic=false }, --not in Classic
     -- CHAT_MSG_ACHIEVEMENT = { callback="TODOEvent", category="achievements", name=title, classic=false }, --not in Classic
     -- CHAT_MSG_GUILD_ACHIEVEMENT = { callback="TODOEvent", category="achievements", name=title, classic=false }, --not in Classic
 
@@ -215,6 +215,18 @@ function Verbose:PLAYER_LEVEL_UP(event, level)
     local msgData = self.db.profile.events[event]
     local substitutions = { level=level }
 
+    self:EventDetailsDbgPrint(substitutions)
+    self:Speak(msgData, substitutions)
+end
+
+function Verbose:ACHIEVEMENT_EARNED(event, achievementID, alreadyEarned)
+    -- DEBUG
+    self:EventDbgPrint(event, level)
+
+    local id, name, points = GetAchievementInfo(achievementID)
+
+    local msgData = self.db.profile.events[event]
+    local substitutions = { name=name, points=points }
     self:EventDetailsDbgPrint(substitutions)
     self:Speak(msgData, substitutions)
 end
