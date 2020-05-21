@@ -53,8 +53,8 @@ Verbose.playerCombatLogSubEvents = {
 }
 
 local playerCombatLogSubEventsAlias = {
-    SPELL_AURA_APPLIED_DOSE = SPELL_AURA_APPLIED,
-    SPELL_AURA_REFRESH = SPELL_AURA_APPLIED,
+    SPELL_AURA_APPLIED_DOSE = "SPELL_AURA_APPLIED",
+    SPELL_AURA_REFRESH = "SPELL_AURA_APPLIED",
 }
 
 local blacklist = {
