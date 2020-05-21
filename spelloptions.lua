@@ -50,8 +50,8 @@ function Verbose:AddSpellEventOptions(spellOptionsGroup, event)
     if not spellOptionsGroup.args[event] then
         spellOptionsGroup.args[event] = {
             type = "group",
-            name = event, -- self.usedSpellEvents[event].name,
-            --order = self.usedSpellEvents[event].order,
+            name = Verbose.EventName,
+            order = Verbose.EventOrder,
             args = {
                 enable = {
                     type = "toggle",
@@ -125,6 +125,23 @@ function Verbose:GetSpellEventMessages(info)
 end
 function Verbose:SetSpellEventMessages(info, value)
     self:TextToTable(value, self:SpellEventData(info).messages)
+end
+
+function Verbose.EventName(info)
+    event = info[#info]
+    if Verbose.usedSpellEvents[event] then
+        return Verbose.usedSpellEvents[event].name
+    else
+        return event
+    end
+end
+function Verbose.EventOrder(info)
+    event = info[#info]
+    if Verbose.usedSpellEvents[event] then
+        return Verbose.usedSpellEvents[event].order
+    else
+        return nil
+    end
 end
 
 -- Load saved events to options table

@@ -1,4 +1,5 @@
 local addonName, Verbose = ...
+local L = LibStub("AceLocale-3.0"):GetLocale(addonName)
 
 -- Lua functions
 local tostring = tostring
@@ -14,14 +15,14 @@ Verbose.usedSpellEvents = {
     --     inClassic,  -- Exists in WoW Classic
     -- },
 
-    UNIT_SPELLCAST_SENT = { callback="OnUnitSpellcastSent", name="Sent", icon=icon, order=-100, classic=true },
-    UNIT_SPELLCAST_START = { callback="OnUnitSpellcastCommon", name="Start", icon=icon, order=0, classic=true },
-    UNIT_SPELLCAST_CHANNEL_START = { callback="OnUnitSpellcastCommon", name="Channel start", icon=icon, order=10, classic=true },
-    UNIT_SPELLCAST_SUCCEEDED = { callback="OnUnitSpellcastEnd", name="Succeeded", icon=icon, order=20, classic=true },
-    UNIT_SPELLCAST_FAILED = { callback="OnUnitSpellcastEnd", name="Failed", icon=icon, order=30, classic=true },
-    UNIT_SPELLCAST_INTERRUPTED = { callback="OnUnitSpellcastEnd", name="Interrupted", icon=icon, order=40, classic=true },
-    UNIT_SPELLCAST_STOP = { callback="OnUnitSpellcastEnd", name="Stop", icon=icon, order=50, classic=true },
-    UNIT_SPELLCAST_CHANNEL_STOP = { callback="OnUnitSpellcastEnd", name="Channel stop", icon=icon, order=60, classic=true },
+    UNIT_SPELLCAST_SENT = { callback="OnUnitSpellcastSent", name=nil, order=-100, classic=true },
+    UNIT_SPELLCAST_START = { callback="OnUnitSpellcastCommon", name=L["Cast start"], order=0, classic=true },
+    UNIT_SPELLCAST_CHANNEL_START = { callback="OnUnitSpellcastCommon", name=L["Channel start"], order=10, classic=true },
+    UNIT_SPELLCAST_SUCCEEDED = { callback="OnUnitSpellcastEnd", name=L["Cast succeeded"], order=20, classic=true },
+    UNIT_SPELLCAST_FAILED = { callback="OnUnitSpellcastEnd", name=L["Cast failed"], order=30, classic=true },
+    UNIT_SPELLCAST_INTERRUPTED = { callback="OnUnitSpellcastEnd", name=L["Cast interrupted"], order=40, classic=true },
+    UNIT_SPELLCAST_STOP = { callback="OnUnitSpellcastStop", name=L["Stop"], order=-99, classic=true },
+    UNIT_SPELLCAST_CHANNEL_STOP = { callback="OnUnitSpellcastEnd", name=L["Channel stop"], order=60, classic=true },
 }
 
 -- Table to store spell targets, which are not provided for all events
@@ -39,12 +40,16 @@ function Verbose:OnUnitSpellcastCommon(event, caster, castID, spellID)
     self:OnSpellcastEvent(event, caster, target, spellID)
 end
 
-function Verbose:OnUnitSpellcastEnd(event, caster, castID, spellID)
-    self:OnUnitSpellcastCommon(event, caster, castID, spellID)
+function Verbose:OnUnitSpellcastStop(event, caster, castID, spellID)
     -- Clean targetTable
     if castID then  -- is sometimes nil
         targetTable[castID] = nil
     end
+end
+
+function Verbose:OnUnitSpellcastEnd(event, caster, castID, spellID)
+    self:OnUnitSpellcastCommon(event, caster, castID, spellID)
+    Verbose:OnUnitSpellcastStop(event, caster, castID, spellID)
 end
 
 function Verbose:RecordSpellcastEvent(spellID, event)
