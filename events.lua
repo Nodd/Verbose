@@ -34,7 +34,7 @@ function Verbose:EventDbgPrintFormat(event, spellName, spellID, caster, target)
         self:Print(EventDbgPrintFormatString:format(event or "|cFFAAABFEnil|r", spellName or "|cFFAAABFEnil|r", spellID or "|cFFAAABFEnil|r", caster or "|cFFAAABFEnil|r", target or "|cFFAAABFEnil|r"))
     end
 end
-local EventDetailDbgPrintFormatString = "|cFFFFFF00EVENT:|r    %s |cFFFF3F40=|r %s"
+local EventDetailDbgPrintFormatString = "|cFFFFFF00EVENT:|r    <%s> |cFFFF3F40=|r %s"
 function Verbose:EventDetailsDbgPrint(eventInfo)
     if eventInfo and self.db.profile.eventDetailDebug then
         for k, v in Verbose.orderedpairs(eventInfo) do
@@ -127,7 +127,7 @@ function Verbose:RegisterEvents()
 end
 
 local genders = { nil, "male", "female" }
-function Verbose:GlobalSubstitutions()
+function Verbose:TargetSubstitutions()
     local substitutions = {
         targetname = UnitName("target"),
         targetguild = GetGuildInfo("target"),
@@ -137,6 +137,11 @@ function Verbose:GlobalSubstitutions()
         targetfamily = UnitCreatureFamily("target"),  -- For beasts and demons
         targetgenreid = UnitSex("target"),
         targetgenre = genders[UnitSex("target")],
+    }
+    return substitutions
+end
+function Verbose:NpcSubstitutions()
+    local substitutions = {
         npcname = UnitName("npc"),
         npcguild = GetGuildInfo("npc"),
         npcclass = UnitClass("npc"),  -- Same as targetname for npc, even named ones
@@ -165,9 +170,15 @@ function Verbose:ManageNoArgEvent(event, ...)
         event = Verbose.usedEventsAlias[event]
     end
 
+    local eventData = Verbose.usedEvents[event]
+    local substitutions
+    if eventData.category == "npc" then
+        substitutions = self:NpcSubstitutions()
+    end
+
     self:Speak(
         self.db.profile.events[event],
-        self:GlobalSubstitutions()
+        substitutions
     )
 end
 
@@ -188,8 +199,7 @@ function Verbose:RESURRECT_REQUEST(event, caster)
     self:EventDbgPrint(event, caster)
 
     local msgData = self.db.profile.events[event]
-    local substitutions = self:GlobalSubstitutions()
-    substitutions.caster = caster
+    local substitutions = { caster=caster }
     self:Speak(msgData, substitutions)
 end
 
@@ -198,7 +208,7 @@ function Verbose:TAXIMAP_OPENED(event, nodeID)
     self:EventDbgPrint(event, nodeID)
 
     local msgData = self.db.profile.events[event]
-    local substitutions = self:GlobalSubstitutions()
+    local substitutions = self:NpcSubstitutions()
     substitutions.nodeID = nodeID
     substitutions.taxiNodeName = TaxiNodeName(nodeID)
     self:Speak(msgData, substitutions)
