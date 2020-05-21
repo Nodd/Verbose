@@ -83,7 +83,6 @@ function Verbose:CombatLog(event)
 
     -- Debug
     self:EventDbgPrintFormat("CLEU/"..eventInfo.event, eventInfo.spellName, eventInfo.spellID, eventInfo.sourceName, eventInfo.destName)
-    self:EventDetailsDbgPrint(eventInfo)
 
     -- Respond to event
     self:spellsRecordCombatLogEvent(eventInfo)

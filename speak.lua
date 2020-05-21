@@ -114,6 +114,8 @@ function Verbose:GetRandomMessageWithSubstitution(messages, substitutions)
 end
 
 function Verbose:Speak(msgData, substitutions, messagesTable)
+    self:EventDetailsDbgPrint(substitutions)
+
     -- Check arg
     if not msgData then
         self:SpeakDbgPrint("No message data")

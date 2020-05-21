@@ -36,7 +36,7 @@ function Verbose:EventDbgPrintFormat(event, spellName, spellID, caster, target)
 end
 local EventDetailDbgPrintFormatString = "|cFFFFFF00EVENT:|r    %s |cFFFF3F40=|r %s"
 function Verbose:EventDetailsDbgPrint(eventInfo)
-    if self.db.profile.eventDetailDebug then
+    if eventInfo and self.db.profile.eventDetailDebug then
         for k, v in Verbose.orderedpairs(eventInfo) do
             if self:NameIsPlayer(v) then
                 v = "|cFF3CE13F"..v.."|r"
@@ -190,7 +190,6 @@ function Verbose:RESURRECT_REQUEST(event, caster)
     local msgData = self.db.profile.events[event]
     local substitutions = self:GlobalSubstitutions()
     substitutions.caster = caster
-    self:EventDetailsDbgPrint(substitutions)
     self:Speak(msgData, substitutions)
 end
 
@@ -202,7 +201,6 @@ function Verbose:TAXIMAP_OPENED(event, nodeID)
     local substitutions = self:GlobalSubstitutions()
     substitutions.nodeID = nodeID
     substitutions.taxiNodeName = TaxiNodeName(nodeID)
-    self:EventDetailsDbgPrint(substitutions)
     self:Speak(msgData, substitutions)
 end
 
@@ -214,8 +212,6 @@ function Verbose:PLAYER_LEVEL_UP(event, level)
 
     local msgData = self.db.profile.events[event]
     local substitutions = { level=level }
-
-    self:EventDetailsDbgPrint(substitutions)
     self:Speak(msgData, substitutions)
 end
 
@@ -227,7 +223,6 @@ function Verbose:ACHIEVEMENT_EARNED(event, achievementID, alreadyEarned)
 
     local msgData = self.db.profile.events[event]
     local substitutions = { name=name, points=points }
-    self:EventDetailsDbgPrint(substitutions)
     self:Speak(msgData, substitutions)
 end
 
