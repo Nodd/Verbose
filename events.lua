@@ -84,7 +84,7 @@ Verbose.usedEvents = {
     -- TRADE_CLOSED = { callback="TODOEvent", category=category, name=title, classic=true },  -- Trade between players
 
     -- Achievement events
-    PLAYER_LEVEL_UP = { callback="TODOEvent", category="achievements", name=L["Level up"], classic=true },
+    PLAYER_LEVEL_UP = { callback="PLAYER_LEVEL_UP", category="achievements", name=L["Level up"], classic=true },
     ACHIEVEMENT_EARNED = { callback="TODOEvent", category="achievements", name=ACHIEVEMENT_UNLOCKED, classic=false }, --not in Classic
     -- CHAT_MSG_ACHIEVEMENT = { callback="TODOEvent", category="achievements", name=title, classic=false }, --not in Classic
     -- CHAT_MSG_GUILD_ACHIEVEMENT = { callback="TODOEvent", category="achievements", name=title, classic=false }, --not in Classic
@@ -202,6 +202,19 @@ function Verbose:TAXIMAP_OPENED(event, nodeID)
     local substitutions = self:GlobalSubstitutions()
     substitutions.nodeID = nodeID
     substitutions.taxiNodeName = TaxiNodeName(nodeID)
+    self:EventDetailsDbgPrint(substitutions)
+    self:Speak(msgData, substitutions)
+end
+
+function Verbose:PLAYER_LEVEL_UP(event, level)
+    -- Lots of additionnal arguments are ignored (stats and talents updates)
+
+    -- DEBUG
+    self:EventDbgPrint(event, level)
+
+    local msgData = self.db.profile.events[event]
+    local substitutions = { level=level }
+
     self:EventDetailsDbgPrint(substitutions)
     self:Speak(msgData, substitutions)
 end
