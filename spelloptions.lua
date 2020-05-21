@@ -29,12 +29,7 @@ function Verbose:AddSpellOptionsGroup(parentGroup, spellID)
             name = function(info) return self:SpellName(info[#info]) end,
             icon = function(info) return self:SpellIconID(info[#info]) end,
             iconCoords = Verbose.iconCropBorders,
-            desc = function(info)
-                return (
-                    self:SpellIconTexture(info[#info])
-                    .. "\n".. self:SpellDescription(info[#info]))
-                    .. "\n\nSpell ID: " .. info[#info]
-                end,
+            desc = Verbose.SpellOptionsDesc,
             childGroups = "select",
             args = {
             },
@@ -44,13 +39,39 @@ function Verbose:AddSpellOptionsGroup(parentGroup, spellID)
     return parentGroup.args[spellID]
 end
 
+local eventDescFmt = L["\n%%s\n   %s%%d (%%s ago)|r"]:format(NORMAL_FONT_COLOR_CODE)
+function Verbose.SpellOptionsDesc(info)
+    local spellID = info[#info]
+
+    -- Main text
+    local txt = ("%s\n%s\n\nSpell ID: %s"):format(
+        Verbose:SpellIconTexture(spellID),
+        Verbose:SpellDescription(spellID),
+        spellID)
+
+    -- Events detail
+    local dbTable = Verbose.db.profile.spells[spellID]
+    local now = GetServerTime()
+    local hasEvents = false
+    for event, eventData in pairs(dbTable) do
+        hasEvents = true
+        local elapsed = Verbose:secondsToString(now - eventData.lastRecord)
+        txt = txt..eventDescFmt:format(
+            Verbose.EventName(event), eventData.count, elapsed)
+    end
+    if not hasEvents then
+        txt = txt..L["\nNo event recorded"]
+    end
+
+    return txt
+end
 
 -- Add spell event configuration to a spell option's group if it doesn't exist
 function Verbose:AddSpellEventOptions(spellOptionsGroup, event)
     if not spellOptionsGroup.args[event] then
         spellOptionsGroup.args[event] = {
             type = "group",
-            name = Verbose.EventName,
+            name = Verbose.EventNameFromInfo,
             order = Verbose.EventOrder,
             args = {
                 enable = {
@@ -127,8 +148,10 @@ function Verbose:SetSpellEventMessages(info, value)
     self:TextToTable(value, self:SpellEventData(info).messages)
 end
 
-function Verbose.EventName(info)
-    event = info[#info]
+function Verbose.EventNameFromInfo(info)
+    return Verbose.EventName(info[#info])
+end
+function Verbose.EventName(event)
     if Verbose.usedSpellEvents[event] then
         return Verbose.usedSpellEvents[event].name
     elseif Verbose.playerCombatLogSubEvents[event] then
