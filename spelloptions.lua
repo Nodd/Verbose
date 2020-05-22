@@ -86,9 +86,11 @@ function Verbose:AddSpellEventOptions(spellOptionsGroup, event)
                 },
                 forget = {
                     type = "execute",
-                    name = "Forget this event",
+                    name = L["Forget this event"],
+                    desc = L["Delete the event for this spell. To avoid accidental data loss, the message list must be empty."],
                     order = 15,
                     func = "ForgetEvent",
+                    disabled = "ForgetEventDisable",
                 },
                 newline19 = { type="description", name="", order=15.5 },
                 proba = {
@@ -195,6 +197,11 @@ function Verbose:ForgetEvent(info)
 
     -- Clear DB
     self.db.profile.spells[spellID][event] = nil
+end
+function Verbose:ForgetEventDisable(info)
+    local event = info[#info - 1]
+    local spellID = info[#info - 2]
+    return #self.db.profile.spells[spellID][event].messages ~= 0
 end
 
 -- Load saved events to options table
