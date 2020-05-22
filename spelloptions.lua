@@ -101,6 +101,9 @@ end
 
 function Verbose:SpellHideInOptions(info)
     local spellID = info[#info]
+    if not Verbose.showUnusableSpells and not IsPlayerSpell(tonumber(spellID)) then
+        return true
+    end
     local spellName = self:SpellName(spellID):lower()
     hide = false
     for _, word in ipairs(Verbose.filterValues) do

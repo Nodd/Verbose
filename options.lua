@@ -36,6 +36,7 @@ Verbose.multilineHeightNoTab = 14
 Verbose.multilineHeightTab = 11
 Verbose.filterValues = {}
 Verbose.sortSpellValue = "alphabetic"
+Verbose.showUnusableSpells = true
 
 Verbose.options = {
     name = addonName,
@@ -238,8 +239,12 @@ Verbose.options = {
                 },
                 clear = {
                     type = "execute",
-                    name = L["Clear filter"],
+                    name = L["Clear"],
+                    --image = "Interface\\Buttons\\UI-StopButton",
+                    imageWidth = 16,
+                    imageHeight = 16,
                     order = 11,
+                    width = 0.5,
                     desc = L["Clear the filter input (to the left of this button)."],
                     func = function() wipe(Verbose.filterValues) end,
                 },
@@ -250,6 +255,13 @@ Verbose.options = {
                     values = { alphabetic=L["Sort by name"], recent=L["Sort by date"], count=L["Sort by count"] },
                     get = function() return Verbose.sortSpellValue end,
                     set = function(_, value) Verbose.sortSpellValue = value end,
+                },
+                unusable = {
+                    type = "toggle",
+                    name = L["Show non player spells"],
+                    order = 21,
+                    get = function() return Verbose.showUnusableSpells end,
+                    set = function(_, value) Verbose.showUnusableSpells = value end,
                 },
                 spellbook = {
                     type = "group",
