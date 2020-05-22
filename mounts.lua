@@ -1,4 +1,5 @@
 local addonName, Verbose = ...
+local L = LibStub("AceLocale-3.0"):GetLocale(addonName)
 -- Spellcasts are managed in Verbose:OnSpellcastEvent (spellevents.lua)
 
 -- Lua functions
@@ -25,13 +26,13 @@ Verbose.mountTypeString = {
     ["398"] = "AIR", -- Kua'fon's Harness
 }
 Verbose.mountTypeData = {
-    AIR = { name="Flying", icon=618976 },  -- icon_petfamily_flying
-    GROUND = { name="Ground", icon=618973 },  -- icon_petfamily_critter
-    WATER = { name="Water", icon=618981 },  -- icon_petfamily_water
+    AIR = { name=L["Flying"], icon=618976 },  -- icon_petfamily_flying
+    GROUND = { name=L["Ground"], icon=618973 },  -- icon_petfamily_critter
+    WATER = { name=L["Water"], icon=618981 },  -- icon_petfamily_water
 }
 Verbose.mountEvents = {
-    UNIT_SPELLCAST_START = { name="Start casting", order=0 },
-    UNIT_SPELLCAST_SUCCEEDED = { name="Successful casting", order=1 },
+    UNIT_SPELLCAST_START = { name=L["Start casting"], order=0 },
+    UNIT_SPELLCAST_SUCCEEDED = { name=L["Successful casting"], order=1 },
 }
 
 -- Match numbers returned by C_MountJournal.GetMountInfoByID

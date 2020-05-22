@@ -28,7 +28,7 @@ Verbose.usedCombatLogEvents = {
     --     inClassic,  -- Exists in WoW Classic
     -- },
 
-    COMBAT_LOG_EVENT_UNFILTERED = { callback="CombatLog", category="combat", title="Combat log", icon=icon, classic=true },
+    COMBAT_LOG_EVENT_UNFILTERED = { callback="CombatLog", classic=true },
 }
 
 Verbose.playerCombatLogSubEvents = {

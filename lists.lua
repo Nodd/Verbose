@@ -43,7 +43,7 @@ function Verbose:AddListToOptions(listID)
                 name = L["List name"],
                 order = 10,
                 pattern = "^%w+$",
-                usage = "Only alphanumeric characters allowed",
+                usage = L["Only alphanumeric characters allowed"],
                 get = function(info)
                     return self.db.profile.lists[info[#info - 1]].name
                 end,
@@ -70,7 +70,7 @@ function Verbose:AddListToOptions(listID)
                 multiline = Verbose.multilineHeightNoTab,  -- Shows the "Accept" button in the bottom with default windows height
                 width = "full",
                 pattern = "^[^<>]+$",
-                usage = "No '<' nor '>' allowed",
+                usage = L["No '<' nor '>' allowed"],
                 get = function(info)
                     return self:TableToText(self.db.profile.lists[info[#info - 1]].values)
                 end,

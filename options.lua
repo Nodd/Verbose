@@ -205,7 +205,7 @@ Verbose.options = {
                 reloadui = {
                     type = "execute",
                     name = L["Save data by reloading UI"],
-                    desc = "Addon data is only saved to disk on few occasion, one of them being reloading the UI.",
+                    desc = L["Addon data is only saved to disk on few occasion, one of them being reloading the UI."],
                     order = 60,
                     width = 1.5,
                     func = ReloadUI,
@@ -216,7 +216,7 @@ Verbose.options = {
             -- Tree of known events, and associated configuration
             type = "group",
             name = L["Messages"],
-            desc = "Per event messages configuration",
+            desc = L["Per event messages configuration"],
             order = 20,
             cmdHidden = true,
             childGroups = "tree",
@@ -248,7 +248,7 @@ Verbose.options = {
                 },
                 sort = {
                     type = "select",
-                    name = "Sort spells",
+                    name = L["Sort spells"],
                     order = 20,
                     values = { alphabetic=L["Sort by name"], recent=L["Sort by date"], count=L["Sort by count"] },
                     get = function() return Verbose.db.profile.sortSpellValue end,
@@ -457,7 +457,7 @@ Verbose.options = {
             -- Replacement lists
             type = "group",
             name = L["Lists"],
-            desc = "Substitution lists",
+            desc = L["Substitution lists"],
             order = 30,
             cmdHidden = true,
             childGroups = "tree",
@@ -473,7 +473,7 @@ Verbose.options = {
             -- This is broken, it should use LibDeflate to avoid special chars in the textbox which are not rendered correctly
             type = "group",
             name = L["Save"],
-            desc = "Save or Load configuration",
+            desc = L["Save or Load configuration"],
             order = 35,
             hidden = true,
             childGroups = "tree",
@@ -482,14 +482,14 @@ Verbose.options = {
                     type = "execute",
                     name = L["Update current data"],
                     func = "PrepareSaveData",
-                    desc = "Dump addon configuration to the input box. You can then copy the text to save or share it.",
+                    desc = L["Dump addon configuration to the input box. You can then copy the text to save or share it."],
                     order = 10,
                 },
                 load = {
                     type = "execute",
                     name = L["Load data"],
                     func = "LoadData",
-                    desc = "Loads the addon configuration in the input box. |cFFFF0000Warning: This will permanentely destroy all your current configuration !|r",
+                    desc = L["Loads the addon configuration in the input box. |cFFFF0000Warning: This will permanentely destroy all your current configuration !|r"],
                     order = 20,
                 },
                 data = {
