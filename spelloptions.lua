@@ -162,6 +162,7 @@ local spellEventOptionsGroup = {
             order = 15,
             func = "ForgetEvent",
             disabled = "ForgetEventDisable",
+            hidden = "ForgetEventHidden",
         },
         newline19 = { type="description", name="", order=15.5 },
         proba = {
@@ -254,6 +255,10 @@ function Verbose:ForgetEventDisable(info)
     local event = info[#info - 1]
     local spellID = info[#info - 2]
     return #self.db.profile.spells[spellID][event].messages ~= 0
+end
+function Verbose:ForgetEventHidden(info)
+    local spellID = info[#info - 2]
+    return Verbose.mountSpells[spellID] ~= nil
 end
 
 -- Load saved events to options table
