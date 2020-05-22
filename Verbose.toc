@@ -30,7 +30,6 @@ Locales\Locales.xml
 utils.lua
 Verbose.lua
 speak.lua
-spelloptions.lua
 spellbook.lua
 mounts.lua
 lists.lua
@@ -45,6 +44,9 @@ db.lua
 
 # Needs events.lua, help.lua
 options.lua
+
+# Needs options.lua
+spelloptions.lua
 
 # Needs combatlogevents.lua, options.lua
 combatlogoptions.lua

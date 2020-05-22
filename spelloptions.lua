@@ -115,66 +115,94 @@ function Verbose:SpellHideInOptions(info)
     return hide
 end
 
+function Verbose.EventNameFromInfo(info)
+    return Verbose.EventName(info[#info])
+end
+function Verbose.EventName(event)
+    if Verbose.usedSpellEvents[event] then
+        return Verbose.usedSpellEvents[event].name
+    elseif Verbose.playerCombatLogSubEvents[event] then
+        return Verbose.playerCombatLogSubEvents[event].name
+    else
+        return event
+    end
+end
+function Verbose.EventOrderFromInfo(info)
+    return Verbose.EventOrder(info[#info])
+end
+function Verbose.EventOrder(event)
+    if Verbose.usedSpellEvents[event] then
+        return Verbose.usedSpellEvents[event].order
+    elseif Verbose.playerCombatLogSubEvents[event] then
+        return Verbose.playerCombatLogSubEvents[event].order
+    else
+        return 100
+    end
+end
+
+-- All fields are dynamic so it's possible to reuse the same table
+local spellEventOptionsGroup = {
+    type = "group",
+    name = Verbose.EventNameFromInfo,
+    order = Verbose.EventOrderFromInfo,
+    hidden = false,
+    args = {
+        enable = {
+            type = "toggle",
+            name = ENABLE,
+            order = 10,
+            width = 1.5,
+            get = "GetSpellEventEnabled",
+            set = "SetSpellEventEnabled",
+        },
+        forget = {
+            type = "execute",
+            name = L["Forget this event"],
+            desc = L["Delete the event for this spell. To avoid accidental data loss, the message list must be empty."],
+            order = 15,
+            func = "ForgetEvent",
+            disabled = "ForgetEventDisable",
+        },
+        newline19 = { type="description", name="", order=15.5 },
+        proba = {
+            type = "range",
+            name = L["Message probability"],
+            order = 35,
+            isPercent = true,
+            min = 0,
+            max = 1,
+            bigStep = 0.05,
+            get = "GetSpellEventProba",
+            set = "SetSpellEventProba",
+        },
+        cooldown = {
+            type = "range",
+            name = L["Message cooldown (s)"],
+            order = 30,
+            min = 0,
+            max = 3600,
+            softMax = 600,
+            bigStep = 1,
+            width = 1.5,
+            get = "GetSpellEventCooldown",
+            set = "SetSpellEventCooldown",
+        },
+        list = {
+            type = "input",
+            name = L["Messages, one per line"],
+            order = 40,
+            multiline = Verbose.multilineHeightTab,
+            width = "full",
+            get = "GetSpellEventMessages",
+            set = "SetSpellEventMessages",
+        },
+    },
+}
+
 -- Add spell event configuration to a spell option's group if it doesn't exist
 function Verbose:AddSpellEventOptions(spellOptionsGroup, event)
     if not spellOptionsGroup.args[event] then
-        spellOptionsGroup.args[event] = {
-            type = "group",
-            name = Verbose.EventNameFromInfo,
-            order = Verbose.EventOrderFromInfo,
-            hidden = false,
-            args = {
-                enable = {
-                    type = "toggle",
-                    name = ENABLE,
-                    order = 10,
-                    width = 1.5,
-                    get = "GetSpellEventEnabled",
-                    set = "SetSpellEventEnabled",
-                },
-                forget = {
-                    type = "execute",
-                    name = L["Forget this event"],
-                    desc = L["Delete the event for this spell. To avoid accidental data loss, the message list must be empty."],
-                    order = 15,
-                    func = "ForgetEvent",
-                    disabled = "ForgetEventDisable",
-                },
-                newline19 = { type="description", name="", order=15.5 },
-                proba = {
-                    type = "range",
-                    name = L["Message probability"],
-                    order = 35,
-                    isPercent = true,
-                    min = 0,
-                    max = 1,
-                    bigStep = 0.05,
-                    get = "GetSpellEventProba",
-                    set = "SetSpellEventProba",
-                },
-                cooldown = {
-                    type = "range",
-                    name = L["Message cooldown (s)"],
-                    order = 30,
-                    min = 0,
-                    max = 3600,
-                    softMax = 600,
-                    bigStep = 1,
-                    width = 1.5,
-                    get = "GetSpellEventCooldown",
-                    set = "SetSpellEventCooldown",
-                },
-                list = {
-                    type = "input",
-                    name = L["Messages, one per line"],
-                    order = 40,
-                    multiline = Verbose.multilineHeightTab,
-                    width = "full",
-                    get = "GetSpellEventMessages",
-                    set = "SetSpellEventMessages",
-                },
-            },
-        }
+        spellOptionsGroup.args[event] = spellEventOptionsGroup
         self:UpdateOptionsGUI()
     end
 end
@@ -206,31 +234,6 @@ function Verbose:GetSpellEventMessages(info)
 end
 function Verbose:SetSpellEventMessages(info, value)
     self:TextToTable(value, self:SpellEventData(info).messages)
-end
-
-function Verbose.EventNameFromInfo(info)
-    return Verbose.EventName(info[#info])
-end
-function Verbose.EventName(event)
-    if Verbose.usedSpellEvents[event] then
-        return Verbose.usedSpellEvents[event].name
-    elseif Verbose.playerCombatLogSubEvents[event] then
-        return Verbose.playerCombatLogSubEvents[event].name
-    else
-        return event
-    end
-end
-function Verbose.EventOrderFromInfo(info)
-    return Verbose.EventOrder(info[#info])
-end
-function Verbose.EventOrder(event)
-    if Verbose.usedSpellEvents[event] then
-        return Verbose.usedSpellEvents[event].order
-    elseif Verbose.playerCombatLogSubEvents[event] then
-        return Verbose.playerCombatLogSubEvents[event].order
-    else
-        return 100
-    end
 end
 
 function Verbose:ForgetEvent(info)

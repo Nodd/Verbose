@@ -508,61 +508,62 @@ Verbose.options = {
 
 VerboseOptionsTableForDebug = Verbose.options
 
-function Verbose:populateEvent(event, eventData)
-    self.options.args.events.args[eventData.category].args[event] = {
-        type = "group",
-        name = eventData.name,
-        order = eventData.order,
-        args = {
-            enable = {
-                type = "toggle",
-                name = ENABLE,
-                order = 10,
-                width = "full",
-                get = function(info) return self:EventData(info).enabled end,
-                set = function(info, value) self:EventData(info).enabled = value end,
-            },
-            proba = {
-                type = "range",
-                name = L["Message probability"],
-                order = 35,
-                isPercent = true,
-                min = 0,
-                max = 1,
-                bigStep = 0.05,
-                get = function(info) return self:EventData(info).proba end,
-                set = function(info, value) self:EventData(info).proba = value end,
-            },
-            cooldown = {
-                type = "range",
-                name = L["Message cooldown (s)"],
-                order = 30,
-                min = 0,
-                max = 3600,
-                softMax = 600,
-                bigStep = 1,
-                width = 1.5,
-                get = function(info) return self:EventData(info).cooldown end,
-                set = function(info, value) self:EventData(info).cooldown = value end,
-            },
-            list = {
-                type = "input",
-                name = L["Messages, one per line"],
-                order = 40,
-                multiline = Verbose.multilineHeightNoTab,
-                width = "full",
-                get = function(info)
-                    return self:TableToText(self:EventData(info).messages)
-                end,
-                set = function(info, value) self:TextToTable(value, self:EventData(info).messages) end,
-            },
+local categoryEventOptions = {
+    type = "group",
+    name = function(info) return Verbose.usedEvents[info[#info]].name end,
+    order = function(info) return Verbose.usedEvents[info[#info]].order end,
+    args = {
+        enable = {
+            type = "toggle",
+            name = ENABLE,
+            order = 10,
+            width = "full",
+            get = function(info) return Verbose:EventData(info).enabled end,
+            set = function(info, value) Verbose:EventData(info).enabled = value end,
         },
-    }
+        proba = {
+            type = "range",
+            name = L["Message probability"],
+            order = 35,
+            isPercent = true,
+            min = 0,
+            max = 1,
+            bigStep = 0.05,
+            get = function(info) return Verbose:EventData(info).proba end,
+            set = function(info, value) Verbose:EventData(info).proba = value end,
+        },
+        cooldown = {
+            type = "range",
+            name = L["Message cooldown (s)"],
+            order = 30,
+            min = 0,
+            max = 3600,
+            softMax = 600,
+            bigStep = 1,
+            width = 1.5,
+            get = function(info) return Verbose:EventData(info).cooldown end,
+            set = function(info, value) Verbose:EventData(info).cooldown = value end,
+        },
+        list = {
+            type = "input",
+            name = L["Messages, one per line"],
+            order = 40,
+            multiline = Verbose.multilineHeightNoTab,
+            width = "full",
+            get = function(info)
+                return Verbose:TableToText(Verbose:EventData(info).messages)
+            end,
+            set = function(info, value) Verbose:TextToTable(value, Verbose:EventData(info).messages) end,
+        },
+    },
+}
+function Verbose:populateEvent(category, event)
+    self.options.args.events.args[category].args[event] = categoryEventOptions
 end
 
 -- Populate events config
 for event, eventData in pairs(Verbose.usedEvents) do
-    Verbose:populateEvent(event, eventData)
+    Verbose:populateEvent(eventData.category, event)
 end
 
 -- Insert help
