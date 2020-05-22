@@ -67,10 +67,8 @@ end
 function Verbose:InitMountsDB()
     for spellID in pairs(Verbose.mountSpells) do
         -- Add a default message
-        local messages = self.db.profile.spells[spellID].UNIT_SPELLCAST_SUCCEEDED.messages
-        if #messages == 0 then
-            tinsert(messages, "/mountspecial")
-        end
+        local _ = self.db.profile.spells[spellID].UNIT_SPELLCAST_START
+        _ = self.db.profile.spells[spellID].UNIT_SPELLCAST_SUCCEEDED
     end
 end
 
@@ -103,9 +101,7 @@ end
 -- Load saved events to options table
 function Verbose:CheckAndAddMountToOptions(spellID, event)
     if Verbose.mountSpells[spellID] then
-        for event in pairs(Verbose.mountEvents) do
-            self:AddMountToOptions(spellID)
-        end
+        self:AddMountToOptions(spellID)
         return true
     else
         return false
