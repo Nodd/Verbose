@@ -39,16 +39,47 @@ function Verbose:AddSpellOptionsGroup(parentGroup, spellID)
                     name = L["No event was recorded for this spell. Try to cast it !"],
                     order = 10,
                     fontSize = "medium",
-                    hidden = "HideSpellOptionsGroup",
-                }
+                    hidden = "HideSpellDescription",
+                },
+                forget = {
+                    type = "execute",
+                    name = L["Forget this spell"],
+                    desc = L["Delete the spell from the recorded list."],
+                    order = 15,
+                    func = "ForgetSpell",
+                    hidden = "ForgetSpellHidden",
+                },
             },
         }
         self:UpdateOptionsGUI()
     end
     return parentGroup.args[spellID]
 end
-function Verbose:HideSpellOptionsGroup(info)
+function Verbose:HideSpellDescription(info)
     return next(self.db.profile.spells[info[#info - 1]]) ~= nil  -- Check that table is not empty
+end
+function Verbose:ForgetSpell(info)
+    local spellID = info[#info - 1]
+
+    -- Clear options
+    local optionsArgs = self.options.args
+    for i = 1, #info - 2 do
+        optionsArgs = optionsArgs[info[i]].args
+    end
+    optionsArgs[spellID] = nil
+
+    -- Clear DB
+    self.db.profile.spells[spellID] = nil
+end
+function Verbose:ForgetSpellHidden(info)
+    -- Hide buton with description
+    if self:HideSpellDescription(info) then
+        return true
+    end
+
+    -- Hide button if spell is pre-recorded
+    local spellID = info[#info - 1]
+    return self.mountSpells[spellID] ~= nil or self.spellbookSpells[spellID] ~= nil
 end
 
 local eventDescFmt = L["\n%%s\n   %s%%d (%%s ago)|r"]:format(NORMAL_FONT_COLOR_CODE)
