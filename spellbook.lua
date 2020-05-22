@@ -8,13 +8,18 @@ local tostring = tostring
 local wipe = wipe
 
 -- WoW globals
+local GetNumSpecializations = GetNumSpecializations
 local GetNumSpellTabs = GetNumSpellTabs
 local GetProfessions = GetProfessions
+local GetSpecialization = GetSpecialization
 local GetSpellBookItemInfo = GetSpellBookItemInfo
 local GetSpellBookItemName = GetSpellBookItemName
 local GetSpellTabInfo = GetSpellTabInfo
+local GetTalentInfoBySpecialization = GetTalentInfoBySpecialization
 local IsPassiveSpell = IsPassiveSpell
 local BOOKTYPE_SPELL = BOOKTYPE_SPELL
+local MAX_TALENT_TIERS = MAX_TALENT_TIERS
+local NUM_TALENT_COLUMNS = NUM_TALENT_COLUMNS
 
 Verbose.spellbookSpells = {}
 local function RegisterSpellbookSpell(spellID, order)

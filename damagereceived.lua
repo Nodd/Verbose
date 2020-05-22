@@ -1,6 +1,19 @@
 local addonName, Verbose = ...
 local L = LibStub("AceLocale-3.0"):GetLocale(addonName)
 
+-- Lua functions
+local tonumber = tonumber
+local tostring = tostring
+local bit_band = bit.band
+local bit_rshift = bit.rshift
+local bit_lshift = bit.lshift
+local pairs = pairs
+
+-- WoW globals
+local GetServerTime = GetServerTime
+local ENABLE = ENABLE
+
+
 local environmentalDamage = {
     Drowning = STRING_ENVIRONMENTAL_DAMAGE_DROWNING,
     Falling = STRING_ENVIRONMENTAL_DAMAGE_FALLING,
@@ -174,9 +187,9 @@ function Verbose:DamageSpellEventData(info)
 end
 
 local function nbBits1(num)
-	count = 0
+	local count = 0
 	for i=0,8 do
-		if bit.band(bit.rshift(num, i), 0x01) == 0x01 then
+		if bit_band(bit_rshift(num, i), 0x01) == 0x01 then
 			count = count + 1
 		end
 	end
@@ -186,8 +199,8 @@ end
 local function descBits(id)
 	local desc
 	for i=0,6 do
-		local n = bit.lshift(0x01, i)
-		if bit.band(n, id) ~= 0 then
+		local n = bit_lshift(0x01, i)
+		if bit_band(n, id) ~= 0 then
 			if desc then
 				desc = desc.." + "..Verbose.SpellSchoolString[n]
 			else

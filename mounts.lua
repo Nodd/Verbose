@@ -5,6 +5,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale(addonName)
 -- Lua functions
 local wipe = wipe
 local ipairs = ipairs
+local tinsert = tinsert
 local tostring = tostring
 local pairs = pairs
 
@@ -66,7 +67,7 @@ end
 function Verbose:InitMountsDB()
     for spellID in pairs(Verbose.mountSpells) do
         -- Add a default message
-        messages = self.db.profile.spells[spellID].UNIT_SPELLCAST_SUCCEEDED.messages
+        local messages = self.db.profile.spells[spellID].UNIT_SPELLCAST_SUCCEEDED.messages
         if #messages == 0 then
             tinsert(messages, "/mountspecial")
         end

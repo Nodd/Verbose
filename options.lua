@@ -8,6 +8,7 @@ local error = error
 local pairs = pairs
 local wipe = wipe
 local tconcat = table.concat
+local tinsert = tinsert
 
 -- WoW globals
 local SetBindingClick = SetBindingClick
@@ -229,7 +230,7 @@ Verbose.options = {
                     set = function(_, value)
                         wipe(Verbose.db.profile.filterValues)
                         -- Example from https://wowwiki.fandom.com/wiki/API_strsplit
-                        for v in string.gmatch(value, "[^ ]+") do
+                        for v in value:gmatch("[^ ]+") do
                             tinsert(Verbose.db.profile.filterValues, v:lower())
                         end
                     end,

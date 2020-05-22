@@ -6,6 +6,7 @@ local pairs = pairs
 local type = type
 
 -- WoW globals
+local ENABLE = ENABLE
 local GetServerTime = GetServerTime
 local NORMAL_FONT_COLOR_CODE = NORMAL_FONT_COLOR_CODE
 

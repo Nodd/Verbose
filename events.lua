@@ -6,13 +6,17 @@ local pairs = pairs
 local select = select
 
 -- WoW globals
+local GetAchievementInfo = GetAchievementInfo
 local GetGuildInfo = GetGuildInfo
+local GetSpellLink = GetSpellLink
+local TaxiNodeName = TaxiNodeName
 local UnitClass = UnitClass
 local UnitCreatureFamily = UnitCreatureFamily
 local UnitCreatureType = UnitCreatureType
 local UnitName = UnitName
 local UnitRace = UnitRace
 local UnitSex = UnitSex
+
 
 function Verbose:EventDbgPrint(...)
     if self.db.profile.eventDebug then
@@ -227,7 +231,7 @@ end
 
 function Verbose:ACHIEVEMENT_EARNED(event, achievementID, alreadyEarned)
     -- DEBUG
-    self:EventDbgPrint(event, level)
+    self:EventDbgPrint(event, achievementID, alreadyEarned)
 
     local id, name, points = GetAchievementInfo(achievementID)
 

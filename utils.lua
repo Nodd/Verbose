@@ -3,7 +3,9 @@ local addonName, Verbose = ...
 -- Lua functions
 local format = format
 local mod = mod
+local pairs = pairs
 local select = select
+local sort = sort
 local tconcat = table.concat
 local tinsert = tinsert
 local tonumber = tonumber
@@ -13,6 +15,10 @@ local wipe = wipe
 local GetSpellDescription = GetSpellDescription
 local GetSpellInfo = GetSpellInfo
 local FONT_COLOR_CODE_CLOSE = FONT_COLOR_CODE_CLOSE
+local INT_SPELL_DURATION_DAYS = INT_SPELL_DURATION_DAYS
+local INT_SPELL_DURATION_HOURS = INT_SPELL_DURATION_HOURS
+local INT_SPELL_DURATION_MIN = INT_SPELL_DURATION_MIN
+local INT_SPELL_DURATION_SEC = INT_SPELL_DURATION_SEC
 local NORMAL_FONT_COLOR_CODE = NORMAL_FONT_COLOR_CODE
 
 

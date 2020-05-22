@@ -2,7 +2,15 @@ local addonName, Verbose = ...
 local L = LibStub("AceLocale-3.0"):GetLocale(addonName)
 
 -- Lua functions
+local ipairs = ipairs
+local min = min
+local next = next
 local pairs = pairs
+local tonumber = tonumber
+
+-- WoW globals
+local GetServerTime = GetServerTime
+local IsPlayerSpell = IsPlayerSpell
 
 function Verbose:AddSpellToOptions(spellID, event)
     -- Check spell book
@@ -136,7 +144,7 @@ function Verbose:SpellHideInOptions(info)
         return true
     end
     local spellName = self:SpellName(spellID):lower()
-    hide = false
+    local hide = false
     for _, word in ipairs(self.db.profile.filterValues) do
         if not spellName:find(word) then
             hide = true

@@ -6,18 +6,22 @@ local L = LibStub("AceLocale-3.0"):GetLocale(addonName)
 -- Lua functions
 local fastrandom = fastrandom
 local ipairs = ipairs
+local max = max
 local pairs = pairs
 local tinsert = tinsert
 local tostring = tostring
 local tremove = tremove
 
 -- WoW globals
+local CHAT_SAY_GET = CHAT_SAY_GET
+local CHAT_YELL_GET = CHAT_YELL_GET
+local CreateFrame = CreateFrame
 local DoEmote = DoEmote
 local GetChatTypeIndex = GetChatTypeIndex
 local GetServerTime = GetServerTime
 local IsInInstance = IsInInstance
 local SendChatMessage = SendChatMessage
-local UIErrorsFrame = UIErrorsFrame
+local UIParent = UIParent
 local _G = _G
 
 -- Local variables
@@ -25,7 +29,7 @@ local globalLastTime = 0
 local elapsedTimeForObsoleteMessage = 3
 
 local sayCommands = {}
-i = 1
+local i = 1
 while _G["SLASH_SAY"..i] do
     sayCommands[_G["SLASH_SAY"..i]] = true
     i = i + 1
@@ -42,6 +46,7 @@ while _G["SLASH_EMOTE"..i] do
     emoteCommands[_G["SLASH_EMOTE"..i]] = true
     i = i + 1
 end
+i = nil
 local chatColors = {
     SAY = "FFFFFF",
     YELL = "FF3F40",
@@ -204,7 +209,7 @@ function Verbose:Speak(msgData, substitutions, messagesTable)
         self:UseBubbleFrame("|cFF"..chatColors[chatType]..bubbleText.."|r")
     elseif emoteToken then
         self:SpeakDbgPrint("EMOTE:", message)
-        DoEmote(emoteToken, args)
+        DoEmote(emoteToken, sendText)
     elseif chatType == "EMOTE" then
         self:SpeakDbgPrint("Emoting:", message)
         SendChatMessage(sendText, "EMOTE");
@@ -441,7 +446,7 @@ function Verbose:UseBubbleFrame(text)
     bubbleFrame:SetHeight(bubbleFrame.fontstring:GetHeight() + 2 * bubbleFrame.borders)
 
     -- Hide bubble after a delay
-    delay = text:len() / 20
+    local delay = text:len() / 20
     if delay < 3 then delay = 3 end
     self:CancelTimer(self.SpeakTimerID)
     bubbleFrame:Show()

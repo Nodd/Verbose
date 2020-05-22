@@ -11,6 +11,7 @@ local _G = _G
 
 -- WoW globals
 local EmoteList = EmoteList
+local HELP_LABEL = HELP_LABEL
 local TextEmoteSpeechList = TextEmoteSpeechList
 local FONT_COLOR_CODE_CLOSE = FONT_COLOR_CODE_CLOSE
 local NORMAL_FONT_COLOR_CODE = NORMAL_FONT_COLOR_CODE
