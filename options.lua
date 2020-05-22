@@ -32,8 +32,8 @@ local displayedData = ""
 
 local loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
 
-Verbose.multilineHeightNoTab = 14
-Verbose.multilineHeightTab = 11
+Verbose.multilineHeightNoTab = 20
+Verbose.multilineHeightTab = 16
 Verbose.filterValues = {}
 Verbose.sortSpellValue = "alphabetic"
 Verbose.showUnusableSpells = true
@@ -104,7 +104,7 @@ Verbose.options = {
                     type = "keybinding",
                     name = NORMAL_FONT_COLOR_CODE..L["Speak aloud"]..FONT_COLOR_CODE_CLOSE,
                     desc = L["Keybind to speak aloud the bubble message."],
-                    order = 22.5,
+                    order = 24,
                     get = function(info) return Verbose.db.profile.keybindOpenWorld end,
                     set = function(info, value)
                         Verbose.db.profile.keybindOpenWorld = value
@@ -210,7 +210,7 @@ Verbose.options = {
                     name = L["Save data by reloading UI"],
                     desc = "Addon data is only saved to disk on few occasion, one of them being reloading the UI.",
                     order = 60,
-                    width = "double",
+                    width = 1.5,
                     func = ReloadUI,
                 },
             },
@@ -226,7 +226,7 @@ Verbose.options = {
             args = {
                 filter = {
                     type = "input",
-                    name = "",  -- Save vertical space, but no desc displayed :(
+                    name = L["Filter spell names"],
                     order = 10,
                     get = function() return tconcat(Verbose.filterValues, " ") end,
                     set = function(_, value)
@@ -239,18 +239,19 @@ Verbose.options = {
                 },
                 clear = {
                     type = "execute",
-                    name = L["Clear"],
-                    --image = "Interface\\Buttons\\UI-StopButton",
+                    name = "",
+                    image = "Interface\\Buttons\\UI-StopButton",
                     imageWidth = 16,
                     imageHeight = 16,
                     order = 11,
-                    width = 0.5,
+                    width = 0.1,
                     desc = L["Clear the filter input (to the left of this button)."],
                     func = function() wipe(Verbose.filterValues) end,
+                    disabled = function() return #Verbose.filterValues == 0 end,
                 },
                 sort = {
                     type = "select",
-                    name = "",  -- Save vertical space, but no desc displayed :(
+                    name = "Sort spells",
                     order = 20,
                     values = { alphabetic=L["Sort by name"], recent=L["Sort by date"], count=L["Sort by count"] },
                     get = function() return Verbose.sortSpellValue end,
@@ -527,7 +528,7 @@ function Verbose:populateEvent(event, eventData)
             proba = {
                 type = "range",
                 name = L["Message probability"],
-                order = 20,
+                order = 35,
                 isPercent = true,
                 min = 0,
                 max = 1,

@@ -7,6 +7,7 @@ LibStub("AceAddon-3.0"):NewAddon(Verbose, addonName, "AceConsole-3.0", "AceEvent
 local AceConsole = LibStub("AceConsole-3.0")
 local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigCmd = LibStub("AceConfigCmd-3.0")
+local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local LibDataBroker = LibStub("LibDataBroker-1.1")
 local LibDBIcon = LibStub("LibDBIcon-1.0")
 
@@ -52,6 +53,7 @@ function Verbose:OnPostInitialize()
 
     -- Register self.options
     AceConfig:RegisterOptionsTable(addonName, self.options)
+    AceConfigDialog:SetDefaultSize(addonName, 800, 600)
 
     -- Manage enabled state
     self:SetEnabledState(self.db.profile.enabled)
