@@ -57,7 +57,6 @@ local defaultDB = {
                     count = 0,
                     lastRecord = 0,
                     merge = true,
-                    categories = {},
                     messages = {},
                 },
             },
