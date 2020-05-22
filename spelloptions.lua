@@ -83,13 +83,13 @@ end
 
 function Verbose:SpellOrderInOptions(info)
     local spellID = info[#info]
-    if self.sortSpellValue == "recent" then
+    if self.db.profile.sortSpellValue == "recent" then
         local lastRecordNegative = -0.1
         for _, eventData in pairs(self.db.profile.spells[spellID]) do
             lastRecordNegative = min(lastRecordNegative, -eventData.lastRecord)
         end
         return lastRecordNegative
-    elseif self.sortSpellValue == "count" then
+    elseif self.db.profile.sortSpellValue == "count" then
         local countNegative = -0.1
         for _, eventData in pairs(self.db.profile.spells[spellID]) do
             countNegative = min(countNegative, -eventData.count)
@@ -101,12 +101,12 @@ end
 
 function Verbose:SpellHideInOptions(info)
     local spellID = info[#info]
-    if not Verbose.showUnusableSpells and not IsPlayerSpell(tonumber(spellID)) then
+    if not self.db.profile.showUnusableSpells and not IsPlayerSpell(tonumber(spellID)) then
         return true
     end
     local spellName = self:SpellName(spellID):lower()
     hide = false
-    for _, word in ipairs(Verbose.filterValues) do
+    for _, word in ipairs(self.db.profile.filterValues) do
         if not spellName:find(word) then
             hide = true
             break

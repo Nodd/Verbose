@@ -34,9 +34,6 @@ local loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
 
 Verbose.multilineHeightNoTab = 20
 Verbose.multilineHeightTab = 16
-Verbose.filterValues = {}
-Verbose.sortSpellValue = "alphabetic"
-Verbose.showUnusableSpells = true
 
 Verbose.options = {
     name = addonName,
@@ -228,12 +225,12 @@ Verbose.options = {
                     type = "input",
                     name = L["Filter spell names"],
                     order = 10,
-                    get = function() return tconcat(Verbose.filterValues, " ") end,
+                    get = function() return tconcat(Verbose.db.profile.filterValues, " ") end,
                     set = function(_, value)
-                        wipe(Verbose.filterValues)
+                        wipe(Verbose.db.profile.filterValues)
                         -- Example from https://wowwiki.fandom.com/wiki/API_strsplit
                         for v in string.gmatch(value, "[^ ]+") do
-                            tinsert(Verbose.filterValues, v:lower())
+                            tinsert(Verbose.db.profile.filterValues, v:lower())
                         end
                     end,
                 },
@@ -246,23 +243,23 @@ Verbose.options = {
                     order = 11,
                     width = 0.1,
                     desc = L["Clear the filter input (to the left of this button)."],
-                    func = function() wipe(Verbose.filterValues) end,
-                    disabled = function() return #Verbose.filterValues == 0 end,
+                    func = function() wipe(Verbose.db.profile.filterValues) end,
+                    disabled = function() return #Verbose.db.profile.filterValues == 0 end,
                 },
                 sort = {
                     type = "select",
                     name = "Sort spells",
                     order = 20,
                     values = { alphabetic=L["Sort by name"], recent=L["Sort by date"], count=L["Sort by count"] },
-                    get = function() return Verbose.sortSpellValue end,
-                    set = function(_, value) Verbose.sortSpellValue = value end,
+                    get = function() return Verbose.db.profile.sortSpellValue end,
+                    set = function(_, value) Verbose.db.profile.sortSpellValue = value end,
                 },
                 unusable = {
                     type = "toggle",
                     name = L["Show non player spells"],
                     order = 21,
-                    get = function() return Verbose.showUnusableSpells end,
-                    set = function(_, value) Verbose.showUnusableSpells = value end,
+                    get = function() return Verbose.db.profile.showUnusableSpells end,
+                    set = function(_, value) Verbose.db.profile.showUnusableSpells = value end,
                 },
                 spellbook = {
                     type = "group",

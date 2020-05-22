@@ -21,6 +21,10 @@ local defaultDB = {
         cooldown = 10,
         lastTime = 0,
 
+        filterValues = {},
+        sortSpellValue = "alphabetic",
+        showUnusableSpells = true,
+
         selectWorkaround = "bubble",  -- "bubble" or "emote"
         bubblePosition = "bottomright",  -- "bottom" or "top" .. "right" or "left"
         bubbleVerticalOffset = 0,
