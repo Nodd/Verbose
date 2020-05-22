@@ -32,11 +32,21 @@ function Verbose:AddSpellOptionsGroup(parentGroup, spellID)
             desc = Verbose.SpellOptionsDesc,
             childGroups = "select",
             args = {
+                description = {
+                    type = "description",
+                    name = L["No event was recorded for this spell. Try to cast it !"],
+                    order = 10,
+                    fontSize = "medium",
+                    hidden = "HideSpellOptionsGroup",
+                }
             },
         }
         self:UpdateOptionsGUI()
     end
     return parentGroup.args[spellID]
+end
+function Verbose:HideSpellOptionsGroup(info)
+    return next(self.db.profile.spells[info[#info - 1]]) ~= nil  -- Check that table is not empty
 end
 
 local eventDescFmt = L["\n%%s\n   %s%%d (%%s ago)|r"]:format(NORMAL_FONT_COLOR_CODE)
