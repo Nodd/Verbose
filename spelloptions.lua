@@ -30,6 +30,8 @@ function Verbose:AddSpellOptionsGroup(parentGroup, spellID)
             icon = function(info) return self:SpellIconID(info[#info]) end,
             iconCoords = Verbose.iconCropBorders,
             desc = Verbose.SpellOptionsDesc,
+            order = "SpellOrderInOptions",
+            hidden = "SpellHideInOptions",
             childGroups = "select",
             args = {
                 description = {
@@ -79,6 +81,37 @@ function Verbose.SpellOptionsDesc(info)
     return txt
 end
 
+function Verbose:SpellOrderInOptions(info)
+    local spellID = info[#info]
+    if self.sortSpellValue == "recent" then
+        local lastRecordNegative = -0.1
+        for _, eventData in pairs(self.db.profile.spells[spellID]) do
+            lastRecordNegative = min(lastRecordNegative, -eventData.lastRecord)
+        end
+        return lastRecordNegative
+    elseif self.sortSpellValue == "count" then
+        local countNegative = -0.1
+        for _, eventData in pairs(self.db.profile.spells[spellID]) do
+            countNegative = min(countNegative, -eventData.count)
+        end
+        return countNegative
+    end
+    -- Else return nil for alphabetical sort
+end
+
+function Verbose:SpellHideInOptions(info)
+    local spellID = info[#info]
+    local spellName = self:SpellName(spellID):lower()
+    hide = false
+    for _, word in ipairs(Verbose.filterValues) do
+        if not spellName:find(word) then
+            hide = true
+            break
+        end
+    end
+    return hide
+end
+
 -- Add spell event configuration to a spell option's group if it doesn't exist
 function Verbose:AddSpellEventOptions(spellOptionsGroup, event)
     if not spellOptionsGroup.args[event] then
@@ -86,6 +119,7 @@ function Verbose:AddSpellEventOptions(spellOptionsGroup, event)
             type = "group",
             name = Verbose.EventNameFromInfo,
             order = Verbose.EventOrderFromInfo,
+            hidden = false,
             args = {
                 enable = {
                     type = "toggle",

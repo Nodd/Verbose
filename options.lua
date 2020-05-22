@@ -7,6 +7,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale(addonName)
 local error = error
 local pairs = pairs
 local wipe = wipe
+local tconcat = table.concat
 
 -- WoW globals
 local SetBindingClick = SetBindingClick
@@ -31,8 +32,10 @@ local displayedData = ""
 
 local loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
 
-Verbose.multilineHeightNoTab = 17
-Verbose.multilineHeightTab = 14
+Verbose.multilineHeightNoTab = 14
+Verbose.multilineHeightTab = 11
+Verbose.filterValues = {}
+Verbose.sortSpellValue = "alphabetic"
 
 Verbose.options = {
     name = addonName,
@@ -214,12 +217,40 @@ Verbose.options = {
         events = {
             -- Tree of known events, and associated configuration
             type = "group",
-            name = L["Events"],
+            name = L["Messages"],
             desc = "Per event messages configuration",
             order = 20,
             cmdHidden = true,
             childGroups = "tree",
             args = {
+                filter = {
+                    type = "input",
+                    name = "",  -- Save vertical space, but no desc displayed :(
+                    order = 10,
+                    get = function() return tconcat(Verbose.filterValues, " ") end,
+                    set = function(_, value)
+                        wipe(Verbose.filterValues)
+                        -- Example from https://wowwiki.fandom.com/wiki/API_strsplit
+                        for v in string.gmatch(value, "[^ ]+") do
+                            tinsert(Verbose.filterValues, v:lower())
+                        end
+                    end,
+                },
+                clear = {
+                    type = "execute",
+                    name = L["Clear filter"],
+                    order = 11,
+                    desc = L["Clear the filter input (to the left of this button)."],
+                    func = function() wipe(Verbose.filterValues) end,
+                },
+                sort = {
+                    type = "select",
+                    name = "",  -- Save vertical space, but no desc displayed :(
+                    order = 20,
+                    values = { alphabetic=L["Sort by name"], recent=L["Sort by date"], count=L["Sort by count"] },
+                    get = function() return Verbose.sortSpellValue end,
+                    set = function(_, value) Verbose.sortSpellValue = value end,
+                },
                 spellbook = {
                     type = "group",
                     name = SPELLBOOK,
