@@ -75,6 +75,7 @@ function Verbose:InitSpellbook(event)
             icon = tabTexture,
             iconCoords = Verbose.iconCropBorders,
             order = order,
+            hidden = "SpecHidden",
             args = {},
         }
 
@@ -100,6 +101,23 @@ function Verbose:InitSpellbook(event)
         end
     end
     self:UpdateOptionsGUI()
+end
+
+function Verbose:SpecHidden(info)
+    -- Early return if not filtered
+    if self.db.profile.showUnusableSpells then
+        return false
+    end
+
+    -- Check that it's a class specialisation
+    -- First order is the General tab
+    local order = tonumber(info[#info])
+    if order == 1 or order > GetNumSpecializations() + 1 then
+        return false
+    end
+
+    -- Ide if it's not the current spec
+    return order ~= GetSpecialization() + 1
 end
 
 function Verbose:AddSpellbookSpellEventToOptions(spellID, event)
