@@ -90,7 +90,7 @@ function Verbose:ForgetSpellHidden(info)
     return self.mountSpells[spellID] ~= nil or self.spellbookSpells[spellID] ~= nil
 end
 
-local eventDescFmt = L["\n%%s\n   %s%%d (%%s ago)|r"]:format(NORMAL_FONT_COLOR_CODE)
+local eventDescFmt = "\n%s\n   "..NORMAL_FONT_COLOR_CODE.."%d "..BNET_BROADCAST_SENT_TIME.."|r"
 local function sortByOrder(a, b)
     return Verbose.EventOrder(a) < Verbose.EventOrder(b)
 end
@@ -114,7 +114,7 @@ function Verbose.SpellOptionsDesc(info)
             Verbose.EventName(event), eventData.count, elapsed)
     end
     if not hasEvents then
-        txt = txt..L["\nNo event recorded"]
+        txt = txt.."\n"..L["No event recorded"]
     end
 
     return txt

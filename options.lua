@@ -92,7 +92,9 @@ Verbose.options = {
                 selectWorkaround = {
                     type = "select",
                     name = L["Select workaround"],
-                    desc = L["Two workarounds are possible:\n- a |cFF00FF00thought bubble|r is displayed for you only, and the message can be said aloud in the next few seconds by pressing the keybind or using the command |cFF00FF00/vw|r (typically in a macro)\n- an |cFF00FF00emote|r is directly displayed in chat for everyone to see, but no bubble will be displayed so it might go unnoticed"],
+                    desc = L["Two workarounds are possible:"].."\n"..
+                        L["- a |cFF00FF00thought bubble|r is displayed for you only, and the message can be said aloud by pressing the keybind or using the command |cFF00FF00/vw|r (typically in a macro) in the next few seconds"].."\n"..
+                        L["- an |cFF00FF00emote|r is directly displayed in chat for everyone to see, but no bubble will be displayed so it might go unnoticed"],
                     order = 22.25,
                     values = { bubble = L["Thought bubble"], emote = L["Emote"] },
                     get = function(info) return Verbose.db.profile.selectWorkaround end,
