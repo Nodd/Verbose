@@ -1,5 +1,5 @@
 local addonName, Verbose = ...
-local L = LibStub("AceLocale-3.0"):GetLocale(addonName)
+local L = LibStub("AceLocale-3.0"):GetLocale(addonName.."Help")
 
 -- Lua functions
 local assert = assert
