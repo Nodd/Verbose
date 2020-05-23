@@ -350,63 +350,63 @@ Verbose.options = {
                             fontSize = "medium",
                             order = 1,
                         },
-                        damage = {
+                    },
+                },
+                damage = {
+                    type = "group",
+                    name = L["Damage received"],
+                    order = 20,
+                    icon = damageIcon,
+                    iconCoords = Verbose.iconCropBorders,
+                    childGroups = "tree",
+                    args = {
+                        title = {
+                            type = "description",
+                            name = Verbose:IconTextureBorderlessFromID(spellsIconID).." "..L["Spellcasts"],
+                            fontSize = "large",
+                            order = 0,
+                        },
+                        info = {
+                            type = "description",
+                            name = L["Documentation here."],
+                            fontSize = "medium",
+                            order = 1,
+                        },
+                        environmental = {
                             type = "group",
-                            name = L["Damage received"],
-                            order = 12,
-                            icon = damageIcon,
+                            name = ENVIRONMENTAL_DAMAGE,
+                            order = 0,
+                            -- icon = spellsIconID,
                             iconCoords = Verbose.iconCropBorders,
                             childGroups = "tree",
-                            args = {
-                                title = {
-                                    type = "description",
-                                    name = Verbose:IconTextureBorderlessFromID(spellsIconID) .. " Spellcasts",
-                                    fontSize = "large",
-                                    order = 0,
-                                },
-                                info = {
-                                    type = "description",
-                                    name = L["Documentation here."],
-                                    fontSize = "medium",
-                                    order = 1,
-                                },
-                                environmental = {
-                                    type = "group",
-                                    name = ENVIRONMENTAL_DAMAGE,
-                                    order = 0,
-                                    -- icon = spellsIconID,
-                                    iconCoords = Verbose.iconCropBorders,
-                                    childGroups = "tree",
-                                    args = {},
-                                },
-                                monoSchool = {
-                                    type = "group",
-                                    name = L["Mono school"],
-                                    order = 1,
-                                    -- icon = spellsIconID,
-                                    iconCoords = Verbose.iconCropBorders,
-                                    childGroups = "tree",
-                                    args = {},
-                                },
-                                dualSchools = {
-                                    type = "group",
-                                    name = L["Dual schools"],
-                                    order = 2,
-                                    -- icon = spellsIconID,
-                                    iconCoords = Verbose.iconCropBorders,
-                                    childGroups = "tree",
-                                    args = {},
-                                },
-                                moreSchools = {
-                                    type = "group",
-                                    name = L["Triple or more schools"],
-                                    order = 3,
-                                    -- icon = spellsIconID,
-                                    iconCoords = Verbose.iconCropBorders,
-                                    childGroups = "tree",
-                                    args = {},
-                                },
-                            },
+                            args = {},
+                        },
+                        monoSchool = {
+                            type = "group",
+                            name = L["Mono school"],
+                            order = 1,
+                            -- icon = spellsIconID,
+                            iconCoords = Verbose.iconCropBorders,
+                            childGroups = "tree",
+                            args = {},
+                        },
+                        dualSchools = {
+                            type = "group",
+                            name = L["Dual schools"],
+                            order = 2,
+                            -- icon = spellsIconID,
+                            iconCoords = Verbose.iconCropBorders,
+                            childGroups = "tree",
+                            args = {},
+                        },
+                        moreSchools = {
+                            type = "group",
+                            name = L["Triple or more schools"],
+                            order = 3,
+                            -- icon = spellsIconID,
+                            iconCoords = Verbose.iconCropBorders,
+                            childGroups = "tree",
+                            args = {},
                         },
                     },
                 },
@@ -632,10 +632,10 @@ function Verbose:RefreshOptions()
     -- Load DB to options
     self:ResetOptionsGroup(self.options.args.lists.args)
     self:ResetOptionsGroup(self.options.args.events.args.spells.args)
-    self:ResetOptionsGroup(self.options.args.events.args.combat.args.damage.args.environmental.args)
-    self:ResetOptionsGroup(self.options.args.events.args.combat.args.damage.args.monoSchool.args)
-    self:ResetOptionsGroup(self.options.args.events.args.combat.args.damage.args.dualSchools.args)
-    self:ResetOptionsGroup(self.options.args.events.args.combat.args.damage.args.moreSchools.args)
+    self:ResetOptionsGroup(self.options.args.events.args.damage.args.environmental.args)
+    self:ResetOptionsGroup(self.options.args.events.args.damage.args.monoSchool.args)
+    self:ResetOptionsGroup(self.options.args.events.args.damage.args.dualSchools.args)
+    self:ResetOptionsGroup(self.options.args.events.args.damage.args.moreSchools.args)
     for groupID, groupdata in pairs(self.options.args.events.args.spellbook.args) do
         if groupdata.args then
             for spellID, spellData in pairs(groupdata.args) do
