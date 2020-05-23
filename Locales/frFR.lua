@@ -10,4 +10,4 @@ end
 
 local H = LibStub("AceLocale-3.0"):NewLocale(addonName.."Help", "frFR")
 
---@localization(locale="frFR", format="lua_additive_table", namespace="help")@
+--@localization(locale="frFR", format="lua_additive_table", namespace="help", table-name="H")@
