@@ -20,3 +20,6 @@ externals:
 tools-used:
   - findglobals
   - speakinspell
+
+ignore:
+  - phrases.py
