@@ -70,7 +70,7 @@ end
 local txt_anim, txt_speech, txt_nothing = GenerateEmoteCommandsHelp()
 
 local helpData = {
-    L["Help"],
+    HELP_LABEL,
     {
         L["Welcome"],
         L["Welcome to %s !"]:format(addonName)..

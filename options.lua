@@ -45,7 +45,7 @@ Verbose.options = {
         general = {
             -- General options
             type = "group",
-            name = L["Options"],
+            name = OPTIONS,
             order = 10,
             args = {
                 enable = {
@@ -96,7 +96,7 @@ Verbose.options = {
                         L["- a |cFF00FF00thought bubble|r is displayed for you only, and the message can be said aloud by pressing the keybind or using the command |cFF00FF00/vw|r (typically in a macro) in the next few seconds"].."\n"..
                         L["- an |cFF00FF00emote|r is directly displayed in chat for everyone to see, but no bubble will be displayed so it might go unnoticed"],
                     order = 22.25,
-                    values = { bubble = L["Thought bubble"], emote = L["Emote"] },
+                    values = { bubble=L["Thought bubble"], emote=EMOTE },
                     get = function(info) return Verbose.db.profile.selectWorkaround end,
                     set = function(info, value) Verbose.db.profile.selectWorkaround = value end,
                 },
@@ -475,7 +475,7 @@ Verbose.options = {
         save = {
             -- This is broken, it should use LibDeflate to avoid special chars in the textbox which are not rendered correctly
             type = "group",
-            name = L["Save"],
+            name = SAVE,
             desc = L["Save or Load configuration"],
             order = 35,
             hidden = true,

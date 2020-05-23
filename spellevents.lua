@@ -16,7 +16,7 @@ Verbose.usedSpellEvents = {
     -- },
 
     UNIT_SPELLCAST_SENT = { callback="OnUnitSpellcastSent", name=nil, order=-100, classic=true },
-    UNIT_SPELLCAST_STOP = { callback="OnUnitSpellcastStop", name=L["Stop"], order=-99, classic=true },
+    UNIT_SPELLCAST_STOP = { callback="OnUnitSpellcastStop", name=QUEST_SESSION_CHECK_STOP_DIALOG_CONFIRM, order=-99, classic=true },
 
     UNIT_SPELLCAST_START = { callback="OnUnitSpellcastCommon", name=L["Cast start"], order=5, classic=true },
     UNIT_SPELLCAST_CHANNEL_START = { callback="OnUnitSpellcastCommon", name=L["Channel start"], order=10, classic=true },

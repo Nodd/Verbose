@@ -27,9 +27,9 @@ Verbose.mountTypeString = {
     ["398"] = "AIR", -- Kua'fon's Harness
 }
 Verbose.mountTypeData = {
-    AIR = { name=L["Flying"], icon=618976 },  -- icon_petfamily_flying
+    AIR = { name=BATTLE_PET_NAME_3, icon=618976 },  -- icon_petfamily_flying
     GROUND = { name=L["Ground"], icon=618973 },  -- icon_petfamily_critter
-    WATER = { name=L["Water"], icon=618981 },  -- icon_petfamily_water
+    WATER = { name=RELIC_SLOT_TYPE_WATER, icon=618981 },  -- icon_petfamily_water
 }
 Verbose.mountEvents = {
     UNIT_SPELLCAST_START = { name=L["Start casting"], order=0 },
