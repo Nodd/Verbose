@@ -91,7 +91,7 @@ Verbose.usedEvents = {
     PLAYER_LEVEL_UP = { callback="PLAYER_LEVEL_UP", category="player", name=L["Level up"], order=10, classic=true },
     ACHIEVEMENT_EARNED = { callback="ACHIEVEMENT_EARNED", category="player", name=ACHIEVEMENT_UNLOCKED, order=20, classic=false }, --not in Classic
     PLAYER_STARTED_MOVING = { callback="ManageNoArgEvent", category="player", name=L["Start moving"], order=30, classic=true },
-    PLAYER_STOPPED_MOVING = { callback="ManageNoArgEvent", category="player", name=L["Stop moving"], order=40, classic=true },
+    PLAYER_STOPPED_MOVING = { callback="PLAYER_STOPPED_MOVING", category="player", name=L["Stop moving"], order=40, classic=true },
 
     -- NPC interaction events
     -- *_CLOSED events are unreliable and can fire anytime,
@@ -194,6 +194,15 @@ function Verbose:ManageIgnoredArgEvent(event, ...)
     self:Speak(msgData)
 end
 
+function Verbose:PLAYER_STOPPED_MOVING(event, ...)
+    -- When this event is fired, the player is still considered moving (try with /dance)
+    -- A 0 delay (OnUpdate ?) is enough
+
+    -- DEBUG
+    self:EventDbgPrint(event, "(delayed)")
+
+    self:ScheduleTimer("ManageNoArgEvent", 0, event, ...)
+end
 
 -------------------------------------------------------------------------------
 -- Events with specific parameters
