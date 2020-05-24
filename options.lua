@@ -24,7 +24,7 @@ local LibDBIcon = LibStub("LibDBIcon-1.0")
 local spellsIconID = 134414  -- inv_misc_rune_01 (Hearthstone)
 local combatIconID = 132349  -- ability_warrior_offensivestance
 local npcIconID = 2056011  -- ability_warrior_offensivestance
-local achievementsIconID = 236670  -- ui_chat
+local playerIconID = 132311  -- ability_seal
 local spellbookIcon = 133741  -- inv_misc_book_09
 local mountsIconID = "Interface\\Icons\\MountJournalPortrait"
 local damageIcon = 1394889
@@ -413,7 +413,7 @@ Verbose.options = {
                 npc = {
                     type = "group",
                     name = L["NPC interaction"],
-                    order = 30,
+                    order = 50,
                     icon = npcIconID,
                     iconCoords = Verbose.iconCropBorders,
                     childGroups = "tree",
@@ -432,17 +432,17 @@ Verbose.options = {
                         },
                     },
                 },
-                achievements = {
+                player = {
                     type = "group",
-                    name = ACHIEVEMENTS,
+                    name = PLAYER,
                     order = 40,
-                    icon = achievementsIconID,
+                    icon = playerIconID,
                     iconCoords = Verbose.iconCropBorders,
                     childGroups = "tree",
                     args = {
                         title = {
                             type = "description",
-                            name = Verbose:IconTextureBorderlessFromID(achievementsIconID) .. " Achievements",
+                            name = Verbose:IconTextureBorderlessFromID(playerIconID) .. " Achievements",
                             fontSize = "large",
                             order = 0,
                         },

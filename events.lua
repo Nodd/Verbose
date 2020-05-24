@@ -87,11 +87,11 @@ Verbose.usedEvents = {
     -- TRADE_SHOW = { callback="TODOEvent", category=category, name=title, classic=true },  -- Trade between players
     -- TRADE_CLOSED = { callback="TODOEvent", category=category, name=title, classic=true },  -- Trade between players
 
-    -- Achievement events
-    PLAYER_LEVEL_UP = { callback="PLAYER_LEVEL_UP", category="achievements", name=L["Level up"], classic=true },
-    ACHIEVEMENT_EARNED = { callback="ACHIEVEMENT_EARNED", category="achievements", name=ACHIEVEMENT_UNLOCKED, classic=false }, --not in Classic
-    -- CHAT_MSG_ACHIEVEMENT = { callback="TODOEvent", category="achievements", name=title, classic=false }, --not in Classic
-    -- CHAT_MSG_GUILD_ACHIEVEMENT = { callback="TODOEvent", category="achievements", name=title, classic=false }, --not in Classic
+    -- Player events
+    PLAYER_LEVEL_UP = { callback="PLAYER_LEVEL_UP", category="player", name=L["Level up"], order=10, classic=true },
+    ACHIEVEMENT_EARNED = { callback="ACHIEVEMENT_EARNED", category="player", name=ACHIEVEMENT_UNLOCKED, order=20, classic=false }, --not in Classic
+    PLAYER_STARTED_MOVING = { callback="ManageNoArgEvent", category="player", name=L["Start moving"], order=30, classic=true },
+    PLAYER_STOPPED_MOVING = { callback="ManageNoArgEvent", category="player", name=L["Stop moving"], order=40, classic=true },
 
     -- NPC interaction events
     -- *_CLOSED events are unreliable and can fire anytime,
