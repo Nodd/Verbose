@@ -49,7 +49,8 @@ Verbose.playerCombatLogSubEvents = {
 
     SPELL_HEAL = { name=L["Heal"], order=80 },
 
-    PARTY_KILL = { name=COMBATLOG_HIGHLIGHT_KILL, order=50 },
+    -- Needs a section for non spell events
+    --PARTY_KILL = { name=COMBATLOG_HIGHLIGHT_KILL, order=50 },
 }
 
 local playerCombatLogSubEventsAlias = {
