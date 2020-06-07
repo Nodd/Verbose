@@ -49,6 +49,10 @@ Verbose.playerCombatLogSubEvents = {
 
     SPELL_HEAL = { name=L["Heal"], order=80 },
 
+    -- Fires for both the healer and the dead
+    -- Fires for the resurrection request; not the actual resurrection
+    SPELL_RESURRECT = { name=L["Resurrection request (combat log)"], order=81 },
+
     -- Needs a section for non spell events
     --PARTY_KILL = { name=COMBATLOG_HIGHLIGHT_KILL, order=50 },
 }
