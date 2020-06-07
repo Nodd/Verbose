@@ -240,6 +240,11 @@ function Verbose:OnCombatLogEvent(eventInfo)
         return
     end
 
+    if not eventInfo.spellID then
+        self:EventDbgPrint("No spell ID for", eventInfo.event)
+        return
+    end
+
     local dbTable = self.db.profile.spells[eventInfo.spellID][eventInfo.event]
     local messagesTable
 
