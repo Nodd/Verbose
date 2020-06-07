@@ -515,6 +515,7 @@ local categoryEventOptions = {
     type = "group",
     name = function(info) return Verbose.usedEvents[info[#info]].name end,
     order = function(info) return Verbose.usedEvents[info[#info]].order end,
+    desc = function(info) return Verbose.usedEvents[info[#info]].desc end,
     args = {
         enable = {
             type = "toggle",

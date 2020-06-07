@@ -54,6 +54,18 @@ function Verbose:EventDetailsDbgPrint(eventInfo)
     end
 end
 
+local NPC_DESCRIPTION = (
+    L["Substitutions:"]
+    .."\n|cFF00FF00<npcname>|r "..L["Name of the NPC"]
+    .."\n|cFF00FF00<npcguild>|r "..L["Guild of the NPC"]
+    .."\n|cFF00FF00<npcclass>|r "..L["Class of the NPC"]
+    .."\n|cFF00FF00<npcrace>|r "..L["Race of the NPC"]
+    .."\n|cFF00FF00<npctype>|r "..L["Humanoïd, Beast, Demon..."]
+    .."\n|cFF00FF00<npcfamily>|r "..L["Subcategory for beasts and demons"]
+    .."\n|cFF00FF00<npcgenreid>|r "..L["1 if NPC is male, 2 if female"]
+    .."\n|cFF00FF00<npcgenre>|r "..L["'male' or 'female'"]
+)
+
 Verbose.usedEvents = {
     -- EVENT = {
     --     callback,  -- Function to call
@@ -64,16 +76,46 @@ Verbose.usedEvents = {
     -- },
 
     -- Death events
-    PLAYER_DEAD = { callback="ManageNoArgEvent", category="combat", name=DEAD, order=20, classic=true },
-    PLAYER_ALIVE = { callback="ManageNoArgEvent", category="combat", name=L["Resurrection"], order=30, classic=true },
+    PLAYER_DEAD = {
+        callback="ManageNoArgEvent",
+        category="combat",
+        name=DEAD,
+        desc=L["No substitutions"],
+        order=20,
+        classic=true },
+    PLAYER_ALIVE = {
+        callback="ManageNoArgEvent",
+        category="combat",
+        name=L["Resurrection"],
+        desc=L["No substitutions"],
+        order=30,
+        lassic=true },
     -- PLAYER_UNGHOST: cf Verbose.usedEventsAlias
-    RESURRECT_REQUEST = { callback="RESURRECT_REQUEST", category="combat", name=L["Resurrection request"], order=25, classic=true },
+    RESURRECT_REQUEST = {
+        callback="RESURRECT_REQUEST",
+        category="combat",
+        name=L["Resurrection request"],
+        desc=L["Substitutions:"].."\n|cFF00FF00<caster>|r "..L["name of the nice player who just casted rez on you"],
+        order=25,
+        classic=true },
 
     -- Combat events
     -- UNIT_THREAT_LIST_UPDATE = { callback="TODOEvent", category=category, name=title, classic=false }, --not in Classic
     -- COMPANION_UPDATE = { callback="TODOEvent", category=category, name=title, classic=false }, --not in Classic
-    PLAYER_REGEN_DISABLED = { callback="ManageNoArgEvent", category="combat", name=L["Entering combat"], order=10, classic=true },  -- Entering combat
-    PLAYER_REGEN_ENABLED = { callback="ManageNoArgEvent", category="combat", name=L["Leaving combat"], order=15, classic=true },  -- Leaving combat
+    PLAYER_REGEN_DISABLED = {
+        callback="ManageNoArgEvent",
+        category="combat",
+        name=L["Entering combat"],
+        desc=L["No substitutions"],
+        order=10,
+        classic=true },  -- Entering combat
+    PLAYER_REGEN_ENABLED = {
+        callback="ManageNoArgEvent",
+        category="combat",
+        name=L["Leaving combat"],
+        desc=L["No substitutions"],
+        order=15,
+        classic=true },  -- Leaving combat
 
     -- Chat events
     -- CHAT_MSG_WHISPER = { callback="TODOEvent", category=category, name=title, classic=true },
@@ -88,26 +130,85 @@ Verbose.usedEvents = {
     -- TRADE_CLOSED = { callback="TODOEvent", category=category, name=title, classic=true },  -- Trade between players
 
     -- Player events
-    PLAYER_LEVEL_UP = { callback="PLAYER_LEVEL_UP", category="player", name=L["Level up"], order=10, classic=true },
-    ACHIEVEMENT_EARNED = { callback="ACHIEVEMENT_EARNED", category="player", name=ACHIEVEMENT_UNLOCKED, order=20, classic=false }, --not in Classic
-    PLAYER_STARTED_MOVING = { callback="ManageNoArgEvent", category="player", name=L["Start moving"], order=30, classic=true },
-    PLAYER_STOPPED_MOVING = { callback="PLAYER_STOPPED_MOVING", category="player", name=L["Stop moving"], order=40, classic=true },
+    PLAYER_LEVEL_UP = {
+        callback="PLAYER_LEVEL_UP",
+        category="player",
+        name=L["Level up"],
+        desc=L["Substitutions:"].."\n|cFF00FF00<level>|r "..L["the new level"],
+        order=10,
+        classic=true },
+    ACHIEVEMENT_EARNED = {
+        callback="ACHIEVEMENT_EARNED",
+        category="player",
+        name=ACHIEVEMENT_UNLOCKED,
+        desc=L["Substitutions:"].."\n|cFF00FF00<achievement>|r "..L["the achievement label"].."\n|cFF00FF00<points>|r "..L["the number of points gained"],
+        order=20,
+        classic=false }, --not in Classic
+    PLAYER_STARTED_MOVING = {
+        callback="ManageNoArgEvent",
+        category="player",
+        name=L["Start moving"],
+        desc=L["No substitutions"],
+        order=30,
+        classic=true },
+    PLAYER_STOPPED_MOVING = {
+        callback="PLAYER_STOPPED_MOVING",
+        category="player",
+        name=L["Stop moving"],
+        desc=L["No substitutions"],
+        order=40,
+        classic=true },
 
     -- NPC interaction events
     -- *_CLOSED events are unreliable and can fire anytime,
     -- when speaking to another NPC for example.
     -- It would need some heavy filtering :/
     -- I guess they are usefull for UI only
-    GOSSIP_SHOW = { callback="ManageNoArgEvent", category="npc", name=L["Gossip"], classic=true },
+    GOSSIP_SHOW = {
+        callback="ManageNoArgEvent",
+        category="npc",
+        name=L["Gossip"],
+        desc=NPC_DESCRIPTION,
+        classic=true },
     -- GOSSIP_CLOSED = { callback="ManageNoArgEvent", category="npc", name=L["Gossip close"], classic=true },
-    BARBER_SHOP_OPEN = { callback="ManageNoArgEvent", category="npc", name=BARBERSHOP, classic=false },
-    BARBER_SHOP_CLOSE = { callback="ManageNoArgEvent", category="npc", name=L["Barber shop close"], classic=false },
-    MAIL_SHOW = { callback="ManageNoArgEvent", category="npc", name=MAIL_LABEL, classic=true },
-    MERCHANT_SHOW = { callback="ManageNoArgEvent", category="npc", name=MERCHANT, classic=true },
+    BARBER_SHOP_OPEN = {
+        callback="ManageNoArgEvent",
+        category="npc",
+        name=BARBERSHOP,
+        desc=NPC_DESCRIPTION,
+        classic=false },
+    BARBER_SHOP_CLOSE = {
+        callback="ManageNoArgEvent",
+        category="npc",
+        name=L["Barber shop close"],
+        desc=NPC_DESCRIPTION,
+        classic=false },
+    MAIL_SHOW = {
+        callback="ManageNoArgEvent",
+        category="npc",
+        name=MAIL_LABEL,
+        desc=NPC_DESCRIPTION,
+        classic=true },
+    MERCHANT_SHOW = {
+        callback="ManageNoArgEvent",
+        category="npc",
+        name=MERCHANT,
+        desc=NPC_DESCRIPTION,
+        classic=true },
     -- QUEST_GREETING = { callback="ManageNoArgEvent", category="npc", name=L["Quest greeting"], classic=true },
     -- QUEST_FINISHED = { callback="ManageNoArgEvent", category="npc", name=L["Quest finished"], classic=true },
-    TAXIMAP_OPENED = { callback="TAXIMAP_OPENED", category="npc", name=L["Taxi map"], classic=true },
-    TAXIMAP_CLOSED = { callback="ManageNoArgEvent", category="npc", name=L["Taxi map closed"], classic=true },
+    TAXIMAP_OPENED = {
+        callback="TAXIMAP_OPENED",
+        category="npc",
+        name=L["Taxi map"],
+        desc=NPC_DESCRIPTION.."\n|cFF00FF00<stationname>|r "..L["Name of the taxi station you're at"],
+        classic=true },
+    TAXIMAP_CLOSED = {
+        callback="ManageNoArgEvent",
+        category="npc",
+        name=L["Taxi map closed"],
+        desc=L["No substitutions"],
+        classic=true },
     -- TRAINER_SHOW = { callback="ManageNoArgEvent", category="npc", name=L["Trainer"], classic=true },
 }
 Verbose.usedEventsAlias = {
@@ -155,6 +256,9 @@ function Verbose:NpcSubstitutions()
         npcgenreid = UnitSex("npc"),
         npcgenre = genders[UnitSex("npc")],
     }
+    if substitutions.npcclass == substitutions.npcname then
+        substitutions.npcclass = nil
+    end
     return substitutions
 end
 
@@ -222,8 +326,7 @@ function Verbose:TAXIMAP_OPENED(event, nodeID)
 
     local msgData = self.db.profile.events[event]
     local substitutions = self:NpcSubstitutions()
-    substitutions.nodeID = nodeID
-    substitutions.taxiNodeName = TaxiNodeName(nodeID)
+    substitutions.stationname = TaxiNodeName(nodeID)
     self:Speak(msgData, substitutions)
 end
 
@@ -245,7 +348,7 @@ function Verbose:ACHIEVEMENT_EARNED(event, achievementID, alreadyEarned)
     local id, name, points = GetAchievementInfo(achievementID)
 
     local msgData = self.db.profile.events[event]
-    local substitutions = { name=name, points=points }
+    local substitutions = { achievement=name, points=points }
     self:Speak(msgData, substitutions)
 end
 
