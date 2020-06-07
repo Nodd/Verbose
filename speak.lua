@@ -25,6 +25,7 @@ local _G = _G
 local globalLastTime = 0
 local elapsedTimeForObsoleteMessage = 3
 
+-- Get chat commands from globals
 local sayCommands = {}
 local i = 1
 while _G["SLASH_SAY"..i] do
@@ -50,13 +51,15 @@ local chatColors = {
     EMOTE = "FF7E40",
 }
 
+-- Console print for debugging
 function Verbose:SpeakDbgPrint(...)
     if self.db.profile.speakDebug then
         self:Print("|cFFFFFF00SPEAK:|r", ...)
     end
 end
 
-function Verbose:GetRandomFromTable(t)
+-- Get a random entry from an indexed table
+local function GetRandomFromTable(t)
     if not t then return end
 
     local len = #t
@@ -66,20 +69,24 @@ function Verbose:GetRandomFromTable(t)
     return t[n]
 end
 
-function Verbose:ListSubstitution(message)
+-- Subtitute all user-defined list tokens in a message
+--
+-- This could probably be optimized
+local function ListSubstitution(message)
     -- Replace from list randomly
-    for listID, list in pairs(self.db.profile.lists) do
+    for listID, list in pairs(Verbose.db.profile.lists) do
         local listStr = "<" .. list.name .. ">"
         local n
         repeat
-            local element = self:GetRandomFromTable(list.values)
+            local element = GetRandomFromTable(list.values)
             message, n = message:gsub(listStr, element, 1)
         until(n == 0)
     end
     return message
 end
 
-function Verbose:TokenSubstitution(message, substitutions)
+-- Subtitute all substitutions tokens in a message
+local function TokenSubstitution(message, substitutions)
     if not substitutions then return message end
     -- Replace from list randomly
     for token, value in pairs(substitutions) do
@@ -89,32 +96,74 @@ function Verbose:TokenSubstitution(message, substitutions)
     return message
 end
 
-function Verbose:GetRandomMessageWithSubstitution(messages, substitutions)
-    -- Get a random message among messages where all substitutions are valid
+-- Get a random message among messages where all substitutions are valid
+--
+-- Messages with unknown tokens are skipped so that there is no message
+-- displayed with a ugly <token>
+local function GetRandomMessageWithSubstitution(messages, substitutions)
     local message
-    local filteredIndex = 1
+    local validIndex = 1
     -- Iterator for random choice without intermediate list
     -- The final probability is uniform, yes Sir !
     for index, msg in ipairs(messages) do
         -- Replace tokens
-        msg = self:TokenSubstitution(msg, substitutions)
-        msg = self:ListSubstitution(msg)
+        msg = TokenSubstitution(msg, substitutions)
+        msg = ListSubstitution(msg)
 
-        -- Check that all tokens were replaced
-        local valid = true
-        if msg:find("<(%w+)>") then valid = false end
-
-        if valid then
-            -- Message can be in the random pool
-            if fastrandom(1, filteredIndex) == 1 then
+        -- Continue only if all tokens were replaced
+        if not msg:find("<(%w+)>") then
+            -- Message is in the random pool
+            if fastrandom(1, validIndex) == 1 then
                 message = msg
             end
-            filteredIndex = filteredIndex + 1
+            validIndex = validIndex + 1
         end
     end
     return message
 end
 
+-- Parse the chosen message
+--
+-- Extracts:
+-- * chatType: SAY, YELL or EMOTE
+-- * emoteToken: used if chatType is EMOTE
+-- * chatText: the text to be passed in the chat command
+-- * bubbleText: the text to be displayed in the bubble (different from chatText for emotes)
+local function parseMessage(message)
+    local chatType = "SAY"
+    local emoteToken = nil
+    local chatText = message
+    local bubbleText = message
+    if message:sub(1, 1) == "/" then
+        local command = message:match("^(/[^%s]+)") or "";
+        local args = message:match("^/[^%s]+%s+(.*)$") or "";
+        if sayCommands[command] then  -- /say (default)
+            chatText = args
+            bubbleText = args
+        elseif yellCommands[command] then  -- /yell
+            chatType = "YELL"
+            chatText = args
+            bubbleText = args
+        elseif emoteCommands[command] then  -- /me
+            chatType = "EMOTE"
+            chatText = args
+        else
+            emoteToken = hash_EmoteTokenList[command:upper()]
+            if emoteToken then
+                chatType = "EMOTE"
+                chatText = args
+            else
+                -- Unknown command
+                return
+            end
+        end
+    end
+    return chatType, emoteToken, chatText, bubbleText
+end
+
+-- Main function for this module, that tries to get a random message and use it
+--
+-- messagesTable is optional, if nil then msgData.messages will be used instead
 function Verbose:Speak(msgData, substitutions, messagesTable)
     self:EventDetailsDbgPrint(substitutions)
 
@@ -160,62 +209,40 @@ function Verbose:Speak(msgData, substitutions, messagesTable)
     if not messagesTable then
         messagesTable = msgData.messages
     end
-    local message = self:GetRandomMessageWithSubstitution(messagesTable, substitutions)
+    local message = GetRandomMessageWithSubstitution(messagesTable, substitutions)
     if not message then
         self:SpeakDbgPrint("No valid message in table for substitutions")
         return
     end
 
     -- Manage commands
-    local chatType = "SAY"
-    local emoteToken = nil
-    local sendText = message
-    local bubbleText = message
-    if message:sub(1, 1) == "/" then
-        local command = message:match("^(/[^%s]+)") or "";
-        local args = message:match("^/[^%s]+%s+(.*)$") or "";
-        if sayCommands[command] then  -- /say (default)
-            sendText = args
-            bubbleText = args
-        elseif yellCommands[command] then  -- /yell
-            chatType = "YELL"
-            sendText = args
-            bubbleText = args
-        elseif emoteCommands[command] then  -- /me
-            chatType = "EMOTE"
-            sendText = args
-        else
-            emoteToken = hash_EmoteTokenList[command:upper()]
-            if emoteToken then
-                chatType = "EMOTE"
-                sendText = args
-            else
-                self:SpeakDbgPrint("Unknown command: ", message)
-                return
-            end
-        end
+    local chatType, emoteToken, chatText, bubbleText = parseMessage(message)
+    if not chatType then
+        self:SpeakDbgPrint("Unknown command: ", message)
+        return
     end
 
     -- Update times
     msgData.lastTime = currentTime  -- Event CD
     globalLastTime = currentTime  -- Global CD
 
+    -- Finally, do the thing
     self:CloseBubbleFrame()
     if self.db.profile.mute then
         self:SpeakDbgPrint("MUTED, bubbling:", message)
         self:UseBubbleFrame("|cFF"..chatColors[chatType]..bubbleText.."|r")
     elseif emoteToken then
         self:SpeakDbgPrint("EMOTE:", message)
-        DoEmote(emoteToken, sendText)
+        DoEmote(emoteToken, chatText)
     elseif chatType == "EMOTE" then
         self:SpeakDbgPrint("Emoting:", message)
-        SendChatMessage(sendText, "EMOTE");
+        SendChatMessage(chatText, "EMOTE");
     elseif IsInInstance() then
         self:SpeakDbgPrint("In instance, speaking:", message)
-        SendChatMessage(sendText, chatType);
+        SendChatMessage(chatText, chatType);
     elseif Verbose.db.profile.selectWorkaround == "bubble" then
         -- Bubble+Keybind workaround
-        tinsert(self.queue, { time=currentTime, message=message, sendText=sendText, chatType=chatType })
+        tinsert(self.queue, { time=currentTime, message=message, chatText=chatText, chatType=chatType })
         self:SpeakDbgPrint("Not in instance, bubbling")
         self:UseBubbleFrame("|cFF"..chatColors[chatType]..bubbleText.."|r")
     else
@@ -226,7 +253,7 @@ function Verbose:Speak(msgData, substitutions, messagesTable)
             intro = CHAT_YELL_GET
         end
         intro = intro:format("")
-        SendChatMessage(intro..sendText, "EMOTE")
+        SendChatMessage(intro..chatText, "EMOTE")
     end
 end
 
@@ -237,6 +264,7 @@ end
 
 Verbose.queue = {}
 
+-- Empty queue
 function Verbose:OpenWorldWorkaround()
     self:SpeakDbgPrint("Keybind workaround")
     self:CloseBubbleFrame()
@@ -254,7 +282,7 @@ function Verbose:OpenWorldWorkaround()
         local elapsed = currentTime - messageData.time
         if elapsed < elapsedTimeForObsoleteMessage then
             self:SpeakDbgPrint("Talk", elapsed, "seconds later:", messageData.message)
-            SendChatMessage(messageData.sendText, messageData.chatType)
+            SendChatMessage(messageData.chatText, messageData.chatType)
             break
         else
             self:SpeakDbgPrint("Obsolete message since", elapsed, "seconds:", messageData.message)
