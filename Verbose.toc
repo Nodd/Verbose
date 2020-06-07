@@ -38,6 +38,7 @@ spellevents.lua
 combatlogevents.lua
 help.lua
 damagereceived.lua
+bubble.lua
 
 # Needs events.lua
 db.lua
