@@ -7,6 +7,14 @@ local tostring = tostring
 -- WoW globals
 local GetServerTime = GetServerTime
 
+local SUBSTITUTIONS_DESCRIPTION = (
+    L["Substitutions:"]
+    .."\n|cFF00FF00<target>|r "..L["the target of the spell"]
+    .."\n|cFF00FF00<spellname>|r "..L["the name of the spell you're casting"]
+    .."\n|cFF00FF00<caster>|r "..L["'player' or 'pet'"]
+)
+
+
 Verbose.usedSpellEvents = {
     -- EVENT = {
     --     callback,  -- Function to call
@@ -14,16 +22,54 @@ Verbose.usedSpellEvents = {
     --     icon,  -- Icon ID
     --     inClassic,  -- Exists in WoW Classic
     -- },
+    UNIT_SPELLCAST_START = {
+        callback="OnUnitSpellcastCommon",
+        name=L["Cast start"],
+        desc=SUBSTITUTIONS_DESCRIPTION,
+        order=5,
+        classic=true },
+    UNIT_SPELLCAST_CHANNEL_START = {
+        callback="OnUnitSpellcastCommon",
+        name=L["Channel start"],
+        desc=SUBSTITUTIONS_DESCRIPTION,
+        order=10,
+        classic=true },
+    UNIT_SPELLCAST_SUCCEEDED = {
+        callback="OnUnitSpellcastEnd",
+        name=L["Cast success"],
+        desc=SUBSTITUTIONS_DESCRIPTION,
+        order=15,
+        classic=true },
+    UNIT_SPELLCAST_CHANNEL_STOP = {
+        callback="OnUnitSpellcastEnd",
+        name=L["Channel stop"],
+        desc=SUBSTITUTIONS_DESCRIPTION,
+        order=20,
+        classic=true },
+    UNIT_SPELLCAST_FAILED = {
+        callback="OnUnitSpellcastEnd",
+        name=L["Cast start failed"],
+        desc=SUBSTITUTIONS_DESCRIPTION,
+        order=25,
+        classic=true },
+    UNIT_SPELLCAST_INTERRUPTED = {
+        callback="OnUnitSpellcastEnd",
+        name=L["Cast stopped"],
+        desc=SUBSTITUTIONS_DESCRIPTION,
+        order=40,
+        classic=true },
 
-    UNIT_SPELLCAST_SENT = { callback="OnUnitSpellcastSent", name=nil, order=-100, classic=true },
-    UNIT_SPELLCAST_STOP = { callback="OnUnitSpellcastStop", name=QUEST_SESSION_CHECK_STOP_DIALOG_CONFIRM, order=-99, classic=true },
-
-    UNIT_SPELLCAST_START = { callback="OnUnitSpellcastCommon", name=L["Cast start"], order=5, classic=true },
-    UNIT_SPELLCAST_CHANNEL_START = { callback="OnUnitSpellcastCommon", name=L["Channel start"], order=10, classic=true },
-    UNIT_SPELLCAST_SUCCEEDED = { callback="OnUnitSpellcastEnd", name=L["Cast success"], order=15, classic=true },
-    UNIT_SPELLCAST_CHANNEL_STOP = { callback="OnUnitSpellcastEnd", name=L["Channel stop"], order=20, classic=true },
-    UNIT_SPELLCAST_FAILED = { callback="OnUnitSpellcastEnd", name=L["Cast start failed"], order=25, classic=true },
-    UNIT_SPELLCAST_INTERRUPTED = { callback="OnUnitSpellcastEnd", name=L["Cast stopped"], order=40, classic=true },
+    -- Not used for speeches
+    UNIT_SPELLCAST_SENT = {
+        callback="OnUnitSpellcastSent",
+        name=nil,
+        order=-100,
+        classic=true },
+    UNIT_SPELLCAST_STOP = {
+        callback="OnUnitSpellcastStop",
+        name=QUEST_SESSION_CHECK_STOP_DIALOG_CONFIRM,
+        order=-99,
+        classic=true },
 }
 
 -- Table to store spell targets, which are not provided for all events
@@ -81,7 +127,6 @@ function Verbose:OnSpellcastEvent(event, caster, target, spellID)
     self:Speak(msgData, {
         caster = caster,
         target = target,
-        spellName = spellName,
-        icon = nil
+        spellname = spellName
      })
 end

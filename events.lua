@@ -38,18 +38,31 @@ function Verbose:EventDbgPrintFormat(event, spellName, spellID, caster, target)
         self:Print(EventDbgPrintFormatString:format(event or "|cFFAAABFEnil|r", spellName or "|cFFAAABFEnil|r", spellID or "|cFFAAABFEnil|r", caster or "|cFFAAABFEnil|r", target or "|cFFAAABFEnil|r"))
     end
 end
-local EventDetailDbgPrintFormatString = "|cFFFFFF00EVENT:|r    <%s> |cFFFF3F40=|r %s"
+local EventDetailDbgPrintFormatString = "|cFFFFFF00EVENT:|r    %s |cFFFF3F40=|r %s"
+local function colorizeValues(v)
+    if Verbose.NameIsPlayer(v) then
+        v = "|cFF3CE13F"..v.."|r"
+    elseif v == true then
+        v = "|cFF40BC40true|r"
+    elseif v == false then
+        v = "|cFFFF4700false|r"
+    end
+    return v
+end
 function Verbose:EventDetailsDbgPrint(eventInfo)
     if eventInfo and self.db.profile.eventDetailDebug then
         for k, v in Verbose.orderedpairs(eventInfo) do
-            if self:NameIsPlayer(v) then
-                v = "|cFF3CE13F"..v.."|r"
-            elseif v == true then
-                v = "|cFF40BC40true|r"
-            elseif v == false then
-                v = "|cFFFF4700false|r"
+            if k:sub(0, 1) ~= "_" then
+                k = "|cFF00FF00<"..k..">|r"
+                v = colorizeValues(v)
+                self:Print(EventDetailDbgPrintFormatString:format(k, v))
             end
-            self:Print(EventDetailDbgPrintFormatString:format(k, v))
+        end
+        for k, v in Verbose.orderedpairs(eventInfo) do
+            if k:sub(0, 1) == "_" then
+                v = colorizeValues(v)
+                self:Print(EventDetailDbgPrintFormatString:format(k, v))
+            end
         end
     end
 end

@@ -230,6 +230,13 @@ local spellEventOptionsGroup = {
         list = {
             type = "input",
             name = L["Messages, one per line"],
+            desc = function(info)
+                if Verbose.usedSpellEvents[info[#info - 1]] then
+                    return Verbose.usedSpellEvents[info[#info - 1]].desc
+                elseif Verbose.playerCombatLogSubEvents[info[#info - 1]] then
+                    return Verbose.playerCombatLogSubEvents[info[#info - 1]].desc
+                end
+            end,
             order = 40,
             multiline = Verbose.multilineHeightTab,
             width = "full",

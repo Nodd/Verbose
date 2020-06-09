@@ -237,14 +237,14 @@ function Verbose:InitDamageReceived()
 end
 
 function Verbose:OnDamageEvent(eventInfo)
-    if not self:NameIsPlayer(eventInfo.destName) then
+    if not self:NameIsPlayer(eventInfo.destname) then
         return
     end
     local dbTable
-    if eventInfo.event == "ENVIRONMENTAL_DAMAGE" then
-        dbTable = self.db.profile.damage[eventInfo.environmentalType]
+    if eventInfo._event == "ENVIRONMENTAL_DAMAGE" then
+        dbTable = self.db.profile.damage[eventInfo._environmentalType]
     else
-        dbTable = self.db.profile.damage[tostring(eventInfo.school)]
+        dbTable = self.db.profile.damage[tostring(eventInfo._school)]
     end
 
     dbTable.count = dbTable.count + 1
