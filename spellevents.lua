@@ -9,8 +9,8 @@ local GetServerTime = GetServerTime
 
 local SUBSTITUTIONS_DESCRIPTION = (
     L["Substitutions:"]
-    .."\n|cFF00FF00<target>|r "..L["the target of the spell"]
-    .."\n|cFF00FF00<spellname>|r "..L["the name of the spell you're casting"]
+    .."\n|cFF00FF00<target>|r "..L["target of the spell"]
+    .."\n|cFF00FF00<spellname>|r "..L["name of the spell you're casting"]
     .."\n|cFF00FF00<caster>|r "..L["'player' or 'pet'"]
 )
 

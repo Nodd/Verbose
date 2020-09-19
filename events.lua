@@ -69,10 +69,10 @@ end
 
 local NPC_DESCRIPTION = (
     L["Substitutions:"]
-    .."\n|cFF00FF00<npcname>|r "..L["Name of the NPC"]
-    .."\n|cFF00FF00<npcguild>|r "..L["Guild of the NPC"]
-    .."\n|cFF00FF00<npcclass>|r "..L["Class of the NPC"]
-    .."\n|cFF00FF00<npcrace>|r "..L["Race of the NPC"]
+    .."\n|cFF00FF00<npcname>|r "..L["NPC name"]
+    .."\n|cFF00FF00<npcguild>|r "..L["NPC guild (rarely used)"]
+    .."\n|cFF00FF00<npcclass>|r "..L["NPC class (rarely used)"]
+    .."\n|cFF00FF00<npcrace>|r "..L["NPC race"]
     .."\n|cFF00FF00<npctype>|r "..L["Humanoïd, Beast, Demon..."]
     .."\n|cFF00FF00<npcfamily>|r "..L["Subcategory for beasts and demons"]
     .."\n|cFF00FF00<npcgenreid>|r "..L["1 if NPC is male, 2 if female"]
