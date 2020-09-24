@@ -6,8 +6,8 @@ if not L then
     return
 end
 
---@localization(locale="frFR", format="lua_additive_table")@
+--@localization(locale="frFR", format="lua_additive_table", handle-unlocalized="english")@
 
 local H = LibStub("AceLocale-3.0"):NewLocale(addonName.."Help", "frFR")
 
---@localization(locale="frFR", format="lua_additive_table", namespace="help", table-name="H")@
+--@localization(locale="frFR", format="lua_additive_table", handle-unlocalized="english", namespace="help", table-name="H")@
