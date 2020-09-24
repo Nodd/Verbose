@@ -3,7 +3,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale(addonName)
 
 -- GLOBALS: CreateFrame
 
-LibStub("AceAddon-3.0"):NewAddon(Verbose, addonName, "AceConsole-3.0", "AceEvent-3.0", "AceSerializer-3.0", "AceTimer-3.0")
+LibStub("AceAddon-3.0"):NewAddon(Verbose, addonName, "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0")
 local AceConsole = LibStub("AceConsole-3.0")
 local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigCmd = LibStub("AceConfigCmd-3.0")
