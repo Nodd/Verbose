@@ -1,7 +1,9 @@
 local addonName, Verbose = ...
 
 Verbose.debug = false
---@debug@ Verbose.debug = true --@end-debug@
+--@debug@
+Verbose.debug = true
+--@end-debug@
 
 local L = LibStub("AceLocale-3.0"):NewLocale(addonName, "enUS", true, true)
 
