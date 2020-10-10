@@ -189,8 +189,7 @@ function Verbose:UseBubbleFrame(text)
     bubbleFrame:SetHeight(bubbleFrame.fontstring:GetHeight() + 2 * bubbleFrame.borders)
 
     -- Hide bubble after a delay
-    local delay = text:len() / 20
-    if delay < 3 then delay = 3 end
+    local delay = 6
     self:CancelTimer(self.SpeakTimerID)
     bubbleFrame:Show()
     self.SpeakTimerID = self:ScheduleTimer(
