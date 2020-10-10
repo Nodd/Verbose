@@ -4,6 +4,7 @@ local addonName, Verbose = ...
 -- Lua functions
 local ipairs = ipairs
 local tinsert = tinsert
+local tonumber = tonumber
 local tostring = tostring
 local wipe = wipe
 
