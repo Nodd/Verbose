@@ -2,6 +2,7 @@
 
 ## Title: Verbose
 ## Notes: RP addon to say messages on events, such as spellcasts. Bring more life to your actions !
+## Notes-frFR: Addon RP pour dire des messages après des évènements comme des incantations de sorts. Mettez de la dynamique dans vos actions !
 ## Author: Nodd
 ## Version: @project-version@
 ## SavedVariables: VerboseDB
