@@ -91,7 +91,7 @@ function Verbose.CombatLogOptionToDesc(info)
     -- Append count and last time to description
     if not desc then desc = "" else desc = desc.."\n" end
     local elapsed = Verbose:secondsToString(GetServerTime() - eventData.lastRecord)
-    desc = desc .. "Count: "..eventData.count.."\nLast: "..elapsed.." ago"
+    desc = desc .. L["Count:"].." "..eventData.count.."\n"..L["Last: %s ago"]:format(elapsed)
     return desc
 end
 function Verbose.CombatLogOptionToOrder(info)

@@ -29,6 +29,8 @@ for filename in p.glob("*.lua"):
             strings = loc_regex.findall(line)
             for s in strings:
                 namespace.add(s)
+                if s.startswith((" ", "\n")) or s.endswith((" ", "\n")):
+                    print("Leading or closing whitespace in ", repr(s))
                 if s in globals:
                     print(f'"{s}" exists in globals as', globals[s])
 
