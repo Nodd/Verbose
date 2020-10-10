@@ -74,20 +74,25 @@ local helpData = {
     {
         L["Welcome"],
         L["Welcome to %s !"]:format(addonName)..
-        L["\n\nThis addon is heavily inspired by SpeakinSpell which doesn't seem to be maintained anymore."]..
-        L[" This one aims to be simpler to configure and simpler to maintain, but it was primarily done because coding is fun ! :)"]..
-        L["\n\nYou'll find some informations in the entries on the side. Happy speaking !"]
+        "\n\n"..
+        L["This addon is heavily inspired by SpeakinSpell which doesn't seem to be maintained anymore."]..
+        " "..L["This one aims to be simpler to configure and simpler to maintain, but it was primarily done because coding is fun ! :)"]..
+        "\n\n"..
+        L["You'll find some informations in the entries on the side. Happy speaking !"]
     },
     {
         L["Substitutions"],
         L["To make messages more dynamic and feel alive, it is possible to modify the messages on the fly by using substitutions."]..
-        L["\n\nThere are different kinds of substitutions:"]..
-        L["\n  - unit data such as the name or type of the selected target"]..
-        L["\n  - event data such as the caster or the target of a spell tar"]..
-        L["\n  - user-defined list substitutions"]..
-        L["\n\nSubstitution tokens are indicated between angle brackets like this: <token>."]..
-        L["\n\nTo avoid ugly outputs, a message where there are tokens that can not be replaced  will be avoided."]..
-        L[" This can happen for example if <targetname> is used ant there is no target selected."],
+        "\n\n"..
+        L["There are different kinds of substitutions:"]..
+        "\n  - "..L["unit data such as the name or type of the selected target"]..
+        "\n  - "..L["event data such as the caster or the target of a spell"]..
+        "\n  - "..L["user-defined list substitutions"]..
+        "\n\n"..
+        L["Substitution tokens are indicated between angle brackets like this: <token>."]..
+        "\n\n"..
+        L["To avoid ugly outputs, a message where there are tokens that can not be replaced  will be avoided."]..
+        " "..L["This can happen for example if <targetname> is used and there is no target selected."],
         {
             L["Unit data"],
             L["Documentation here."],
@@ -95,19 +100,20 @@ local helpData = {
         {
             L["Event data"],
             L["The available tokens varie among events. They are documented on each event page."]..
-            L["\n\nYeah, that wasn't terribly useful, sorry."]
+            "\n\n"..
+            L["Yeah, that wasn't terribly useful, sorry."]
         },
         {
             L["User-defined lists"],
             L["These lists are configured in the 'List' tab. To create a new list, simply click on the 'New list' button."]..
             "\n\n"..NORMAL_FONT_COLOR_CODE..L["List name"]..FONT_COLOR_CODE_CLOSE..
-            L["\nThe substitution token corresponds to the list name."]..
-            L[" In your messages, simply put the list name between angle brackets and it will replaced by arandom list value."]..
-            L["\nAs the name is used for the token, it's restricted to alphanumeric characters exclusively."]..
-            L["\nIn case of name conflict with another substitution, the other substitution will occur and the list is ignored."]..
+            "\n"..L["The substitution token corresponds to the list name."]..
+            " "..L["In your messages, simply put the list name between angle brackets and it will replaced by a random list value."]..
+            "\n"..L["As the name is used for the token, it's restricted to alphanumeric characters exclusively."]..
+            "\n"..L["In case of name conflict with another substitution, the other substitution will occur and the list is ignored."]..
             "\n\n"..NORMAL_FONT_COLOR_CODE..L["List values"]..FONT_COLOR_CODE_CLOSE..
-            L["\nThe values are entered in the multiline edit box, one entry per line."]..
-            L[" The caracters < and > are not allowed in the values, to avoid conflicts with tokens."]..
+            "\n"..L["The values are entered in the multiline edit box, one entry per line."]..
+            " "..L["The characters < and > are not allowed in the values, to avoid conflicts with tokens."]..
             "\n|cFFFF0000"..L["Don't forget to validate the modifications with the 'Accept' button !"].."|r"
         },
     },
