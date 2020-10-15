@@ -46,7 +46,7 @@ function Verbose:InitSpellbook(event)
 
     -- Map talent spec order (fixed) and spellbook spell order (depends on active spec)
     local allTabs = { 1 }
-    for specIndex = 1, GetNumSpecializations() do
+    for specIndex = 1, GetNumSpecializations() + 1 do
         local tabIndex
         if specIndex < currSpec then
             tabIndex = specIndex + 2
