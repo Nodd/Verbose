@@ -14,7 +14,8 @@ local UIParent = UIParent
 -------------------------------------------------------------------------------
 
 function Verbose:InitBubbleFrame()
-    local bubbleFrame = CreateFrame("Frame", "VerboseBubbleFrame", UIParent)
+    print(BackdropTemplateMixin)
+    local bubbleFrame = CreateFrame("Frame", "VerboseBubbleFrame", UIParent, "BackdropTemplate")
     self.bubbleFrame = bubbleFrame
 
     -- Bubble frame
