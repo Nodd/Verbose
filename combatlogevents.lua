@@ -184,22 +184,28 @@ function Verbose:SetCombatLogArgs(eventInfo, rawEventInfo)
     elseif Verbose.starts_with(eventInfo._event, "UNIT_") then
         eventInfo._recapID, eventInfo._unconsciousOnDeath = unpack(rawEventInfo, suffixIndex)
         suffixIndex = suffixIndex + 2
+    elseif Verbose.starts_with(eventInfo._event, "ENCHANT_") then
+        eventInfo.spellname, eventInfo._itemID, eventInfo.itemname = unpack(rawEventInfo, suffixIndex)
+        suffixIndex = suffixIndex + 2
     end
 
     -- Specific
     if eventInfo._event == "PARTY_KILL" then
         eventInfo._arg1, eventInfo._arg2 = unpack(rawEventInfo, suffixIndex)
         suffixIndex = suffixIndex + 2
-    end
 
     -- Suffixes
-    if Verbose.ends_with(eventInfo._event, "_DAMAGE") then
+    elseif Verbose.ends_with(eventInfo._event, "_DAMAGE") then
         -- This overrides eventInfo._school from above
         eventInfo._amount, eventInfo._overkill, eventInfo._school, eventInfo._resisted, eventInfo._blocked, eventInfo._absorbed, eventInfo._critical, eventInfo._glancing, eventInfo._crushing, eventInfo._isOffHand = unpack(rawEventInfo, suffixIndex)
     elseif Verbose.ends_with(eventInfo._event, "_MISSED") then
         eventInfo._missType, eventInfo._isOffHand, eventInfo._amountMissed, eventInfo._critical = unpack(rawEventInfo, suffixIndex)
     elseif Verbose.ends_with(eventInfo._event, "_HEAL") then
         eventInfo._amount, eventInfo._overhealing, eventInfo._absorbed, eventInfo._critical = unpack(rawEventInfo, suffixIndex)
+    elseif Verbose.ends_with(eventInfo._event, "_HEAL_ABSORBED") then
+        eventInfo._extraGUID, eventInfo._extraName, eventInfo._extraFlags, eventInfo._extraRaidFlags, eventInfo._extraSpellID, eventInfo._extraSpellName, eventInfo._extraSchool, eventInfo._amount = unpack(rawEventInfo, suffixIndex)
+    elseif Verbose.ends_with(eventInfo._event, "_ABSORBED") then
+        eventInfo._amount = unpack(rawEventInfo, suffixIndex)
     elseif Verbose.ends_with(eventInfo._event, "_ENERGIZE") then
         eventInfo._amount, eventInfo._overenergize, eventInfo._powerType, eventInfo._alternatePowerType = unpack(rawEventInfo, suffixIndex)
     elseif Verbose.ends_with(eventInfo._event, "_DRAIN", "_LEECH") then
@@ -218,8 +224,6 @@ function Verbose:SetCombatLogArgs(eventInfo, rawEventInfo)
         eventInfo._extraSpellId, eventInfo.extraspellname, eventInfo._extraSchool, eventInfo._auraType = unpack(rawEventInfo, suffixIndex)
     elseif Verbose.ends_with(eventInfo._event, "_CAST_FAILED") then
         eventInfo._failedType = unpack(rawEventInfo, suffixIndex)
-    elseif Verbose.ends_with(eventInfo._event, "_ABSORBED") then
-        eventInfo._amount = unpack(rawEventInfo, suffixIndex)
     elseif #rawEventInfo ~= suffixIndex - 1 then
         self:Print(eventInfo._event.." has unknown extra arguments:", unpack(rawEventInfo, suffixIndex))
     end
