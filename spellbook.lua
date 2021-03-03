@@ -45,15 +45,15 @@ function Verbose:InitSpellbook(event)
     local currSpec = GetSpecialization()
 
     -- Map talent spec order (fixed) and spellbook spell order (depends on active spec)
-    local allTabs = { 1 }
+    local allTabs = { 1, 2 }
     for specIndex = 1, GetNumSpecializations() + 1 do
         local tabIndex
         if specIndex < currSpec then
-            tabIndex = specIndex + 2
+            tabIndex = specIndex + 3
         elseif specIndex == currSpec then
-            tabIndex = 2
+            tabIndex = 3
         else
-            tabIndex = specIndex + 1
+            tabIndex = specIndex + 2
         end
         tinsert(allTabs, tabIndex)
     end
@@ -111,14 +111,14 @@ function Verbose:SpecHidden(info)
     end
 
     -- Check that it's a class specialisation
-    -- First order is the General tab
+    -- First order is the General tab, then the common spells tab
     local order = tonumber(info[#info])
-    if order == 1 or order > GetNumSpecializations() + 1 then
+    if order == 1 or order == 2 or order > GetNumSpecializations() + 2 then
         return false
     end
 
-    -- Ide if it's not the current spec
-    return order ~= GetSpecialization() + 1
+    -- Hide if it's not the current spec
+    return order ~= GetSpecialization() + 2
 end
 
 function Verbose:AddSpellbookSpellEventToOptions(spellID, event)

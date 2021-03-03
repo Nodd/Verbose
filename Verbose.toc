@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 
 ## Title: Verbose
 ## Notes: RP addon to say messages on events, such as spellcasts. Bring more life to your actions !
