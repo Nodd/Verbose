@@ -221,6 +221,7 @@ local spellEventOptionsGroup = {
             order = 30,
             min = 0,
             max = 3600,
+            bigStep = 5,
             softMax = 600,
             bigStep = 1,
             width = 1.5,

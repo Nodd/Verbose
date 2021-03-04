@@ -74,7 +74,7 @@ Verbose.options = {
                     min = 0,
                     max = 3600,
                     softMax = 600,
-                    bigStep = 1,
+                    bigStep = 5,
                     width = "double",
                     get = function(info) return Verbose.db.profile.cooldown end,
                     set = function(info, value) Verbose.db.profile.cooldown = value end,
