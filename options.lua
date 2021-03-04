@@ -261,6 +261,7 @@ Verbose.options = {
                     type = "toggle",
                     name = L["Show non player spells"],
                     order = 21,
+                    width = "double",
                     get = function() return Verbose.db.profile.showUnusableSpells end,
                     set = function(_, value) Verbose.db.profile.showUnusableSpells = value end,
                 },
