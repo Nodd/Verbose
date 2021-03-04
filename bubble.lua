@@ -58,6 +58,8 @@ function Verbose:InitBubbleFrame()
     bubbleFrame.fontstringinfo:SetJustifyV("BOTTOM")
 
     bubbleFrame:Hide()
+
+    bubbleFrame:SetScript("OnMouseDown", function() Verbose:OpenWorldWorkaround() end)
 end
 
 local bubblePositionData = {
@@ -170,13 +172,19 @@ function Verbose:UseBubbleFrame(text)
     bubbleFrame.fontstring:SetText(text)
 
     -- Update info message (keybind and mute can change)
-    if self.db.profile.keybindOpenWorld and not self.db.profile.mute then
-        bubbleFrame.fontstringinfo:SetText(L["Press %s to speak aloud"]:format(self.db.profile.keybindOpenWorld))
-        bubbleFrame.fontstringinfo:Show()
-        infoWidth = bubbleFrame.fontstringinfo:GetStringWidth() + 2 * bubbleFrame.infoMargin
-    else
+    if self.db.profile.mute then
         bubbleFrame.fontstringinfo:Hide()
         infoWidth = 0
+    else
+        local text
+        if self.db.profile.keybindOpenWorld then
+            text = L["Click or press %s to speak aloud"]:format(self.db.profile.keybindOpenWorld)
+        else
+            text = L["Click to speak aloud"]
+        end
+        bubbleFrame.fontstringinfo:SetText(text)
+        bubbleFrame.fontstringinfo:Show()
+        infoWidth = bubbleFrame.fontstringinfo:GetStringWidth() + 2 * bubbleFrame.infoMargin
     end
 
     -- Resize frame to fit text
