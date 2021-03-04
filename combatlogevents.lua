@@ -186,7 +186,7 @@ function Verbose:SetCombatLogArgs(eventInfo, rawEventInfo)
         suffixIndex = suffixIndex + 2
     elseif Verbose.starts_with(eventInfo._event, "ENCHANT_") then
         eventInfo.spellname, eventInfo._itemID, eventInfo.itemname = unpack(rawEventInfo, suffixIndex)
-        suffixIndex = suffixIndex + 2
+        suffixIndex = suffixIndex + 3
     end
 
     -- Specific
