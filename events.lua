@@ -50,7 +50,7 @@ local function colorizeValues(v)
     return v
 end
 function Verbose:EventDetailsDbgPrint(eventInfo)
-    if eventInfo and self.db.profile.eventDetailDebug then
+    if eventInfo and self.db.profile.eventDebug and self.db.profile.eventDetailDebug then
         for k, v in Verbose.orderedpairs(eventInfo) do
             if k:sub(0, 1) ~= "_" then
                 k = "|cFF00FF00<"..k..">|r"

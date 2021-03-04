@@ -53,7 +53,7 @@ local chatColors = {
 
 -- Console print for debugging
 function Verbose:SpeakDbgPrint(...)
-    if self.db.profile.speakDebug then
+    if self.db.profile.eventDebug and self.db.profile.speakDebug then
         self:Print("|cFFFFFF00SPEAK:|r", ...)
     end
 end
