@@ -140,11 +140,28 @@ function Verbose:SpellOrderInOptions(info)
     -- Else return nil for alphabetical sort
 end
 
+-- Return true if spell should be hidden, false if it should be visible
 function Verbose:SpellHideInOptions(info)
     local spellID = info[#info]
-    if not self.db.profile.showUnusableSpells and not IsPlayerSpell(tonumber(spellID)) then
+
+    -- Filter non player spells if option activated
+    if self.db.profile.showPlayerSpellsOnly and not IsPlayerSpell(tonumber(spellID)) then
         return true
     end
+
+    -- Hide spells without messages if option activated
+    if self.db.profile.showConfiguredSpellsOnly then
+        local empty = true
+        for _, eventData in pairs(self.db.profile.spells[spellID]) do
+            empty = empty and Verbose.tableIsEmpty(eventData.messages)
+            if not empty then break end
+        end
+        if empty then
+            return true
+        end
+    end
+
+    -- Filter by spell name
     local spellName = self:SpellName(spellID):lower()
     local hide = false
     for _, word in ipairs(self.db.profile.filterValues) do

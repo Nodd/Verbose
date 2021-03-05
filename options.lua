@@ -272,11 +272,19 @@ Verbose.options = {
                 },
                 unusable = {
                     type = "toggle",
-                    name = L["Not kown"],
-                    desc = L["Display spells not kown by the player."],
+                    name = L["Player only"],
+                    desc = L["Only display spells kown by the player."],
                     order = 21,
-                    get = function() return Verbose.db.profile.showUnusableSpells end,
-                    set = function(_, value) Verbose.db.profile.showUnusableSpells = value end,
+                    get = function() return Verbose.db.profile.showPlayerSpellsOnly end,
+                    set = function(_, value) Verbose.db.profile.showPlayerSpellsOnly = value end,
+                },
+                unconfigured = {
+                    type = "toggle",
+                    name = L["Configured only"],
+                    desc = L["Only display spells with configured messages."],
+                    order = 20.5,
+                    get = function() return Verbose.db.profile.showConfiguredSpellsOnly end,
+                    set = function(_, value) Verbose.db.profile.showConfiguredSpellsOnly = value end,
                 },
                 spellbook = {
                     type = "group",

@@ -187,7 +187,7 @@ end
 
 function Verbose:SpecHidden(info)
     -- Early return if not filtered
-    if self.db.profile.showUnusableSpells then
+    if not self.db.profile.showPlayerSpellsOnly then
         return false
     end
 

@@ -89,7 +89,8 @@ function Verbose:AddDamageToOptions(optionGroupArgs, damageID, name, desc)
             type = "group",
             name = name,
             desc = getDamageDesc,
-            order = "DamageSpellOrderInOptions",
+            order = "DamageOrderInOptions",
+            hidden = "DamageHideInOptions",
             args = {
                 enable = {
                     type = "toggle",
@@ -146,51 +147,51 @@ function Verbose:AddDamageToOptions(optionGroupArgs, damageID, name, desc)
 end
 
 function Verbose:GetDamageEnabled(info)
-    return self:DamageSpellEventData(info).enabled
+    return self:DamageEventData(info).enabled
 end
 
 function Verbose:GetDamageMerge(info)
-    return self:DamageSpellEventData(info).merge
+    return self:DamageEventData(info).merge
 end
 
 function Verbose:GetDamageProba(info)
-    return self:DamageSpellEventData(info).proba
+    return self:DamageEventData(info).proba
 end
 
 function Verbose:GetDamageCooldown(info)
-    return self:DamageSpellEventData(info).cooldown
+    return self:DamageEventData(info).cooldown
 end
 
 function Verbose:GetDamageMessages(info)
-    return self:TableToText(self:DamageSpellEventData(info).messages)
+    return self:TableToText(self:DamageEventData(info).messages)
 end
 
 function Verbose:SetDamageEnabled(info, value)
-    self:DamageSpellEventData(info).enabled = value
+    self:DamageEventData(info).enabled = value
 end
 
 function Verbose:SetDamageMerge(info, value)
-    self:DamageSpellEventData(info).merge = value
+    self:DamageEventData(info).merge = value
 end
 
 function Verbose:SetDamageProba(info, value)
-    self:DamageSpellEventData(info).proba = value
+    self:DamageEventData(info).proba = value
 end
 
 function Verbose:SetDamageCooldown(info, value)
-    self:DamageSpellEventData(info).cooldown = value
+    self:DamageEventData(info).cooldown = value
 end
 
 function Verbose:SetDamageMessages(info, value)
-    self:TextToTable(value, self:DamageSpellEventData(info).messages)
+    self:TextToTable(value, self:DamageEventData(info).messages)
 end
 
 -- Return spell and event data for callbacks from info arg
-function Verbose:DamageSpellEventData(info)
+function Verbose:DamageEventData(info)
     return self.db.profile.damage[info[#info - 1]]
 end
 
-function Verbose:DamageSpellOrderInOptions(info)
+function Verbose:DamageOrderInOptions(info)
     local damageID = info[#info]
     local dbTable = Verbose.db.profile.damage[damageID]
     if self.db.profile.sortSpellValue == "recent" then
@@ -199,6 +200,30 @@ function Verbose:DamageSpellOrderInOptions(info)
         return min(-0.1, -dbTable.count)
     end
     -- Else return nil for alphabetical sort (and icon sort)
+end
+
+-- Return true if damage type should be hidden, false if it should be visible
+function Verbose:DamageHideInOptions(info)
+    local damageID = info[#info]
+    local dbTable = Verbose.db.profile.damage[damageID]
+
+    -- Hide damage types without messages if option activated
+    if self.db.profile.showConfiguredSpellsOnly then
+        if Verbose.tableIsEmpty(dbTable.messages) then
+            return true
+        end
+    end
+
+    -- Filter by damage name
+    local damageName = info.option.name:lower()
+    local hide = false
+    for _, word in ipairs(self.db.profile.filterValues) do
+        if not damageName:find(word) then
+            hide = true
+            break
+        end
+    end
+    return hide
 end
 
 local function nbBits1(num)

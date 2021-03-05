@@ -23,7 +23,8 @@ local defaultDB = {
 
         filterValues = {},
         sortSpellValue = "alphabetic",
-        showUnusableSpells = true,
+        showPlayerSpellsOnly = false,
+        showConfiguredSpellsOnly = false,
 
         selectWorkaround = "bubble",  -- "bubble" or "emote"
         bubblePosition = "bottomright",  -- "bottom" or "top" .. "right" or "left"

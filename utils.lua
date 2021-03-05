@@ -60,6 +60,10 @@ function Verbose.orderedpairs(t, f)
     return _orderednext, keys
 end
 
+function Verbose.tableIsEmpty(t)
+    return next(t) == nil
+end
+
 -------------------------------------------------------------------------------
 -- String operations
 -------------------------------------------------------------------------------
