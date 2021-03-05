@@ -215,6 +215,7 @@ local spellEventOptionsGroup = {
             min = 1,
             softMax = 20,
             bigStep = 1,
+            width = 1.25,
             get = "GetSpellEventProba",
             set = "SetSpellEventProba",
         },
