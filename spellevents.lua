@@ -6,6 +6,7 @@ local tostring = tostring
 
 -- WoW globals
 local GetServerTime = GetServerTime
+local GetSpellInfo = GetSpellInfo
 
 local SUBSTITUTIONS_DESCRIPTION = (
     L["Substitutions:"]
@@ -114,6 +115,13 @@ function Verbose:OnSpellcastEvent(event, caster, target, spellID)
     if caster ~= "player" and caster ~= "pet" then return end
 
     local spellName = self:SpellName(spellID)
+
+    -- Ignore misc spells from the world
+    if GetSpellInfo(spellID):sub(1, 5) == "[DNT]" then
+        self:Print("Ignoring ", spellName)
+        return
+    end
+
     spellID = tostring(spellID)
 
     -- Debug
