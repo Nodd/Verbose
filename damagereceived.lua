@@ -89,6 +89,7 @@ function Verbose:AddDamageToOptions(optionGroupArgs, damageID, name, desc)
             type = "group",
             name = name,
             desc = getDamageDesc,
+            order = "DamageSpellOrderInOptions",
             args = {
                 enable = {
                     type = "toggle",
@@ -187,6 +188,17 @@ end
 -- Return spell and event data for callbacks from info arg
 function Verbose:DamageSpellEventData(info)
     return self.db.profile.damage[info[#info - 1]]
+end
+
+function Verbose:DamageSpellOrderInOptions(info)
+    local damageID = info[#info]
+    local dbTable = Verbose.db.profile.damage[damageID]
+    if self.db.profile.sortSpellValue == "recent" then
+        return min(-0.1, -dbTable.lastRecord)
+    elseif self.db.profile.sortSpellValue == "count" then
+        return min(-0.1, -dbTable.count)
+    end
+    -- Else return nil for alphabetical sort (and icon sort)
 end
 
 local function nbBits1(num)
