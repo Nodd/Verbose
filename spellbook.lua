@@ -1,6 +1,8 @@
 local addonName, Verbose = ...
 -- Spellcasts are managed in Verbose:OnSpellcastEvent (spellevents.lua)
 
+local LibPlayerSpells = LibStub('LibPlayerSpells-1.0')
+
 -- Lua functions
 local ipairs = ipairs
 local tinsert = tinsert
@@ -112,6 +114,36 @@ function Verbose:InitSpellbook(event)
                     RegisterSpellbookSpell(spellID, order)
                 end
             end
+        end
+    end
+
+    function addRelatedSpell(spellID, relatedSpellID)
+        if spellID == relatedSpellID or IsPassiveSpell(relatedSpellID) then
+            return
+        end
+        relatedSpellID = tostring(relatedSpellID)
+        if not Verbose.spellbookSpells[relatedSpellID] then
+            return
+        end
+        for _, order in ipairs(Verbose.spellbookSpells[relatedSpellID]) do
+            RegisterSpellbookSpell(spellID, order)
+        end
+    end
+    function addRelatedSpells(spellID, relatedSpellIDs)
+        -- Manage both IDs and tables of IDs
+        if type(relatedSpellIDs) == "table" then
+            for _, relatedSpellID in ipairs(relatedSpellIDs) do
+                addRelatedSpell(spellID, relatedSpellID)
+            end
+        else
+            addRelatedSpell(spellID, relatedSpellIDs)
+        end
+    end
+    for spellID, _, providers, modifiedSpells in LibPlayerSpells:IterateSpells(nil, UnitClassBase("player")) do
+        -- IterateSpells returns either an ID or a table of IDs
+        if not IsPassiveSpell(spellID) then
+            addRelatedSpells(spellID, providers)
+            addRelatedSpells(spellID, modifiedSpells)
         end
     end
 
