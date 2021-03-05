@@ -117,8 +117,8 @@ function Verbose:OnSpellcastEvent(event, caster, target, spellID)
     local spellName = self:SpellName(spellID)
 
     -- Ignore misc spells from the world
-    if GetSpellInfo(spellID):sub(1, 5) == "[DNT]" then
-        self:Print("Ignoring ", spellName)
+    if Verbose.starts_with(GetSpellInfo(spellID), "[DNT]") then
+        self:Print("Ignoring [DNT] ", spellName)
         return
     end
 
