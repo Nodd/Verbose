@@ -288,7 +288,7 @@ Verbose.options = {
                     args = {
                         title = {
                             type = "description",
-                            name = Verbose:IconTextureBorderlessFromID(spellbookIcon) .. " Spell book",
+                            name = Verbose:IconTextureBorderlessFromID(spellbookIcon) .. " " .. SPELLBOOK,
                             fontSize = "large",
                             order = 0,
                         },
