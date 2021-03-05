@@ -9,6 +9,8 @@ local tostring = tostring
 local wipe = wipe
 
 -- WoW globals
+local GetFlyoutInfo = GetFlyoutInfo
+local GetFlyoutSlotInfo = GetFlyoutSlotInfo
 local GetNumSpecializations = GetNumSpecializations
 local GetNumSpellTabs = GetNumSpellTabs
 local GetProfessions = GetProfessions
@@ -81,11 +83,20 @@ function Verbose:InitSpellbook(event)
         }
 
         for index = tabOffset + 1, tabOffset + tabNumEntries do
-            local spellName, spellSubName = GetSpellBookItemName(index, BOOKTYPE_SPELL)
+            -- local spellName, spellSubName = GetSpellBookItemName(index, BOOKTYPE_SPELL)
             local skillType, spellID = GetSpellBookItemInfo(index, BOOKTYPE_SPELL)
             local isSpell = skillType == "SPELL" or skillType == "FUTURESPELL"
             if isSpell and not IsPassiveSpell(spellID) then
                 RegisterSpellbookSpell(spellID, order)
+            elseif skillType == "FLYOUT" then
+                local flyoutID = spellID
+                local name, description, numSlots, isKnown = GetFlyoutInfo(flyoutID)
+                for slot = 1, numSlots do
+                    spellID = GetFlyoutSlotInfo(flyoutID, slot)
+                    if not IsPassiveSpell(spellID) then
+                        RegisterSpellbookSpell(spellID, order)
+                    end
+                end
             end
         end
     end
