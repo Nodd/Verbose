@@ -24,6 +24,10 @@ local IsPassiveSpell = IsPassiveSpell
 local BOOKTYPE_SPELL = BOOKTYPE_SPELL
 local MAX_TALENT_TIERS = MAX_TALENT_TIERS
 local NUM_TALENT_COLUMNS = NUM_TALENT_COLUMNS
+local TRADE_SKILLS = TRADE_SKILLS
+
+-- Icons
+local tradeskillsIcon = 136243  -- Cog wheel
 
 Verbose.spellbookSpells = {}
 local function RegisterSpellbookSpell(spellID, order)
@@ -61,14 +65,6 @@ function Verbose:InitSpellbook(event)
         tinsert(allTabs, tabIndex)
     end
 
-    -- Add professions
-    local prof1, prof2, archaeology, fishing, cooking = GetProfessions()
-    if prof1 then tinsert(allTabs, prof1) end
-    if prof2 then tinsert(allTabs, prof2) end
-    if archaeology then tinsert(allTabs, archaeology) end
-    if fishing then tinsert(allTabs, fishing) end
-    if cooking then tinsert(allTabs, cooking) end
-
     -- Scan spellbook and add spell structures
     for order, tabIndex in ipairs(allTabs) do
         local tabName, tabTexture, tabOffset, tabNumEntries, tabIsGuild, tabOffspecID = GetSpellTabInfo(tabIndex)
@@ -105,6 +101,7 @@ function Verbose:InitSpellbook(event)
             end
         end
     end
+
     -- Add all talent spells
     for spec = 1, GetNumSpecializations() do
         for tier = 1, MAX_TALENT_TIERS do
@@ -117,6 +114,42 @@ function Verbose:InitSpellbook(event)
             end
         end
     end
+
+    -- Add professions
+    -- They are considered as tabs by the game, but Verbose processes them differently
+    local order = #allTabs + 1
+    wipe(allTabs)
+    local prof1, prof2, archaeology, fishing, cooking = GetProfessions()
+    if prof1 then tinsert(allTabs, prof1) end
+    if prof2 then tinsert(allTabs, prof2) end
+    if archaeology then tinsert(allTabs, archaeology) end
+    if fishing then tinsert(allTabs, fishing) end
+    if cooking then tinsert(allTabs, cooking) end
+
+    spellbookOptions.args[tostring(order)] = {
+        type = "group",
+        name = TRADE_SKILLS,
+        icon = tradeskillsIcon,
+        iconCoords = Verbose.iconCropBorders,
+        order = order,
+        hidden = false,
+        args = {},
+    }
+
+    -- Scan spellbook professions and add spell structures
+    for _, tabIndex in ipairs(allTabs) do
+        local tabName, tabTexture, tabOffset, tabNumEntries, tabIsGuild, tabOffspecID = GetSpellTabInfo(tabIndex)
+
+        for index = tabOffset + 1, tabOffset + tabNumEntries do
+            -- local spellName, spellSubName = GetSpellBookItemName(index, BOOKTYPE_SPELL)
+            local skillType, spellID = GetSpellBookItemInfo(index, BOOKTYPE_SPELL)
+            local isSpell = skillType == "SPELL" or skillType == "FUTURESPELL"
+            if isSpell and not IsPassiveSpell(spellID) then
+                RegisterSpellbookSpell(spellID, order)
+            end
+        end
+    end
+
     self:UpdateOptionsGUI()
 end
 
