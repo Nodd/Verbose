@@ -9,6 +9,7 @@ local tostring = tostring
 local wipe = wipe
 
 -- WoW globals
+local FindSpellOverrideByID = FindSpellOverrideByID
 local GetFlyoutInfo = GetFlyoutInfo
 local GetFlyoutSlotInfo = GetFlyoutSlotInfo
 local GetNumSpecializations = GetNumSpecializations
@@ -88,6 +89,10 @@ function Verbose:InitSpellbook(event)
             local isSpell = skillType == "SPELL" or skillType == "FUTURESPELL"
             if isSpell and not IsPassiveSpell(spellID) then
                 RegisterSpellbookSpell(spellID, order)
+                local overrideSpellID = FindSpellOverrideByID(spellID)
+                if overrideSpellID ~= spellID then
+                    RegisterSpellbookSpell(overrideSpellID, order)
+                end
             elseif skillType == "FLYOUT" then
                 local flyoutID = spellID
                 local name, description, numSlots, isKnown = GetFlyoutInfo(flyoutID)
