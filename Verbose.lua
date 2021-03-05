@@ -45,7 +45,6 @@ function Verbose:OnPostInitialize()
 
     self:InitSpellbook()
     self:InitMounts()
-    self:InitMountsDB()
     self:InitDamageReceived()
 
     -- Load DB to options

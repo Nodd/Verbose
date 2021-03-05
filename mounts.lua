@@ -50,13 +50,7 @@ function Verbose:InitMounts()
             mountTypeID = tostring(mountTypeID)
             local category = Verbose.mountTypeString[mountTypeID]
             spellID = tostring(spellID)
-            Verbose.mountSpells[spellID] = {
-                name=creatureName,
-                icon=icon,
-                desc=description,
-                order=(not isFavorite) and 1 or 0,
-                categoryID=tostring(mountTypeID),
-            }
+            Verbose.mountSpells[spellID] = tostring(mountTypeID)
 
             -- Fill options table
             self:AddMountToOptions(spellID)
@@ -64,20 +58,12 @@ function Verbose:InitMounts()
     end
 end
 
-function Verbose:InitMountsDB()
-    for spellID in pairs(Verbose.mountSpells) do
-        -- Add a default message
-        local _ = self.db.profile.spells[spellID].UNIT_SPELLCAST_START
-        _ = self.db.profile.spells[spellID].UNIT_SPELLCAST_SUCCEEDED
-    end
-end
-
 function Verbose:AddMountToOptions(spellID)
     local mountsOptions = self.options.args.events.args.mounts
-    local mountData = Verbose.mountSpells[spellID]
+    local categoryID = Verbose.mountSpells[spellID]
 
     -- Insert mount category options
-    local categoryTag = Verbose.mountTypeString[mountData.categoryID]
+    local categoryTag = Verbose.mountTypeString[categoryID]
     if not mountsOptions.args[categoryTag] then
         local mountTypeData = Verbose.mountTypeData[categoryTag]
         mountsOptions.args[categoryTag] = {
