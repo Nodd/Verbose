@@ -296,13 +296,13 @@ Verbose.options = {
                     args = {
                         title = {
                             type = "description",
-                            name = Verbose:IconTextureBorderlessFromID(spellbookIcon) .. " " .. SPELLBOOK,
+                            name = Verbose:IconTextureBorderlessFromID(spellbookIcon).." "..SPELLBOOK,
                             fontSize = "large",
                             order = 0,
                         },
                         info = {
                             type = "description",
-                            name = L["All spellbook spells."],
+                            name = "\n"..L["All spellbook spells, and some of their effects thanks to LibPLayerSpell (please contribute!)."],
                             fontSize = "medium",
                             order = 1,
                         },
@@ -318,13 +318,13 @@ Verbose.options = {
                     args = {
                         title = {
                             type = "description",
-                            name = Verbose:IconTextureBorderlessFromID(spellsIconID) .. " Mounts",
+                            name = Verbose:IconTextureBorderlessFromID(mountsIconID).." "..MOUNTS,
                             fontSize = "large",
                             order = 0,
                         },
                         info = {
                             type = "description",
-                            name = L["Documentation here."],
+                            name = "\n"..L["You farmed mounts, now shout it to everyone, I'm sure they'll love it!"].."\n\n"..L["Hint: try %s for a subtle but efficient effect."]:format(NORMAL_FONT_COLOR_CODE.."/mountspecial"..FONT_COLOR_CODE_CLOSE),
                             fontSize = "medium",
                             order = 1,
                         },
@@ -340,13 +340,13 @@ Verbose.options = {
                     args = {
                         title = {
                             type = "description",
-                            name = Verbose:IconTextureBorderlessFromID(spellsIconID) .. " Spellcasts",
+                            name = Verbose:IconTextureBorderlessFromID(spellsIconID).." "..L["Spells, Items..."],
                             fontSize = "large",
                             order = 0,
                         },
                         info = {
                             type = "description",
-                            name = L["Documentation here."],
+                            name = "\n"..L["This is a collection of spells learned from your actions in the world."].."\n\n"..L["'Spell' is a general term here, it can also come from any object or interative mecanism in the Warcraft world. So yeah, there will be a lot of trash listed here. That's what the filtering options are for, isn't it?"],
                             fontSize = "medium",
                             order = 1,
                         },
@@ -362,13 +362,13 @@ Verbose.options = {
                     args = {
                         title = {
                             type = "description",
-                            name = Verbose:IconTextureBorderlessFromID(combatIconID) .. " Combat",
+                            name = Verbose:IconTextureBorderlessFromID(combatIconID).." "..COMBAT,
                             fontSize = "large",
                             order = 0,
                         },
                         info = {
                             type = "description",
-                            name = L["Documentation here."],
+                            name = "\n"..L["There is one was to start a fight, but multiple ways to finish it. REZ PLZ!"],
                             fontSize = "medium",
                             order = 1,
                         },
@@ -384,13 +384,13 @@ Verbose.options = {
                     args = {
                         title = {
                             type = "description",
-                            name = Verbose:IconTextureBorderlessFromID(spellsIconID).." "..L["Spellcasts"],
+                            name = Verbose:IconTextureBorderlessFromID(damageIcon).." "..L["Damage received"],
                             fontSize = "large",
                             order = 0,
                         },
                         info = {
                             type = "description",
-                            name = L["Documentation here."],
+                            name = "\n"..L["It's going to hurt. A lot. Shout your pain to the world! HEAL FFS!!!"],
                             fontSize = "medium",
                             order = 1,
                         },
@@ -442,13 +442,13 @@ Verbose.options = {
                     args = {
                         title = {
                             type = "description",
-                            name = Verbose:IconTextureBorderlessFromID(npcIconID) .. " NPC interaction",
+                            name = Verbose:IconTextureBorderlessFromID(npcIconID).." "..L["NPC interaction"],
                             fontSize = "large",
                             order = 0,
                         },
                         info = {
                             type = "description",
-                            name = L["Documentation here."],
+                            name = "\n"..L["This section contains the interaction events with different NPCs in the Warcraft world. They may not answer you, but why would that stop you from trying?"],
                             fontSize = "medium",
                             order = 1,
                         },
@@ -464,13 +464,13 @@ Verbose.options = {
                     args = {
                         title = {
                             type = "description",
-                            name = Verbose:IconTextureBorderlessFromID(playerIconID) .. " Achievements",
+                            name = Verbose:IconTextureBorderlessFromID(playerIconID).." "..PLAYER,
                             fontSize = "large",
                             order = 0,
                         },
                         info = {
                             type = "description",
-                            name = L["Documentation here."],
+                            name = "\n"..L["This section contains events related to the character itself. Narcissus myth, anyone ?"],
                             fontSize = "medium",
                             order = 1,
                         },
