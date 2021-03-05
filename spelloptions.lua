@@ -208,24 +208,25 @@ local spellEventOptionsGroup = {
         newline19 = { type="description", name="", order=15.5 },
         proba = {
             type = "range",
-            name = L["Message probability"],
+            name = L["Speak once out of:"],
+            desc = L["On average, messages will be sent once out of this number of events. Note that the actual value is random."],
             order = 35,
-            isPercent = true,
-            min = 0,
-            max = 1,
-            bigStep = 0.05,
+            isPercent = false,
+            min = 1,
+            softMax = 20,
+            bigStep = 1,
             get = "GetSpellEventProba",
             set = "SetSpellEventProba",
         },
         cooldown = {
             type = "range",
             name = L["Message cooldown (s)"],
+            desc = L["Minimal delay between speeches for this spell. See also the global cooldown in the main Options tab."],
             order = 30,
             min = 0,
             max = 3600,
-            bigStep = 5,
             softMax = 600,
-            bigStep = 1,
+            bigStep = 5,
             width = 1.5,
             get = "GetSpellEventCooldown",
             set = "SetSpellEventCooldown",
@@ -268,10 +269,10 @@ function Verbose:SetSpellEventEnabled(info, value)
     self:SpellEventData(info).enabled = value
 end
 function Verbose:GetSpellEventProba(info)
-    return self:SpellEventData(info).proba
+    return 1 / self:SpellEventData(info).proba
 end
 function Verbose:SetSpellEventProba(info, value)
-    self:SpellEventData(info).proba = value
+    self:SpellEventData(info).proba = 1 / value
 end
 function Verbose:GetSpellEventCooldown(info)
     return self:SpellEventData(info).cooldown
