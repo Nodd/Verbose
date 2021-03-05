@@ -272,9 +272,9 @@ Verbose.options = {
                 },
                 unusable = {
                     type = "toggle",
-                    name = L["Show non player spells"],
+                    name = L["Not kown"],
+                    desc = L["Display spells not kown by the player."],
                     order = 21,
-                    width = "double",
                     get = function() return Verbose.db.profile.showUnusableSpells end,
                     set = function(_, value) Verbose.db.profile.showUnusableSpells = value end,
                 },
