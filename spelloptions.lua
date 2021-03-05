@@ -134,6 +134,8 @@ function Verbose:SpellOrderInOptions(info)
             countNegative = min(countNegative, -eventData.count)
         end
         return countNegative
+    elseif self.db.profile.sortSpellValue == "icon" then
+        return Verbose:SpellIconID(spellID)
     end
     -- Else return nil for alphabetical sort
 end
