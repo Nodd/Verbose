@@ -39,10 +39,10 @@ lists.lua
 events.lua
 spellevents.lua
 combatlogevents.lua
-help.lua
 damagereceived.lua
 tradeskills.lua
 bubble.lua
+help.lua
 
 # Needs events.lua
 db.lua
