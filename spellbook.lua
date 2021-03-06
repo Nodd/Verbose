@@ -209,7 +209,7 @@ function Verbose:AddSpellbookSpellEventToOptions(spellID, event)
     end
 end
 
--- Load saved events to options table
+-- Add event to options table if it matches
 function Verbose:CheckAndAddSpellbookToOptions(spellID, event)
     if self.spellbookSpells[spellID] then
         self:AddSpellbookSpellEventToOptions(spellID, event)

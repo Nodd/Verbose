@@ -84,7 +84,7 @@ function Verbose:AddMountToOptions(spellID)
     end
 end
 
--- Load saved events to options table
+-- Add event to options table if it matches
 function Verbose:CheckAndAddMountToOptions(spellID, event)
     if Verbose.mountSpells[spellID] then
         self:AddMountToOptions(spellID)
