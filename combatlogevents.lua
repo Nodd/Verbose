@@ -172,7 +172,7 @@ end
 function Verbose:SetCombatLogArgs(eventInfo, rawEventInfo)
     -- Prefixes
     local suffixIndex = 12
-    if Verbose.starts_with(eventInfo._event, "SPELL_", "RANGE_") then
+    if Verbose.starts_with(eventInfo._event, "SPELL_", "RANGE_", "DAMAGE_") then
         eventInfo._spellID, eventInfo.spellname, eventInfo._school = unpack(rawEventInfo, suffixIndex)
         eventInfo._spellID = tostring(eventInfo._spellID)
         suffixIndex = suffixIndex + 3
@@ -195,7 +195,7 @@ function Verbose:SetCombatLogArgs(eventInfo, rawEventInfo)
         suffixIndex = suffixIndex + 2
 
     -- Suffixes
-    elseif Verbose.ends_with(eventInfo._event, "_DAMAGE") then
+    elseif Verbose.ends_with(eventInfo._event, "_DAMAGE", "_SHIELD", "_SPLIT") then
         -- This overrides eventInfo._school from above
         eventInfo._amount, eventInfo._overkill, eventInfo._school, eventInfo._resisted, eventInfo._blocked, eventInfo._absorbed, eventInfo._critical, eventInfo._glancing, eventInfo._crushing, eventInfo._isOffHand = unpack(rawEventInfo, suffixIndex)
     elseif Verbose.ends_with(eventInfo._event, "_MISSED") then
