@@ -118,7 +118,6 @@ function Verbose:OnSpellcastEvent(event, caster, target, spellID)
 
     -- Ignore misc spells from the world
     if Verbose.starts_with(GetSpellInfo(spellID), "[DNT]") then
-        self:Print("Ignoring [DNT] ", spellName)
         return
     end
 
