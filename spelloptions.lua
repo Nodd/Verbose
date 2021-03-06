@@ -21,6 +21,10 @@ function Verbose:AddSpellToOptions(spellID, event)
     elseif self:CheckAndAddMountToOptions(spellID, event) then
         return
 
+    -- Check Tradeskills
+    elseif self:CheckAndAddTradeskillToOptions(spellID, event) then
+        return
+
     else
         -- Insert spell options
         local spellOptionsGroup = self:AddSpellOptionsGroup(

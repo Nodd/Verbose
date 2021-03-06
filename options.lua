@@ -432,6 +432,28 @@ Verbose.options = {
                         },
                     },
                 },
+                recipes = {
+                    type = "group",
+                    name = AUCTION_CATEGORY_RECIPES,
+                    order = 30,
+                    icon = Verbose.C.tradeskillsIcon,
+                    iconCoords = Verbose.iconCropBorders,
+                    childGroups = "tree",
+                    args = {
+                        title = {
+                            type = "description",
+                            name = Verbose:IconTextureBorderlessFromID(Verbose.C.tradeskillsIcon).." "..AUCTION_CATEGORY_RECIPES,
+                            fontSize = "large",
+                            order = 0,
+                        },
+                        info = {
+                            type = "description",
+                            name = "\n"..L["All your favorites recipes! And all the bad ones too..."],
+                            fontSize = "medium",
+                            order = 1,
+                        },
+                    },
+                },
                 npc = {
                     type = "group",
                     name = L["NPC interaction"],

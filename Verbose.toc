@@ -41,6 +41,7 @@ spellevents.lua
 combatlogevents.lua
 help.lua
 damagereceived.lua
+tradeskills.lua
 bubble.lua
 
 # Needs events.lua
