@@ -110,18 +110,20 @@ function Verbose:AddDamageToOptions(optionGroupArgs, damageID, name, desc)
                 },
                 proba = {
                     type = "range",
-                    name = L["Message probability"],
+                    name = L["Speak once out of:"],
+                    desc = L["On average, messages will be sent once out of this number of events. Note that the actual value is random."],
                     order = 30,
-                    isPercent = true,
-                    min = 0,
-                    max = 1,
-                    bigStep = 0.05,
+                    min = 1,
+                    softMax = 20,
+                    bigStep = 1,
+                    width = Verbose.C.proba_option_width,
                     get = "GetDamageProba",
                     set = "SetDamageProba",
                 },
                 cooldown = {
                     type = "range",
                     name = L["Message cooldown (s)"],
+                    desc = L["Minimal delay between speeches for this spell. See also the global cooldown in the main Options tab."],
                     order = 20,
                     min = 0,
                     max = 3600,
@@ -155,7 +157,7 @@ function Verbose:GetDamageMerge(info)
 end
 
 function Verbose:GetDamageProba(info)
-    return self:DamageEventData(info).proba
+    return 1 / self:DamageEventData(info).proba
 end
 
 function Verbose:GetDamageCooldown(info)
@@ -175,7 +177,7 @@ function Verbose:SetDamageMerge(info, value)
 end
 
 function Verbose:SetDamageProba(info, value)
-    self:DamageEventData(info).proba = value
+    self:DamageEventData(info).proba = 1 / value
 end
 
 function Verbose:SetDamageCooldown(info, value)
