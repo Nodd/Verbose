@@ -51,14 +51,11 @@ function Verbose:InitMounts()
             local category = Verbose.mountTypeString[mountTypeID]
             spellID = tostring(spellID)
             Verbose.mountSpells[spellID] = tostring(mountTypeID)
-
-            -- Fill options table
-            self:AddMountToOptions(spellID)
         end
     end
 end
 
-function Verbose:AddMountToOptions(spellID)
+function Verbose:AddMountToOptions(spellID, event)
     local mountsOptions = self.options.args.events.args.mounts
     local categoryID = Verbose.mountSpells[spellID]
 
@@ -79,15 +76,13 @@ function Verbose:AddMountToOptions(spellID)
     -- Insert mount options
     local spellOptionsGroup = self:AddSpellOptionsGroup(
         mountsOptions.args[categoryTag], spellID)
-    for event, eventData in pairs(Verbose.mountEvents) do
-        self:AddSpellEventOptions(spellOptionsGroup, event)
-    end
+    self:AddSpellEventOptions(spellOptionsGroup, event)
 end
 
 -- Add event to options table if it matches
 function Verbose:CheckAndAddMountToOptions(spellID, event)
     if Verbose.mountSpells[spellID] then
-        self:AddMountToOptions(spellID)
+        self:AddMountToOptions(spellID, event)
         return true
     else
         return false

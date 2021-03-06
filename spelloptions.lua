@@ -89,9 +89,9 @@ function Verbose:ForgetSpellHidden(info)
         return true
     end
 
-    -- Hide button if spell is pre-recorded
+    -- Hide button if spell is in the spell book
     local spellID = info[#info - 1]
-    return self.mountSpells[spellID] ~= nil or self.spellbookSpells[spellID] ~= nil
+    return self.spellbookSpells[spellID] ~= nil
 end
 
 local eventDescFmt = "\n%s\n   "..NORMAL_FONT_COLOR_CODE.."%d "..BNET_BROADCAST_SENT_TIME.."|r"
