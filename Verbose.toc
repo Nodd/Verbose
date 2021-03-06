@@ -29,6 +29,7 @@ Libs\LibPlayerSpells-1.0\lib.xml
 Locales\Locales.xml
 
 # No dependency
+constants.lua
 utils.lua
 Verbose.lua
 speak.lua

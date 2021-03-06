@@ -28,9 +28,6 @@ local MAX_TALENT_TIERS = MAX_TALENT_TIERS
 local NUM_TALENT_COLUMNS = NUM_TALENT_COLUMNS
 local TRADE_SKILLS = TRADE_SKILLS
 
--- Icons
-local tradeskillsIcon = 136243  -- Cog wheel
-
 Verbose.spellbookSpells = {}
 local function RegisterSpellbookSpell(spellID, order)
     spellID = tostring(spellID)
@@ -161,7 +158,7 @@ function Verbose:InitSpellbook(event)
     spellbookOptions.args[tostring(order)] = {
         type = "group",
         name = TRADE_SKILLS,
-        icon = tradeskillsIcon,
+        icon = Verbose.C.tradeskillsIcon,
         iconCoords = Verbose.iconCropBorders,
         order = order,
         hidden = false,
