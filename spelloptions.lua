@@ -177,6 +177,16 @@ function Verbose:SpellHideInOptions(info)
     return hide
 end
 
+function Verbose:EventHideInOptions(info)
+    -- Hide events without messages if option activated
+    if self.db.profile.showConfiguredSpellsOnly then
+        local spellID = info[#info-1]
+        local event = info[#info]
+        local eventData = self.db.profile.spells[spellID][event]
+        return Verbose.tableIsEmpty(eventData.messages)
+    end
+end
+
 function Verbose.EventNameFromInfo(info)
     return Verbose.EventName(info[#info])
 end
@@ -207,13 +217,14 @@ local spellEventOptionsGroup = {
     type = "group",
     name = Verbose.EventNameFromInfo,
     order = Verbose.EventOrderFromInfo,
-    hidden = false,
+    hidden = "EventHideInOptions",  -- hidden is inherted, must be set to false for each child
     args = {
         enable = {
             type = "toggle",
             name = ENABLE,
             order = 10,
             width = 1.5,
+            hidden = false,
             get = "GetSpellEventEnabled",
             set = "SetSpellEventEnabled",
         },
@@ -222,10 +233,11 @@ local spellEventOptionsGroup = {
             name = L["Forget this event"],
             desc = L["Delete the event for this spell. To avoid accidental data loss, the message list must be empty."],
             order = 15,
+            hidden = false,
             func = "ForgetEvent",
             disabled = "ForgetEventDisable",
         },
-        newline19 = { type="description", name="", order=15.5 },
+        newline19 = { type="description", name="", order=15.5, hidden = false },
         proba = {
             type = "range",
             name = L["Speak once out of:"],
@@ -236,6 +248,7 @@ local spellEventOptionsGroup = {
             softMax = 20,
             bigStep = 1,
             width = 1.25,
+            hidden = false,
             get = "GetSpellEventProba",
             set = "SetSpellEventProba",
         },
@@ -249,6 +262,7 @@ local spellEventOptionsGroup = {
             softMax = 600,
             bigStep = 5,
             width = 1.5,
+            hidden = false,
             get = "GetSpellEventCooldown",
             set = "SetSpellEventCooldown",
         },
@@ -265,6 +279,7 @@ local spellEventOptionsGroup = {
             order = 40,
             multiline = Verbose.multilineHeightTab,
             width = "full",
+            hidden = false,
             get = "GetSpellEventMessages",
             set = "SetSpellEventMessages",
         },
